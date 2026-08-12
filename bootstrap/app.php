@@ -1,0 +1,64 @@
+<?php
+
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Configuration\Exceptions;
+use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
+
+/*
+|--------------------------------------------------------------------------
+| Sumber kebenaran konfigurasi: file .env
+|--------------------------------------------------------------------------
+|
+| Beberapa shell / IDE mengekspor isi .env proyek ini ke environment
+| (misalnya DB_CONNECTION=sqlite dari versi lama). Karena loader dotenv
+| Laravel bersifat immutable, ekspor tersebut diam-diam menimpa nilai
+| dari file .env. Di sini variabel yang kuncinya juga didefinisikan di
+| .env dibersihkan, sehingga file .env selalu menang.
+|
+*/
+
+// Saat menjalankan PHPUnit, phpunit.xml sudah menetapkan override-nya
+// sendiri (APP_ENV=testing, DB sqlite :memory:, cache array, dll.) ke
+// environment. Jangan bersihkan environment dalam kasus ini agar
+// override tersebut tetap berlaku.
+$isTestRun = in_array(getenv('APP_ENV'), ['testing'], true)
+    || in_array($_SERVER['APP_ENV'] ?? null, ['testing'], true);
+
+$envFilePath = dirname(__DIR__).'/.env';
+
+if (! $isTestRun && is_file($envFilePath)) {
+    foreach (file($envFilePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [] as $line) {
+        $line = trim($line);
+
+        if ($line === '' || str_starts_with($line, '#') || ! str_contains($line, '=')) {
+            continue;
+        }
+
+        [$name] = explode('=', $line, 2);
+        $name = trim($name);
+
+        if (preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $name)) {
+            putenv($name);
+            unset($_ENV[$name], $_SERVER[$name]);
+        }
+    }
+}
+
+return Application::configure(basePath: dirname(__DIR__))
+    ->withRouting(
+        web: __DIR__.'/../routes/web.php',
+        commands: __DIR__.'/../routes/console.php',
+        health: '/up',
+    )
+    ->withMiddleware(function (Middleware $middleware): void {
+        // Pengguna yang belum login diarahkan ke halaman login,
+        // dan pengguna yang sudah login dijauhkan dari form login.
+        $middleware->redirectGuestsTo(fn () => route('login'));
+        $middleware->redirectUsersTo(fn () => route('admin.dashboard'));
+    })
+    ->withExceptions(function (Exceptions $exceptions): void {
+        $exceptions->shouldRenderJsonWhen(
+            fn (Request $request) => $request->is('api/*'),
+        );
+    })->create();

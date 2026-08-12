@@ -1,0 +1,96 @@
+@import 'tailwindcss';
+
+/* Self-hosted fonts (no external CDN) */
+@import '@fontsource/inter/latin-300.css';
+@import '@fontsource/inter/latin-400.css';
+@import '@fontsource/inter/latin-500.css';
+@import '@fontsource/inter/latin-600.css';
+@import '@fontsource/inter/latin-700.css';
+@import '@fontsource/inter/latin-800.css';
+@import '@fontsource/poppins/latin-400.css';
+@import '@fontsource/poppins/latin-500.css';
+@import '@fontsource/poppins/latin-600.css';
+@import '@fontsource/poppins/latin-700.css';
+@import '@fontsource/poppins/latin-800.css';
+
+/* Class-based dark mode (original site toggles .dark on <html>) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-poppins: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+
+    --color-accent: #3b82f6;
+
+    --animate-float: float 6s ease-in-out infinite;
+    --animate-scale-in: scale-in 0.3s ease-out;
+
+    @keyframes float {
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-12px);
+        }
+    }
+
+    @keyframes scale-in {
+        0% {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+}
+
+[x-cloak] {
+    display: none !important;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    padding-top: calc(1rem + env(safe-area-inset-top, 0px));
+}
+
+/* Admin & auth pages have their own fixed layouts (no floating navbar) */
+.admin-body {
+    padding-top: 0;
+}
+
+/* All buttons (and elements acting as buttons) show a pointer cursor */
+button:not(:disabled),
+[role="button"]:not(:disabled),
+input[type="file"]::file-selector-button {
+    cursor: pointer;
+}
+
+/* Hide scrollbars on horizontal carousels (no Tailwind utility) */
+.scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+    display: none;
+}
+
+/* Twinkling sparkles background decor */
+@keyframes sparkle-twinkle {
+    0%,
+    100% {
+        opacity: 0;
+        transform: scale(0);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
