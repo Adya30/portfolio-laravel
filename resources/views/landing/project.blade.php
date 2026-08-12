@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<section class="relative z-10 pt-32 pb-16 sm:pt-36">
+<section class="relative z-10 pt-24 pb-16 sm:pt-36">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {{-- Breadcrumb --}}

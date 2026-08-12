@@ -3,6 +3,7 @@ import 'animate.css/animate.min.css';
 import 'aos/dist/aos.css';
 import AOS from 'aos';
 import Alpine from 'alpinejs';
+import './image-uploader';
 
 window.Alpine = Alpine;
 

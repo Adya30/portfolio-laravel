@@ -22,7 +22,7 @@
             </div>
 
             <div class="sm:col-span-2">
-                <x-admin.image-input name="gambar" label="Ikon Tool" :current="$tool->gambar" />
+                <x-admin.image-input name="gambar" label="Ikon Tool" :current="$tool->gambar" ratio="1" />
             </div>
 
             <div class="sm:col-span-2 md:col-span-1">

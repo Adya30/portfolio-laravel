@@ -79,7 +79,7 @@ class ProjectController extends Controller
             'link' => ['nullable', 'url'],
             'tools' => ['nullable', 'string'],
             'fitur' => ['nullable', 'string'],
-            'gambar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp,svg', 'max:4096'],
+            'gambar' => ['nullable', 'image:allow_svg', 'mimes:jpeg,png,jpg,gif,webp,svg', 'max:4096'],
             'gambar_url' => ['nullable', 'url'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
         ], $this->validationMessages(), [

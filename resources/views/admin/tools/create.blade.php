@@ -20,7 +20,7 @@
             </div>
 
             <div class="sm:col-span-2">
-                <x-admin.image-input name="gambar" label="Ikon Tool" />
+                <x-admin.image-input name="gambar" label="Ikon Tool" ratio="1" />
             </div>
 
             <div class="sm:col-span-2 md:col-span-1">

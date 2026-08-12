@@ -31,7 +31,7 @@ class ProfileController extends Controller
             'about_2' => ['nullable', 'string'],
             'email' => ['nullable', 'email', 'max:255'],
             'cv_url' => ['nullable', 'url'],
-            'hero_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp,svg', 'max:4096'],
+            'hero_image' => ['nullable', 'image:allow_svg', 'mimes:jpeg,png,jpg,gif,webp,svg', 'max:4096'],
             'hero_image_url' => ['nullable', 'url'],
             'github' => ['nullable', 'url'],
             'instagram' => ['nullable', 'url'],

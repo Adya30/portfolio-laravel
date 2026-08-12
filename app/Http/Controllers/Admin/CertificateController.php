@@ -76,7 +76,7 @@ class CertificateController extends Controller
             'tanggal' => ['nullable', 'string', 'max:255'],
             'desk' => ['nullable', 'string'],
             'icon' => ['nullable', 'string', 'max:255'],
-            'gambar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp,svg', 'max:4096'],
+            'gambar' => ['nullable', 'image:allow_svg', 'mimes:jpeg,png,jpg,gif,webp,svg', 'max:4096'],
             'gambar_url' => ['nullable', 'url'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
         ], $this->validationMessages(), [

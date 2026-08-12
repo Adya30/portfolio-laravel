@@ -11,6 +11,9 @@ abstract class Controller
 {
     protected function uploadImage(UploadedFile $file, string $dir): string
     {
+        $isSvg = strtolower($file->getClientOriginalExtension()) === 'svg';
+        $svgContent = $isSvg ? $this->compressSvg((string) file_get_contents($file->getRealPath())) : null;
+
         $cloudName = config('cloudinary.cloud_name');
         $apiKey = config('cloudinary.api_key');
         $apiSecret = config('cloudinary.api_secret');
@@ -35,11 +38,16 @@ abstract class Controller
                     'overwrite' => false,
                 ];
 
-                if (strtolower($file->getClientOriginalExtension()) !== 'svg') {
+                if ($isSvg) {
+                    // Upload the compressed SVG content directly.
+                    $result = $cloudinary->uploadApi()->upload(
+                        'data:image/svg+xml;base64,'.base64_encode($svgContent),
+                        $options
+                    );
+                } else {
                     $options['format'] = 'webp';
+                    $result = $cloudinary->uploadApi()->upload($file->getRealPath(), $options);
                 }
-
-                $result = $cloudinary->uploadApi()->upload($file->getRealPath(), $options);
 
                 return $result['secure_url'] ?? $result['url'];
             } catch (\Throwable $e) {
@@ -47,10 +55,10 @@ abstract class Controller
             }
         }
 
-        return $this->storeLocally($file, $dir);
+        return $this->storeLocally($file, $dir, $svgContent);
     }
 
-    private function storeLocally(UploadedFile $file, string $dir): string
+    private function storeLocally(UploadedFile $file, string $dir, ?string $svgContent = null): string
     {
         $name = time().'_'.Str::random(10);
         $ext = strtolower($file->getClientOriginalExtension());
@@ -58,6 +66,13 @@ abstract class Controller
 
         if (! is_dir($targetDir)) {
             mkdir($targetDir, 0777, true);
+        }
+
+        if ($ext === 'svg' && $svgContent) {
+            // Store the compressed SVG markup directly.
+            file_put_contents($targetDir.'/'.$name.'.svg', $svgContent);
+
+            return 'uploads/'.$dir.'/'.$name.'.svg';
         }
 
         if ($ext !== 'svg' && function_exists('imagewebp')) {
@@ -78,6 +93,30 @@ abstract class Controller
         $file->move($targetDir, $name.'.'.$ext);
 
         return 'uploads/'.$dir.'/'.$name.'.'.$ext;
+    }
+
+    /**
+     * Optimize SVG markup: strip the XML declaration, DOCTYPE (including
+     * internal subsets), comments and insignificant whitespace.
+     *
+     * The minification is conservative: whitespace between tags is only
+     * collapsed when directly between a closing '>' and an opening '<', and
+     * whitespace runs inside tag markup are collapsed to a single space, so
+     * text nodes and base64 data URIs in attributes are left untouched.
+     * (One documented edge: whitespace between elements inside a
+     * `<text xml:space="preserve">` is collapsed — not a concern for the
+     * icons/logos this app stores.)
+     */
+    private function compressSvg(string $svg): string
+    {
+        $minified = preg_replace('/<\?xml[^>]*\?>/i', '', $svg);
+        $minified = preg_replace('/<!DOCTYPE[^>]*(?:\[[^\]]*\][^>]*)?>/i', '', $minified);
+        $minified = preg_replace('/<!--.*?-->/s', '', $minified);
+        $minified = preg_replace('/>\s+</', '><', $minified);
+        $minified = preg_replace_callback('/<[^>]+>/', fn ($m) => preg_replace('/\s{2,}/', ' ', $m[0]), $minified);
+        $minified = trim($minified);
+
+        return $minified !== '' ? $minified : $svg;
     }
 
     protected function resolveImage(Request $request, string $dir, ?string $current = null): ?string

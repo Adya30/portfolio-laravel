@@ -51,7 +51,7 @@
                     </div>
 
                     <div class="sm:col-span-2">
-                        <x-admin.image-input name="hero_image" label="Foto Profil (Hero)" :current="$profile->hero_image" />
+                        <x-admin.image-input name="hero_image" label="Foto Profil (Hero)" :current="$profile->hero_image" ratio="1" />
                     </div>
                 </div>
             </div>
