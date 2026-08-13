@@ -40,15 +40,11 @@
                                        class="p-2 rounded-lg text-slate-500 hover:text-accent hover:bg-accent/10 transition-colors" title="Edit">
                                         <i class="ri-pencil-line"></i>
                                     </a>
-                                    <form method="POST" action="{{ route('admin.categories.destroy', $category) }}"
-                                          onsubmit="return confirm('Yakin ingin menghapus kategori {{ $category->nama }}? Project di dalamnya akan menjadi tanpa kategori.')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                                class="p-2 rounded-lg text-slate-500 hover:text-red-500 hover:bg-red-50 transition-colors" title="Hapus">
-                                            <i class="ri-delete-bin-line"></i>
-                                        </button>
-                                    </form>
+                                    <x-admin.delete-modal
+                                        :action="route('admin.categories.destroy', $category)"
+                                        item-name="{{ $category->nama }}"
+                                        item-type="kategori"
+                                        message="Yakin ingin menghapus <strong>{{ $category->nama }}</strong>? Project di dalamnya akan menjadi tanpa kategori." />
                                 </div>
                             </td>
                         </tr>

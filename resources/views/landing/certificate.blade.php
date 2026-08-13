@@ -46,21 +46,23 @@
                     </div>
                 </header>
 
-                <div class="rounded-2xl overflow-hidden border border-slate-200 dark:border-white/5 bg-slate-100 dark:bg-slate-900 p-6 sm:p-8 mb-6 shadow-lg" data-aos="fade-up" data-aos-delay="100">
-                    <img src="{{ img_url($certificate->gambar) }}" alt="{{ $certificate->nama }}"
-                         class="w-full h-auto object-contain rounded-xl bg-white dark:bg-[#0a0a0f]" loading="lazy">
-                </div>
-
-                @if ($certificate->desk)
-                    <div class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-2xl p-7 sm:p-9 mb-6" data-aos="fade-up" data-aos-delay="150">
-                        <h2 class="font-poppins text-lg font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
-                            <i class="ri-information-line text-accent"></i> About This Certificate
-                        </h2>
-                        <p class="text-sm sm:text-[0.95rem] text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">
-                            {{ $certificate->desk }}
-                        </p>
+                <div class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-2xl overflow-hidden shadow-lg mb-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="bg-slate-100 dark:bg-slate-900 p-6 sm:p-8">
+                        <img src="{{ img_url($certificate->gambar) }}" alt="{{ $certificate->nama }}"
+                             class="w-full h-auto object-contain rounded-xl bg-white dark:bg-[#0a0a0f]" loading="lazy">
                     </div>
-                @endif
+
+                    @if ($certificate->desk)
+                        <div class="p-7 sm:p-9 border-t border-slate-200/50 dark:border-white/5">
+                            <h2 class="font-poppins text-lg font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
+                                <i class="ri-information-line text-accent"></i> About This Certificate
+                            </h2>
+                            <p class="text-sm sm:text-[0.95rem] text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+                                {{ $certificate->desk }}
+                            </p>
+                        </div>
+                    @endif
+                </div>
 
                 <div class="mb-4" data-aos="fade-up" data-aos-delay="200">
                     <a href="{{ route('landing') }}#certificates"

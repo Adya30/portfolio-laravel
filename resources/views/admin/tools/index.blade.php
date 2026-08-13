@@ -48,15 +48,10 @@
                                        class="p-2 rounded-lg text-slate-500 hover:text-accent hover:bg-accent/10 transition-colors" title="Edit">
                                         <i class="ri-pencil-line"></i>
                                     </a>
-                                    <form method="POST" action="{{ route('admin.tools.destroy', $tool) }}"
-                                          onsubmit="return confirm('Yakin ingin menghapus tool {{ $tool->nama }}?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                                class="p-2 rounded-lg text-slate-500 hover:text-red-500 hover:bg-red-50 transition-colors" title="Hapus">
-                                            <i class="ri-delete-bin-line"></i>
-                                        </button>
-                                    </form>
+                                    <x-admin.delete-modal
+                                        :action="route('admin.tools.destroy', $tool)"
+                                        item-name="{{ $tool->nama }}"
+                                        item-type="tool" />
                                 </div>
                             </td>
                         </tr>
