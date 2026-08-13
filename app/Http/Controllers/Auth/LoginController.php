@@ -12,14 +12,9 @@ use Illuminate\View\View;
 
 class LoginController extends Controller
 {
-    /**
-     * Maksimal percobaan login yang diperbolehkan sebelum dikunci sementara.
-     */
+
     protected const MAX_ATTEMPTS = 5;
 
-    /**
-     * Durasi kunci (dalam menit) setelah percobaan login melebihi batas.
-     */
     protected const DECAY_MINUTES = 1;
 
     public function showLoginForm(): View|RedirectResponse
@@ -41,8 +36,6 @@ class LoginController extends Controller
             'password' => 'Password',
         ]);
 
-        // Kunci sementara percobaan login dari email + IP yang sama
-        // setelah terlalu banyak kegagalan (anti brute-force / spam).
         $throttleKey = $this->throttleKey($request);
 
         if (RateLimiter::tooManyAttempts($throttleKey, self::MAX_ATTEMPTS)) {
@@ -77,9 +70,6 @@ class LoginController extends Controller
         return redirect()->route('login');
     }
 
-    /**
-     * Kunci rate limiter yang unik per kombinasi email + IP.
-     */
     private function throttleKey(Request $request): string
     {
         return 'login|'.Str::lower((string) $request->input('email')).'|'.$request->ip();

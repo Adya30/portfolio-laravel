@@ -34,12 +34,10 @@
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ $seoUrl }}">
 
-    {{-- Favicon (file lokal, kompatibel browser lama) --}}
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon.png') }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
 
-    {{-- Open Graph --}}
     <meta property="og:site_name" content="Adya Handika Putra AP | Portfolio">
     <meta property="og:title" content="{{ $seoTitle }}">
     <meta property="og:description" content="{{ $seoDescription }}">
@@ -51,7 +49,6 @@
         <meta property="og:image:alt" content="{{ $seoTitle }}">
     @endif
 
-    {{-- Twitter Card --}}
     <meta name="twitter:card" content="{{ $seoImage ? 'summary_large_image' : 'summary' }}">
     <meta name="twitter:title" content="{{ $seoTitle }}">
     <meta name="twitter:description" content="{{ $seoDescription }}">
@@ -59,9 +56,8 @@
         <meta name="twitter:image" content="{{ $seoImage }}">
     @endif
 
-    {{-- Structured data (JSON-LD) --}}
     @if ($seoJsonLd)
-        <script type="application/ld+json">{!! json_encode($seoJsonLd, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
+        <script type="application/ld+json">{!! json_encode($seoJsonLd, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!}</script>
     @endif
 
     <script>
@@ -74,8 +70,6 @@
         })();
     </script>
 
-    {{-- Base URL of the landing page, used by the navbar to jump to a section
-         from detail pages (e.g. /project/1 -> /#proyek). --}}
     <script>window.landingUrl = "{{ route('landing') }}";</script>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])

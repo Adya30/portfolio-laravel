@@ -2,6 +2,7 @@
     $adminNav = [
         ['route' => 'admin.dashboard', 'active' => 'admin.dashboard', 'label' => 'Dashboard', 'icon' => 'ri-dashboard-line'],
         ['route' => 'admin.projects.index', 'active' => 'admin.projects', 'label' => 'Kelola Project', 'icon' => 'ri-folder-open-line'],
+        ['route' => 'admin.categories.index', 'active' => 'admin.categories', 'label' => 'Kategori', 'icon' => 'ri-price-tag-3-line'],
         ['route' => 'admin.tools.index', 'active' => 'admin.tools', 'label' => 'Tools', 'icon' => 'ri-tools-line'],
         ['route' => 'admin.certificates.index', 'active' => 'admin.certificates', 'label' => 'Sertifikat', 'icon' => 'ri-award-line'],
         ['route' => 'admin.experiences.index', 'active' => 'admin.experiences', 'label' => 'Pengalaman', 'icon' => 'ri-briefcase-line'],
@@ -16,6 +17,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Admin Panel') - Adya Portfolio</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>

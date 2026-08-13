@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Experience;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -33,6 +34,7 @@ class ExperienceController extends Controller
             'location' => $data['location'] ?? null,
             'desk' => $data['desk'],
             'practicum_desc' => $data['practicum_desc'] ?? null,
+            'gambar' => $this->resolveImage($request, 'experiences'),
             'responsibilities' => $this->linesToArray($data['responsibilities'] ?? null),
             'skills' => $this->linesToArray($data['skills'] ?? null),
             'sort_order' => $data['sort_order'] ?? 0,
@@ -57,6 +59,7 @@ class ExperienceController extends Controller
             'location' => $data['location'] ?? null,
             'desk' => $data['desk'],
             'practicum_desc' => $data['practicum_desc'] ?? null,
+            'gambar' => $this->resolveImage($request, 'experiences', $experience->gambar),
             'responsibilities' => $this->linesToArray($data['responsibilities'] ?? null),
             'skills' => $this->linesToArray($data['skills'] ?? null),
             'sort_order' => $data['sort_order'] ?? $experience->sort_order,
@@ -72,6 +75,20 @@ class ExperienceController extends Controller
         return redirect()->route('admin.experiences.index')->with('success', 'Pengalaman berhasil dihapus.');
     }
 
+    public function reorder(Request $request): JsonResponse
+    {
+        $ids = $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer'],
+        ])['ids'];
+
+        foreach ($ids as $index => $id) {
+            Experience::whereKey($id)->update(['sort_order' => $index + 1]);
+        }
+
+        return response()->json(['ok' => true]);
+    }
+
     private function validateData(Request $request): array
     {
         return $request->validate([
@@ -81,6 +98,8 @@ class ExperienceController extends Controller
             'location' => ['nullable', 'string', 'max:255'],
             'desk' => ['required', 'string'],
             'practicum_desc' => ['nullable', 'string'],
+            'gambar' => ['nullable', 'image:allow_svg', 'mimes:jpeg,png,jpg,gif,webp,svg', 'max:4096'],
+            'gambar_url' => ['nullable', 'url'],
             'responsibilities' => ['nullable', 'string'],
             'skills' => ['nullable', 'string'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
@@ -91,6 +110,8 @@ class ExperienceController extends Controller
             'location' => 'Lokasi',
             'desk' => 'Deskripsi',
             'practicum_desc' => 'Deskripsi praktikum',
+            'gambar' => 'Logo / Foto',
+            'gambar_url' => 'URL logo / foto',
             'responsibilities' => 'Tanggung jawab utama',
             'skills' => 'Skill',
             'sort_order' => 'Urutan',

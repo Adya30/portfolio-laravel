@@ -4,7 +4,6 @@
 <section class="relative z-10 pt-24 pb-16 sm:pt-36">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {{-- Breadcrumb --}}
         <nav class="flex flex-wrap items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400 mb-8 animate__animated animate__fadeInUp" aria-label="Breadcrumb">
             <a href="{{ route('landing') }}#certificates" class="inline-flex items-center gap-1 hover:text-accent transition-colors">
                 <i class="ri-home-4-line"></i> Home
@@ -15,13 +14,10 @@
             <span class="text-accent font-semibold truncate max-w-[220px]">{{ $certificate->nama }}</span>
         </nav>
 
-        {{-- Two panels: left = title + photo + explanation, right = certificate details --}}
         <div class="grid lg:grid-cols-[1fr_320px] gap-8 lg:gap-10 items-start">
 
-            {{-- LEFT PANEL --}}
             <div class="min-w-0">
 
-                {{-- Header --}}
                 <header class="mb-8" data-aos="fade-up" data-aos-duration="700">
                     <div class="flex items-center gap-2 text-xs font-semibold text-accent uppercase tracking-wider mb-3">
                         <i class="ri-award-line"></i>
@@ -50,13 +46,11 @@
                     </div>
                 </header>
 
-                {{-- Certificate image (foto) --}}
                 <div class="rounded-2xl overflow-hidden border border-slate-200 dark:border-white/5 bg-slate-100 dark:bg-slate-900 p-6 sm:p-8 mb-6 shadow-lg" data-aos="fade-up" data-aos-delay="100">
                     <img src="{{ img_url($certificate->gambar) }}" alt="{{ $certificate->nama }}"
                          class="w-full h-auto object-contain rounded-xl bg-white dark:bg-[#0a0a0f]" loading="lazy">
                 </div>
 
-                {{-- Description (penjelasan) --}}
                 @if ($certificate->desk)
                     <div class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-2xl p-7 sm:p-9 mb-6" data-aos="fade-up" data-aos-delay="150">
                         <h2 class="font-poppins text-lg font-bold text-slate-800 dark:text-white mb-4 flex items-center gap-2">
@@ -68,7 +62,6 @@
                     </div>
                 @endif
 
-                {{-- CTA --}}
                 <div class="mb-4" data-aos="fade-up" data-aos-delay="200">
                     <a href="{{ route('landing') }}#certificates"
                        class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full border-[1.5px] border-accent/30 text-accent dark:text-[#60a5fa] text-sm font-semibold transition-all duration-200 hover:bg-accent/10 hover:border-accent hover:-translate-y-0.5 dark:hover:bg-accent/15 dark:hover:border-[#60a5fa]">
@@ -77,10 +70,8 @@
                 </div>
             </div>
 
-            {{-- RIGHT PANEL: certificate details --}}
             <aside class="lg:sticky lg:top-28 space-y-6" data-aos="fade-up" data-aos-delay="150">
 
-                {{-- Certificate details --}}
                 <div class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-2xl p-7">
                     <h2 class="font-poppins text-base font-bold text-slate-800 dark:text-white mb-5 flex items-center gap-2">
                         <i class="ri-award-line text-accent text-lg"></i> Certificate Details
@@ -121,7 +112,6 @@
             </aside>
         </div>
 
-        {{-- Previous / Next navigation --}}
         <div class="flex items-stretch justify-between gap-4 border-t border-slate-200 dark:border-white/10 pt-8 mt-12">
             @if ($prev)
                 <a href="{{ route('certificate.show', $prev) }}"

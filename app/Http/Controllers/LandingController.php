@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Certificate;
 use App\Models\Experience;
 use App\Models\Profile;
@@ -15,7 +16,8 @@ class LandingController extends Controller
     public function index(): View
     {
         $profile = Profile::first();
-        $projects = Project::orderBy('sort_order')->get();
+        $categories = Category::orderBy('id')->get();
+        $projects = Project::with('category')->orderBy('sort_order')->get();
         $tools = Tool::orderBy('sort_order')->get();
         $experiences = Experience::orderBy('sort_order')->get();
         $certificates = Certificate::orderBy('sort_order')->get();
@@ -31,6 +33,7 @@ class LandingController extends Controller
 
         return view('landing.landing', [
             'profile' => $profile,
+            'categories' => $categories,
             'projects' => $projects,
             'tools' => $tools,
             'experiences' => $experiences,
@@ -155,12 +158,6 @@ class LandingController extends Controller
         return response($xml, 200, ['Content-Type' => 'application/xml']);
     }
 
-    /**
-     * Resolve the previous / next items around $current within $ordered,
-     * so detail pages can offer quick navigation between entries.
-     *
-     * @return array{prev: \Illuminate\Database\Eloquent\Model|null, next: \Illuminate\Database\Eloquent\Model|null}
-     */
     private function navigation($current, $ordered): array
     {
         $index = $ordered->search(fn ($item) => $item->id === $current->id);

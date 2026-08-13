@@ -4,6 +4,7 @@
 
 @php
     $portfolioData = [
+        'categories' => $categories->map(fn ($c) => ['id' => $c->id, 'nama' => $c->nama])->values(),
         'tools' => $tools->map(fn ($t) => ['id' => $t->id, 'img' => img_url($t->gambar), 'nama' => $t->nama, 'ket' => $t->ket])->values(),
         'projects' => $projects->map(fn ($p) => [
             'id' => $p->id,
@@ -15,6 +16,7 @@
             'link' => $p->link,
             'fullDesk' => $p->full_desk,
             'fitur' => $p->fitur ?? [],
+            'categoryId' => $p->category_id,
         ])->values(),
         'experiences' => $experiences->map(fn ($e) => [
             'id' => $e->id,
@@ -25,6 +27,7 @@
             'location' => $e->location,
             'desc' => $e->desk,
             'practicumDesc' => $e->practicum_desc,
+            'img' => $e->gambar ? img_url($e->gambar) : null,
             'responsibilities' => $e->responsibilities ?? [],
             'skills' => $e->skills ?? [],
         ])->values(),
@@ -217,7 +220,7 @@
     </div>
 
     <div class="relative max-w-5xl mx-auto px-4" data-aos="fade-up" data-aos-duration="600">
-        <div x-data="carousel(16)">
+        <div x-data="carousel({{ $tools->count() }})">
             <div x-ref="track"
                  class="grid grid-flow-col grid-rows-2 gap-4 overflow-x-auto scrollbar-none snap-x snap-mandatory pb-4 auto-cols-[100%] sm:auto-cols-[calc(50%-0.5rem)] md:auto-cols-[calc(33.333%-0.67rem)] lg:auto-cols-[calc(25%-0.75rem)] scroll-smooth">
                 <template x-for="t in tools" :key="t.id">
@@ -237,7 +240,7 @@
                     <button @click="go(i)"
                             class="h-2 rounded-full transition-all duration-500 cursor-pointer"
                             :class="current === i ? 'bg-accent w-6' : 'bg-slate-300 dark:bg-slate-600 w-2 hover:bg-slate-400 dark:hover:bg-slate-500'"
-                            :aria-label="'Go to page ' + (i + 1)"></button>
+                            :aria-label="'Go to page ' + i"></button>
                 </template>
             </div>
         </div>
@@ -251,14 +254,38 @@
     </div>
 
     <div class="relative max-w-6xl mx-auto px-4" data-aos="fade-up" data-aos-duration="600">
-        <div x-data="carousel(12)">
+        <div x-data="projectGallery({{ json_encode($categories->map(fn ($c) => ['id' => $c->id, 'nama' => $c->nama])->values()) }})">
+
+            <div class="flex flex-wrap justify-center gap-2 mb-8">
+                <button type="button" @click="setCategory('all')"
+                        class="px-4 py-2 rounded-full text-xs font-semibold border transition-all duration-200 cursor-pointer"
+                        :class="category === 'all'
+                            ? 'bg-accent text-white border-accent shadow-sm'
+                            : 'bg-white dark:bg-[#1a1a2e] border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400 hover:border-accent/40 hover:text-accent'">
+                    All
+                </button>
+                <template x-for="c in categories" :key="c.id">
+                    <button type="button" @click="setCategory(c.id)"
+                            class="px-4 py-2 rounded-full text-xs font-semibold border transition-all duration-200 cursor-pointer"
+                            :class="category === c.id
+                                ? 'bg-accent text-white border-accent shadow-sm'
+                                : 'bg-white dark:bg-[#1a1a2e] border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-400 hover:border-accent/40 hover:text-accent'"
+                            x-text="c.nama"></button>
+                </template>
+            </div>
+
             <div x-ref="track"
                  class="grid grid-flow-col grid-rows-2 gap-6 overflow-x-auto scrollbar-none snap-x snap-mandatory pb-4 auto-cols-[100%] sm:auto-cols-[calc(50%-0.75rem)] lg:auto-cols-[calc(33.333%-1rem)] scroll-smooth">
-                <template x-for="p in projects" :key="p.id">
+                <template x-for="p in visibleProjects" :key="p.id">
                     <a :href="p.url"
                        class="block bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-2xl transition-all duration-300 hover:border-accent/30 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] overflow-hidden group snap-start w-full min-w-0">
                         <div class="relative overflow-hidden">
-                            <img :src="p.img" :alt="p.nama" class="w-full aspect-[600/383] object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+                            <img x-show="p.img" :src="p.img" :alt="p.nama" class="w-full aspect-[600/383] object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+                            <template x-if="!p.img">
+                                <div class="w-full aspect-[600/383] flex items-center justify-center bg-linear-to-br from-accent/15 via-accent/5 to-transparent dark:from-accent/20 dark:via-accent/10 dark:to-transparent">
+                                    <span class="text-5xl font-bold text-accent/40 dark:text-[#60a5fa]/40" x-text="(p.nama || 'P').charAt(0).toUpperCase()"></span>
+                                </div>
+                            </template>
                             <div class="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                             <div class="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <span class="text-xs font-semibold px-3 py-1.5 rounded-full bg-white/90 dark:bg-black/60 text-slate-800 dark:text-white backdrop-blur-sm"><i class="ri-eye-line mr-1"></i>View</span>
@@ -286,7 +313,7 @@
                     <button @click="go(i)"
                             class="h-2 rounded-full transition-all duration-500 cursor-pointer"
                             :class="current === i ? 'bg-accent w-6' : 'bg-slate-300 dark:bg-slate-600 w-2 hover:bg-slate-400 dark:hover:bg-slate-500'"
-                            :aria-label="'Go to page ' + (i + 1)"></button>
+                            :aria-label="'Go to page ' + i"></button>
                 </template>
             </div>
         </div>
@@ -294,70 +321,100 @@
 </section>
 
 <section class="py-10 relative z-10 scroll-mt-20" id="experiences">
-    <div class="text-center mb-8 pt-10">
+    <div class="text-center mb-12 pt-10">
         <h2 class="font-poppins text-[1.75rem] sm:text-4xl font-bold leading-[1.2] text-slate-800 dark:text-slate-100">My Experience</h2>
         <p class="mt-3 mx-auto text-[0.95rem] text-slate-500 dark:text-slate-400 max-w-lg">Click on any experience to see the full details</p>
     </div>
 
-    <div class="max-w-3xl mx-auto relative pl-6 border-l-2 border-slate-200 dark:border-white/10 ml-4 sm:ml-auto">
-        <template x-for="(e, i) in experiences" :key="e.id">
-            <div class="relative mb-12 last:mb-0">
-                <span class="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full border-4 border-white dark:border-[#0a0a0f] shadow-sm"
-                      :class="i === 0 ? 'bg-accent shadow-accent/50' : 'bg-slate-400'"></span>
-                <a :href="e.url" class="block group rounded-2xl">
-                    <div class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-2xl transition-all duration-300 hover:border-accent/30 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-6">
-                    <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-4">
-                        <div>
-                            <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 group-hover:text-accent transition-colors" x-text="e.role"></h3>
-                            <p class="text-sm font-semibold text-accent mb-1" x-text="e.company"></p>
-                            <p class="text-xs text-slate-400 dark:text-slate-500 flex items-center gap-1">
-                                <i class="ri-map-pin-line"></i><span x-text="e.location"></span>
-                            </p>
-                        </div>
-                        <div class="flex items-center gap-2 self-start">
-                            <span class="text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400 whitespace-nowrap" x-text="e.duration"></span>
-                            <span class="w-7 h-7 flex items-center justify-center rounded-full bg-accent/10 text-accent opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" aria-hidden="true">
-                                <i class="ri-arrow-right-up-line text-sm"></i>
-                            </span>
-                        </div>
-                    </div>
-                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-4" x-text="e.desc"></p>
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="relative">
 
-                    <template x-if="e.practicumDesc">
-                        <div class="mb-4 bg-slate-100/50 dark:bg-white/2 p-4 rounded-xl border border-slate-200/30 dark:border-white/5">
-                            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-400 mb-2">Practicum Responsibilities</h4>
-                            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed" x-text="e.practicumDesc"></p>
-                        </div>
-                    </template>
+            <div class="absolute left-6 top-1 bottom-1 w-0.5 rounded-full bg-linear-to-b from-accent/50 via-slate-200 dark:via-white/10 to-transparent" aria-hidden="true"></div>
 
-                    <template x-if="e.responsibilities && e.responsibilities.length > 0">
-                        <div class="mb-4">
-                            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-400 mb-2">Key Responsibilities</h4>
-                            <ul class="space-y-2">
-                                <template x-for="(r, ri) in e.responsibilities" :key="ri">
-                                    <li class="text-sm text-slate-500 dark:text-slate-400 flex items-start gap-2">
-                                        <i class="ri-checkbox-circle-line text-accent text-sm mt-0.5 flex-shrink-0"></i>
-                                        <span x-text="r"></span>
-                                    </li>
-                                </template>
-                            </ul>
-                        </div>
-                    </template>
+            <template x-for="(e, i) in experiences" :key="e.id">
+                <div class="relative pl-14 sm:pl-16 mb-10 md:mb-12 last:mb-0">
 
-                    <template x-if="e.skills && e.skills.length > 0">
-                        <div class="pt-3 border-t border-slate-100 dark:border-white/5">
-                            <div class="flex flex-wrap gap-1.5 items-center">
-                                <span class="text-xs text-slate-400 dark:text-slate-500 mr-1 font-medium">Skills:</span>
-                                <template x-for="(s, si) in e.skills" :key="si">
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium text-accent dark:text-[#60a5fa] bg-accent/10 dark:bg-accent/15 border border-accent/15 dark:border-accent/25 transition-all duration-200 hover:bg-accent/15 hover:-translate-y-px text-[10px] py-0.5 px-2" x-text="s"></span>
-                                </template>
+                    <span class="absolute left-6 top-2.5 -translate-x-1/2 w-4 h-4 rounded-full border-4 border-slate-50 dark:border-[#0a0a0f] shadow-sm transition-all duration-300"
+                          :class="i === 0
+                              ? 'bg-accent shadow-[0_0_0_4px_rgba(59,130,246,0.25)]'
+                              : 'bg-slate-300 dark:bg-slate-600'"></span>
+
+                    <a :href="e.url" class="block group w-full">
+                        <div class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-2xl p-6 sm:p-8 transition-all duration-300 group-hover:border-accent/30 group-hover:-translate-y-1 group-hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:group-hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)]">
+
+                            <div class="flex items-start gap-4 mb-4">
+                                <span class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex-shrink-0 overflow-hidden bg-accent/10 dark:bg-accent/15 flex items-center justify-center font-poppins font-bold text-lg text-accent dark:text-[#60a5fa] border border-slate-200 dark:border-white/5">
+                                    <img x-show="e.img" :src="e.img" :alt="e.company" class="w-full h-full object-cover">
+                                    <template x-if="!e.img">
+                                        <span x-text="(e.company || '?').charAt(0).toUpperCase()"></span>
+                                    </template>
+                                </span>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center justify-between gap-3 mb-1">
+                                        <span class="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-accent dark:text-[#60a5fa] min-w-0">
+                                            <i class="ri-briefcase-4-line text-sm flex-shrink-0"></i>
+                                            <span class="truncate" x-text="e.company"></span>
+                                        </span>
+                                        <span class="text-[11px] font-bold text-slate-300 dark:text-slate-600 select-none flex-shrink-0" x-text="String(i + 1).padStart(2, '0')"></span>
+                                    </div>
+                                    <h3 class="text-lg sm:text-xl font-bold text-slate-800 dark:text-slate-100 group-hover:text-accent transition-colors leading-snug" x-text="e.role"></h3>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 mt-3 mb-4 text-xs text-slate-500 dark:text-slate-400">
+                                <span class="inline-flex items-center gap-1.5 font-semibold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 whitespace-nowrap">
+                                    <i class="ri-calendar-line text-accent"></i><span x-text="e.duration"></span>
+                                </span>
+                                <span class="inline-flex items-center gap-1">
+                                    <i class="ri-map-pin-line"></i><span x-text="e.location"></span>
+                                </span>
+                            </div>
+
+                            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-4" x-text="e.desc"></p>
+
+                            <template x-if="e.practicumDesc">
+                                <div class="mb-4 bg-slate-100/50 dark:bg-white/5 p-4 rounded-xl border border-slate-200/30 dark:border-white/5">
+                                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-400 mb-2">Practicum Responsibilities</h4>
+                                    <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed" x-text="e.practicumDesc"></p>
+                                </div>
+                            </template>
+
+                            <template x-if="e.responsibilities && e.responsibilities.length > 0">
+                                <div class="mb-4">
+                                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-400 mb-2">Key Responsibilities</h4>
+                                    <ul class="space-y-2">
+                                        <template x-for="(r, ri) in e.responsibilities" :key="ri">
+                                            <li class="text-sm text-slate-500 dark:text-slate-400 flex items-start gap-2">
+                                                <i class="ri-checkbox-circle-line text-accent text-sm mt-0.5 flex-shrink-0"></i>
+                                                <span x-text="r"></span>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                </div>
+                            </template>
+
+                            <template x-if="e.skills && e.skills.length > 0">
+                                <div class="pt-3 border-t border-slate-100 dark:border-white/5">
+                                    <div class="flex flex-wrap gap-1.5 items-center">
+                                        <span class="text-xs text-slate-400 dark:text-slate-500 mr-1 font-medium">Skills:</span>
+                                        <template x-for="(s, si) in e.skills" :key="si">
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium text-accent dark:text-[#60a5fa] bg-accent/10 dark:bg-accent/15 border border-accent/15 dark:border-accent/25 transition-all duration-200 hover:bg-accent/15 hover:-translate-y-px" x-text="s"></span>
+                                        </template>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <div class="pt-4 mt-4 border-t border-slate-100 dark:border-white/5 flex items-center justify-between">
+                                <span class="text-xs font-semibold text-slate-400 dark:text-slate-500 group-hover:text-accent transition-colors">View Details</span>
+                                <span class="w-7 h-7 flex items-center justify-center rounded-full bg-accent/10 text-accent group-hover:bg-accent group-hover:text-white transition-all duration-300" aria-hidden="true">
+                                    <i class="ri-arrow-right-up-line text-sm"></i>
+                                </span>
                             </div>
                         </div>
-                    </template>
+                    </a>
                 </div>
-                </a>
-            </div>
-        </template>
+            </template>
+        </div>
     </div>
 </section>
 
@@ -368,7 +425,7 @@
     </div>
 
     <div class="relative max-w-6xl mx-auto px-4" data-aos="fade-up" data-aos-duration="600">
-        <div x-data="carousel(11)">
+        <div x-data="carousel({{ $certificates->count() }})">
             <div x-ref="track"
                  class="grid grid-flow-col grid-rows-2 gap-6 overflow-x-auto scrollbar-none snap-x snap-mandatory pb-4 auto-cols-[100%] sm:auto-cols-[calc(50%-0.75rem)] lg:auto-cols-[calc(33.333%-1rem)] scroll-smooth">
                 <template x-for="c in certificates" :key="c.id">
@@ -398,20 +455,20 @@
                     <button @click="go(i)"
                             class="h-2 rounded-full transition-all duration-500 cursor-pointer"
                             :class="current === i ? 'bg-accent w-6' : 'bg-slate-300 dark:bg-slate-600 w-2 hover:bg-slate-400 dark:hover:bg-slate-500'"
-                            :aria-label="'Go to page ' + (i + 1)"></button>
+                            :aria-label="'Go to page ' + i"></button>
                 </template>
             </div>
         </div>
     </div>
 </section>
 
-<section class="pt-6 pb-2 relative z-10 scroll-mt-20" id="kontak">
+<section class="pt-6 pb-12 relative z-10 scroll-mt-20" id="kontak">
     <div class="text-center mb-8 pt-15">
         <h2 class="font-poppins text-[1.75rem] sm:text-4xl font-bold leading-[1.2] text-slate-800 dark:text-slate-100">Let's Talk</h2>
         <p class="mt-3 mx-auto text-[0.95rem] text-slate-500 dark:text-slate-400 max-w-lg">Have a project in mind or just want to say hi? Feel free to reach out directly!</p>
     </div>
 
-    <div class="max-w-5xl mx-auto text-center" data-aos="fade-up" data-aos-duration="600" data-aos-delay="200">
+    <div class="max-w-5xl mx-auto text-center px-4 sm:px-6 lg:px-8" data-aos="fade-up" data-aos-duration="600" data-aos-delay="200">
         <div class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-2xl transition-all duration-300 hover:border-accent/30 hover:-translate-y-1 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-8 md:p-16">
             <p class="text-sm sm:text-base text-slate-500 dark:text-slate-400 mb-6 leading-relaxed max-w-xl mx-auto">
                 I am always open to discussing new projects, collaboration opportunities, or just to say hi. Send your email and I will respond as soon as possible!

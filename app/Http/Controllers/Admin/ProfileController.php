@@ -61,7 +61,7 @@ class ProfileController extends Controller
             'about_2' => $data['about_2'] ?? null,
             'email' => $data['email'] ?? null,
             'cv_url' => $data['cv_url'] ?? null,
-            'hero_image' => $this->resolveHeroImage($request, $profile->hero_image),
+            'hero_image' => $this->resolveFieldImage($request, 'hero_image', 'profile', $profile->hero_image),
             'github' => $data['github'] ?? null,
             'instagram' => $data['instagram'] ?? null,
             'youtube' => $data['youtube'] ?? null,
@@ -86,14 +86,14 @@ class ProfileController extends Controller
         return redirect()->route('admin.profile.edit')->with('success', 'Profil berhasil diperbarui.');
     }
 
-    private function resolveHeroImage(Request $request, ?string $current): ?string
+    private function resolveFieldImage(Request $request, string $field, string $dir, ?string $current): ?string
     {
-        if ($request->hasFile('hero_image') && $request->file('hero_image')->isValid()) {
-            return $this->uploadImage($request->file('hero_image'), 'profile');
+        if ($request->hasFile($field) && $request->file($field)->isValid()) {
+            return $this->uploadImage($request->file($field), $dir);
         }
 
-        if ($request->filled('hero_image_url')) {
-            return $request->input('hero_image_url');
+        if ($request->filled($field.'_url')) {
+            return $request->input($field.'_url');
         }
 
         return $current;

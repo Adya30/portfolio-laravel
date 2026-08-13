@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CertificateController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ExperienceController;
@@ -38,6 +39,13 @@ Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
+    // Drag & drop row ordering (kept before the resource routes).
+    Route::post('projects/reorder', [ProjectController::class, 'reorder'])->name('projects.reorder');
+    Route::post('tools/reorder', [ToolController::class, 'reorder'])->name('tools.reorder');
+    Route::post('certificates/reorder', [CertificateController::class, 'reorder'])->name('certificates.reorder');
+    Route::post('experiences/reorder', [ExperienceController::class, 'reorder'])->name('experiences.reorder');
+
+    Route::resource('categories', CategoryController::class);
     Route::resource('projects', ProjectController::class);
     Route::resource('tools', ToolController::class);
     Route::resource('certificates', CertificateController::class);

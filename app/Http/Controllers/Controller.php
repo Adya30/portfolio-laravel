@@ -39,7 +39,7 @@ abstract class Controller
                 ];
 
                 if ($isSvg) {
-                    // Upload the compressed SVG content directly.
+
                     $result = $cloudinary->uploadApi()->upload(
                         'data:image/svg+xml;base64,'.base64_encode($svgContent),
                         $options
@@ -69,7 +69,7 @@ abstract class Controller
         }
 
         if ($ext === 'svg' && $svgContent) {
-            // Store the compressed SVG markup directly.
+
             file_put_contents($targetDir.'/'.$name.'.svg', $svgContent);
 
             return 'uploads/'.$dir.'/'.$name.'.svg';
@@ -95,18 +95,6 @@ abstract class Controller
         return 'uploads/'.$dir.'/'.$name.'.'.$ext;
     }
 
-    /**
-     * Optimize SVG markup: strip the XML declaration, DOCTYPE (including
-     * internal subsets), comments and insignificant whitespace.
-     *
-     * The minification is conservative: whitespace between tags is only
-     * collapsed when directly between a closing '>' and an opening '<', and
-     * whitespace runs inside tag markup are collapsed to a single space, so
-     * text nodes and base64 data URIs in attributes are left untouched.
-     * (One documented edge: whitespace between elements inside a
-     * `<text xml:space="preserve">` is collapsed — not a concern for the
-     * icons/logos this app stores.)
-     */
     private function compressSvg(string $svg): string
     {
         $minified = preg_replace('/<\?xml[^>]*\?>/i', '', $svg);

@@ -36,11 +36,6 @@
                 <x-admin.image-input name="gambar" label="Gambar Sertifikat" />
             </div>
 
-            <div class="sm:col-span-2 md:col-span-1">
-                <x-admin.field name="sort_order" label="Urutan" type="number" value="0"
-                               help="Semakin kecil angkanya, semakin awal tampil." />
-            </div>
-
             <div class="sm:col-span-2 flex items-center gap-3 pt-2 border-t border-slate-100">
                 <button type="submit"
                         class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-white text-sm font-semibold hover:bg-blue-600 transition-colors">

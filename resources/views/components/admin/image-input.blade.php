@@ -4,6 +4,7 @@
     'current' => null,
     'ratio' => 'free',
     'crop' => true,
+    'help' => null,
 ])
 
 @php
@@ -20,9 +21,12 @@
     class="space-y-1.5"
 >
     <label class="block text-sm font-semibold text-slate-700">{{ $label }}</label>
+    @if ($help)
+        <p class="text-xs text-slate-400">{{ $help }}</p>
+    @endif
 
     <div class="flex items-start gap-4">
-        {{-- Live preview --}}
+
         <div class="relative w-24 h-24 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-center overflow-hidden flex-shrink-0">
             <template x-if="previewSrc">
                 <img :src="previewSrc" alt="Pratinjau {{ $label }}" class="w-full h-full object-cover">
@@ -65,7 +69,6 @@
         @enderror
     @endif
 
-    {{-- Crop modal --}}
     <div x-show="showCrop" x-cloak x-transition.opacity.duration.200ms
          class="fixed inset-0 z-[200] flex items-center justify-center p-4" role="dialog" aria-modal="true">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="cancelCrop"></div>

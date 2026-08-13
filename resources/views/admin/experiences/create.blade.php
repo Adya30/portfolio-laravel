@@ -7,7 +7,7 @@
     <x-admin.page-title title="Tambah Pengalaman" subtitle="Isi data pengalaman baru" />
 
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 max-w-4xl">
-        <form method="POST" action="{{ route('admin.experiences.store') }}" class="grid sm:grid-cols-2 gap-5">
+        <form method="POST" action="{{ route('admin.experiences.store') }}" enctype="multipart/form-data" class="grid sm:grid-cols-2 gap-5">
             @csrf
 
             <div>
@@ -37,6 +37,11 @@
             </div>
 
             <div class="sm:col-span-2">
+                <x-admin.image-input name="gambar" label="Logo / Foto Perusahaan" ratio="1"
+                                     help="Kosongkan untuk memakai inisial perusahaan otomatis." />
+            </div>
+
+            <div class="sm:col-span-2">
                 <x-admin.field name="responsibilities" label="Tanggung Jawab Utama" type="textarea" rows="4"
                                help="Satu tanggung jawab per baris." />
             </div>
@@ -44,11 +49,6 @@
             <div class="sm:col-span-2">
                 <x-admin.field name="skills" label="Skill" type="textarea" rows="3"
                                help="Satu skill per baris. Contoh: Python, Git & Version Control." />
-            </div>
-
-            <div class="sm:col-span-2 md:col-span-1">
-                <x-admin.field name="sort_order" label="Urutan" type="number" value="0"
-                               help="Semakin kecil angkanya, semakin awal tampil." />
             </div>
 
             <div class="sm:col-span-2 flex items-center gap-3 pt-2 border-t border-slate-100">

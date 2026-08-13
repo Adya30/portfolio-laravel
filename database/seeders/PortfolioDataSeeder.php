@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
 use App\Models\Certificate;
 use App\Models\Experience;
 use App\Models\Profile;
@@ -11,6 +12,9 @@ use Illuminate\Database\Seeder;
 
 class PortfolioDataSeeder extends Seeder
 {
+    /** Maps project names to their category ids (filled by seedCategories). */
+    private array $categoryByProject = [];
+
     /**
      * Seed the portfolio content (projects, tools, certificates, experiences, profile).
      */
@@ -18,9 +22,28 @@ class PortfolioDataSeeder extends Seeder
     {
         $this->seedProfile();
         $this->seedTools();
+        $this->seedCategories();
         $this->seedProjects();
         $this->seedExperiences();
         $this->seedCertificates();
+    }
+
+    private function seedCategories(): void
+    {
+        $groups = [
+            'Web Application' => ['Agris', 'Handman', 'Kasirku'],
+            'Frontend / UI Design' => ['Iphone UI', 'Fire Force', 'Gorengin Aja!'],
+            'Blog' => ['SMAGITV Blog', 'Adya Blog'],
+            'Software' => ['Tanamin', 'GARAP', 'SIPA'],
+            'Database' => ['SINABIL'],
+        ];
+
+        foreach ($groups as $nama => $projectNames) {
+            $category = Category::updateOrCreate(['nama' => $nama]);
+            foreach ($projectNames as $projectName) {
+                $this->categoryByProject[$projectName] = $category->id;
+            }
+        }
     }
 
     private function seedProfile(): void
@@ -189,7 +212,10 @@ class PortfolioDataSeeder extends Seeder
         foreach ($projects as $i => $project) {
             Project::updateOrCreate(
                 ['nama' => $project['nama']],
-                $project + ['sort_order' => $i + 1]
+                $project + [
+                    'sort_order' => $i + 1,
+                    'category_id' => $this->categoryByProject[$project['nama']] ?? null,
+                ]
             );
         }
     }

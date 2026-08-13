@@ -56,6 +56,14 @@ return Application::configure(basePath: dirname(__DIR__))
         // dan pengguna yang sudah login dijauhkan dari form login.
         $middleware->redirectGuestsTo(fn () => route('login'));
         $middleware->redirectUsersTo(fn () => route('admin.dashboard'));
+
+        // Keamanan dasar: header keamanan + batas permintaan per IP
+        // per menit (120) untuk semua halaman web sebagai mitigasi
+        // dasar serangan brute-force / DDoS di level aplikasi.
+        $middleware->web(append: [
+            \App\Http\Middleware\SecurityHeaders::class,
+            'throttle:120,1',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

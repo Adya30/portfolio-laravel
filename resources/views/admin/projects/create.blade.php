@@ -30,6 +30,18 @@
             </div>
 
             <div class="sm:col-span-2">
+                <label for="category_id" class="block text-sm font-semibold text-slate-700">Kategori</label>
+                <select name="category_id" id="category_id"
+                        class="w-full rounded-xl border bg-white px-3.5 py-2.5 text-sm text-slate-800 outline-none transition-all border-slate-200 focus:border-accent focus:ring-4 focus:ring-accent/20 mt-1.5">
+                    <option value="">Tanpa Kategori</option>
+                    @foreach ($categories as $cat)
+                        <option value="{{ $cat->id }}" @selected(old('category_id', '') == $cat->id)>{{ $cat->nama }}</option>
+                    @endforeach
+                </select>
+                <p class="text-xs text-slate-400 mt-1.5">Kelola kategori di menu "Kategori".</p>
+            </div>
+
+            <div class="sm:col-span-2">
                 <x-admin.field name="tools" label="Teknologi (Tools)" type="textarea" rows="4"
                                help="Satu teknologi per baris. Contoh: Laravel, PHP, MySQL." />
             </div>
@@ -41,11 +53,6 @@
 
             <div class="sm:col-span-2">
                 <x-admin.image-input name="gambar" label="Gambar Project" />
-            </div>
-
-            <div class="sm:col-span-2 md:col-span-1">
-                <x-admin.field name="sort_order" label="Urutan" type="number" value="0"
-                               help="Semakin kecil angkanya, semakin awal tampil." />
             </div>
 
             <div class="sm:col-span-2 flex items-center gap-3 pt-2 border-t border-slate-100">

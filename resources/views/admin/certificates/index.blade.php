@@ -19,14 +19,14 @@
                         <th class="px-4 py-3.5">Sertifikat</th>
                         <th class="px-4 py-3.5 hidden md:table-cell">Penerbit</th>
                         <th class="px-4 py-3.5 hidden sm:table-cell">Tanggal</th>
-                        <th class="px-4 py-3.5 w-20">Urutan</th>
+                        <th class="px-4 py-3.5 w-14"><span class="sr-only">Urutkan</span></th>
                         <th class="px-4 py-3.5 text-right w-28">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100">
+                <tbody class="divide-y divide-slate-100" x-data="reorderTable('{{ route('admin.certificates.reorder') }}')">
                     @forelse ($certificates as $i => $cert)
-                        <tr class="hover:bg-slate-50/70 transition-colors">
-                            <td class="px-4 py-3 text-slate-500">{{ $i + 1 }}</td>
+                        <tr data-id="{{ $cert->id }}" class="hover:bg-slate-50/70 transition-colors">
+                            <td class="px-4 py-3 text-slate-500" data-order>{{ $i + 1 }}</td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden flex-shrink-0">
@@ -37,7 +37,13 @@
                             </td>
                             <td class="px-4 py-3 hidden md:table-cell text-slate-500">{{ $cert->penerbit ?? '-' }}</td>
                             <td class="px-4 py-3 hidden sm:table-cell text-slate-500">{{ $cert->tanggal ?? '-' }}</td>
-                            <td class="px-4 py-3 text-slate-500">{{ $cert->sort_order }}</td>
+                            <td class="px-4 py-3">
+                                <span draggable="true"
+                                      class="inline-flex w-8 h-8 items-center justify-center rounded-lg text-slate-300 hover:text-slate-500 hover:bg-slate-100 cursor-grab active:cursor-grabbing transition-colors"
+                                      title="Geser untuk mengurutkan">
+                                    <i class="ri-drag-move-2-line"></i>
+                                </span>
+                            </td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center justify-end gap-1.5">
                                     <a href="{{ route('admin.certificates.edit', $cert) }}"

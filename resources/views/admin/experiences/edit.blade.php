@@ -7,7 +7,7 @@
     <x-admin.page-title title="Edit Pengalaman" subtitle="Perbarui data pengalaman" />
 
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 max-w-4xl">
-        <form method="POST" action="{{ route('admin.experiences.update', $experience) }}" class="grid sm:grid-cols-2 gap-5">
+        <form method="POST" action="{{ route('admin.experiences.update', $experience) }}" enctype="multipart/form-data" class="grid sm:grid-cols-2 gap-5">
             @csrf
             @method('PUT')
 
@@ -38,6 +38,11 @@
             </div>
 
             <div class="sm:col-span-2">
+                <x-admin.image-input name="gambar" label="Logo / Foto Perusahaan" :current="$experience->gambar" ratio="1"
+                                     help="Kosongkan untuk memakai inisial perusahaan otomatis." />
+            </div>
+
+            <div class="sm:col-span-2">
                 <x-admin.field name="responsibilities" label="Tanggung Jawab Utama" type="textarea" rows="4"
                                :value="implode(PHP_EOL, $experience->responsibilities ?? [])"
                                help="Satu tanggung jawab per baris." />
@@ -47,11 +52,6 @@
                 <x-admin.field name="skills" label="Skill" type="textarea" rows="3"
                                :value="implode(PHP_EOL, $experience->skills ?? [])"
                                help="Satu skill per baris. Contoh: Python, Git & Version Control." />
-            </div>
-
-            <div class="sm:col-span-2 md:col-span-1">
-                <x-admin.field name="sort_order" label="Urutan" type="number" :value="$experience->sort_order"
-                               help="Semakin kecil angkanya, semakin awal tampil." />
             </div>
 
             <div class="sm:col-span-2 flex items-center gap-3 pt-2 border-t border-slate-100">

@@ -8,13 +8,15 @@
         ['id' => 'certificates', 'label' => 'Certificates', 'href' => '#certificates', 'icon' => 'ri-award-line'],
         ['id' => 'kontak', 'label' => 'Contact', 'href' => '#kontak', 'icon' => 'ri-chat-3-line'],
     ];
+
 @endphp
 
-<div class="fixed top-4 left-0 right-0 z-[100] hidden md:block">
-    <nav class="mx-auto w-[calc(100%-2rem)] max-w-6xl transition-all duration-300 rounded-2xl border backdrop-blur-md shadow-lg"
+<div class="fixed top-4 left-0 right-0 z-[100] hidden md:block" x-cloak>
+
+    <nav class="mx-auto w-[calc(100%-2rem)] max-w-6xl transition-all duration-300 rounded-2xl border backdrop-blur-md shadow-lg bg-white/70 dark:bg-[#0b1329]/90"
          :class="scrolled
-            ? 'bg-slate-100/90 dark:bg-[#0b1329]/95 py-1 border-slate-200/50 dark:border-white/10 shadow-slate-200/40 dark:shadow-black/20'
-            : 'bg-slate-50/80 dark:bg-[#0b1329]/80 py-1.5 border-slate-200/30 dark:border-white/5 shadow-slate-200/30 dark:shadow-black/10'">
+            ? 'py-1 border-slate-200/50 dark:border-white/10 shadow-slate-200/40 dark:shadow-black/20'
+            : 'py-1.5 border-slate-200/30 dark:border-white/5 shadow-slate-200/30 dark:shadow-black/10'">
         <div class="px-6 flex items-center justify-between">
 
             <a href="#beranda" @click.prevent="scrollToSection($event, '#beranda')"
@@ -49,7 +51,7 @@
     </nav>
 </div>
 
-<nav class="fixed top-[calc(1rem+env(safe-area-inset-top,0px))] left-4 right-4 z-[100] md:hidden">
+<nav class="fixed top-[calc(1rem+env(safe-area-inset-top,0px))] left-4 right-4 z-[100] md:hidden" x-cloak>
     <div class="relative rounded-2xl border border-slate-200/50 dark:border-white/10 bg-slate-100/95 dark:bg-[#0b1329]/95 backdrop-blur-2xl shadow-lg shadow-slate-200/20 dark:shadow-black/30">
         <div class="flex items-center justify-between gap-1 overflow-x-auto scrollbar-none py-2 px-3">
 
