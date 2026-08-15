@@ -6,16 +6,6 @@
 <section class="relative z-20 pt-20 pb-16 sm:pt-24">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        <nav class="flex flex-wrap items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400 mb-8 animate__animated animate__fadeInUp" aria-label="Breadcrumb">
-            <a href="{{ route('landing') }}#experiences" class="inline-flex items-center gap-1 hover:text-accent transition-colors">
-                <i class="ri-home-4-line"></i> <span x-text="t('home')">Home</span>
-            </a>
-            <i class="ri-arrow-right-s-line text-slate-300 dark:text-slate-600"></i>
-            <a href="{{ route('landing') }}#experiences" class="hover:text-accent transition-colors" x-text="t('experiencesBreadcrumb')">Experiences</a>
-            <i class="ri-arrow-right-s-line text-slate-300 dark:text-slate-600"></i>
-            <span class="text-accent font-semibold truncate max-w-55" x-text='L(@json($experience->role), @json($experience->role_idn))'>{{ $experience->role }}</span>
-        </nav>
-
         <div class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-3xl overflow-hidden shadow-xl shadow-slate-200/50 dark:shadow-black/20" data-aos="fade-up" data-aos-duration="700">
             <div class="grid lg:grid-cols-[1fr_320px] items-stretch divide-y lg:divide-y-0 lg:divide-x divide-slate-200 dark:divide-white/5">
 
@@ -35,21 +25,10 @@
                                     <div class="flex items-center gap-2 text-xs font-semibold text-accent uppercase tracking-wider mb-3">
                                         <span x-text="t('experience')">Experience</span>
                                     </div>
-                                    <h1 class="font-poppins text-2xl sm:text-3xl lg:text-[2.75rem] font-bold leading-tight text-slate-800 dark:text-white mb-3" x-text='L(@json($experience->role), @json($experience->role_idn))'>
+                                    <h1 class="font-poppins text-xl sm:text-xl lg:text-[2rem] font-bold leading-tight text-slate-800 dark:text-white mb-3" x-text='L(@json($experience->role), @json($experience->role_idn))'>
                                         {{ $experience->role }}
                                     </h1>
                                     <p class="text-base font-semibold text-accent mb-3">{{ $experience->company }}</p>
-
-                                    <div class="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-500 dark:text-slate-400">
-                                        <span class="flex items-center gap-1.5">
-                                            <i class="ri-calendar-line"></i>{{ $experience->duration }}
-                                        </span>
-                                        @if ($experience->location)
-                                            <span class="flex items-center gap-1.5">
-                                                <i class="ri-map-pin-line"></i>{{ $experience->location }}
-                                            </span>
-                                        @endif
-                                    </div>
                                 </div>
                             </div>
                         </header>
@@ -123,12 +102,6 @@
                             <ul class="space-y-3.5 text-sm">
                                 <li class="flex items-center justify-between gap-3">
                                     <span class="text-slate-400 dark:text-slate-500 flex items-center gap-2">
-                                        <span x-text="t('company')">Company</span>
-                                    </span>
-                                    <span class="font-semibold text-slate-700 dark:text-slate-200 text-right">{{ $experience->company }}</span>
-                                </li>
-                                <li class="flex items-center justify-between gap-3">
-                                    <span class="text-slate-400 dark:text-slate-500 flex items-center gap-2">
                                         <i class="ri-calendar-line"></i> <span x-text="t('duration')">Duration</span>
                                     </span>
                                     <span class="font-semibold text-slate-700 dark:text-slate-200 text-right">{{ $experience->duration }}</span>
@@ -148,7 +121,7 @@
             </div>
         </div>
 
-        <div class="flex items-stretch justify-between gap-4 border-t border-slate-200 dark:border-white/10 pt-8 mt-12">
+        <div class="flex items-stretch justify-between gap-2 border-t border-slate-200 dark:border-white/10 pt-5 mt-12">
             @if ($prev)
                 <a href="{{ route('experience.show', $prev) }}"
                    class="group flex-1 min-w-0 bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-2xl p-5 transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)]">

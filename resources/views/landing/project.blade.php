@@ -10,17 +10,6 @@
 
 <section class="relative z-20 pt-20 pb-16 sm:pt-24">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-
-        <nav class="flex flex-wrap items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400 mb-8 animate__animated animate__fadeInUp" aria-label="Breadcrumb">
-            <a href="{{ route('landing') }}#proyek" class="inline-flex items-center gap-1 hover:text-accent transition-colors">
-                <i class="ri-home-4-line"></i> <span x-text="t('home')">Home</span>
-            </a>
-            <i class="ri-arrow-right-s-line text-slate-300 dark:text-slate-600"></i>
-            <a href="{{ route('landing') }}#proyek" class="hover:text-accent transition-colors" x-text="t('projectsBreadcrumb')">Projects</a>
-            <i class="ri-arrow-right-s-line text-slate-300 dark:text-slate-600"></i>
-            <span class="text-accent font-semibold truncate max-w-55">{{ $project->nama }}</span>
-        </nav>
-
         <div class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-3xl overflow-hidden shadow-xl shadow-slate-200/50 dark:shadow-black/20" data-aos="fade-up" data-aos-duration="700">
             <div class="grid lg:grid-cols-[1fr_340px] items-stretch divide-y lg:divide-y-0 lg:divide-x divide-slate-200 dark:divide-white/5">
 
@@ -30,16 +19,15 @@
                             <div class="flex flex-wrap items-center gap-2 text-xs font-semibold text-accent uppercase tracking-wider mb-3">
                                 <i class="ri-folder-open-line"></i>
                                 <span x-text="t('project')">Project</span>
+                            </div>
+                            <h1 class="font-poppins text-2xl sm:text-3xl lg:text-[2.75rem] font-bold leading-tight text-slate-800 dark:text-white mb-4">
+                                {{ $project->nama }}
+                            </h1>
                                 @if ($project->category)
                                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium normal-case tracking-normal text-accent dark:text-[#60a5fa] bg-accent/10 border border-accent/15">
                                         <i class="ri-price-tag-3-line"></i>{{ $project->category->nama }}
                                     </span>
                                 @endif
-                            </div>
-                            <h1 class="font-poppins text-2xl sm:text-3xl lg:text-[2.75rem] font-bold leading-tight text-slate-800 dark:text-white mb-4">
-                                {{ $project->nama }}
-                            </h1>
-                            <p class="text-sm sm:text-base text-slate-500 dark:text-slate-400 leading-relaxed max-w-2xl" x-text='L(@json($project->desk), @json($project->desk_idn))'>{{ $project->desk }}</p>
                         </header>
 
                         <div class="border border-slate-200 dark:border-white/5 bg-slate-100 dark:bg-slate-900 shadow-sm">

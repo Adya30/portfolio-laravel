@@ -82,7 +82,7 @@ class ToolController extends Controller
         return $request->validate([
             'nama' => ['required', 'string', 'max:255'],
             'ket' => ['nullable', 'string', 'max:255'],
-            'gambar' => ['nullable', 'image:allow_svg', 'mimes:jpeg,png,jpg,gif,webp,svg,avif,heic,heif,bmp', 'max:15360'],
+            'gambar' => ['nullable', 'image:allow_svg', 'mimes:webp,svg', 'max:15360'],
             'gambar_url' => ['nullable', 'url'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
         ], $this->validationMessages(), [

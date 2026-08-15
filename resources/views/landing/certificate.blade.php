@@ -6,16 +6,6 @@
 <section class="relative z-20 pt-20 pb-16 sm:pt-24">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        <nav class="flex flex-wrap items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400 mb-8 animate__animated animate__fadeInUp" aria-label="Breadcrumb">
-            <a href="{{ route('landing') }}#certificates" class="inline-flex items-center gap-1 hover:text-accent transition-colors">
-                <i class="ri-home-4-line"></i> <span x-text="t('home')">Home</span>
-            </a>
-            <i class="ri-arrow-right-s-line text-slate-300 dark:text-slate-600"></i>
-            <a href="{{ route('landing') }}#certificates" class="hover:text-accent transition-colors" x-text="t('certificatesBreadcrumb')">Certificates</a>
-            <i class="ri-arrow-right-s-line text-slate-300 dark:text-slate-600"></i>
-            <span class="text-accent font-semibold truncate max-w-55" x-text='L(@json($certificate->nama), @json($certificate->nama_idn))'>{{ $certificate->nama }}</span>
-        </nav>
-
         <div class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-3xl overflow-hidden shadow-xl shadow-slate-200/50 dark:shadow-black/20" data-aos="fade-up" data-aos-duration="700">
             <div class="grid lg:grid-cols-[1fr_320px] items-stretch divide-y lg:divide-y-0 lg:divide-x divide-slate-200 dark:divide-white/5">
 

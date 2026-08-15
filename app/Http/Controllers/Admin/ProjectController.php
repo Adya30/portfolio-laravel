@@ -118,7 +118,7 @@ class ProjectController extends Controller
             'tools.*' => ['integer', 'exists:tools,id'],
             'fitur' => ['nullable', 'string'],
             'fitur_idn' => ['nullable', 'string'],
-            'gambar' => ['nullable', 'image:allow_svg', 'mimes:jpeg,png,jpg,gif,webp,svg,avif,heic,heif,bmp', 'max:15360'],
+            'gambar' => ['nullable', 'image:allow_svg', 'mimes:webp,svg', 'max:15360'],
             'gambar_url' => ['nullable', 'url'],
             'category_id' => ['nullable', 'integer', 'exists:categories,id'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
