@@ -146,6 +146,8 @@ abstract class Controller
             'max.file' => ':attribute maksimal :max KB.',
             'min.numeric' => ':attribute minimal :min.',
             'integer' => ':attribute harus berupa angka.',
+            'array' => ':attribute harus berupa daftar pilihan.',
+            'exists' => ':attribute tidak valid.',
             'confirmed' => ':attribute tidak cocok.',
             'current_password' => 'Password saat ini salah.',
             'password' => ':attribute minimal :min karakter.',

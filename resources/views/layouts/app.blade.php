@@ -66,6 +66,10 @@
                 var t = localStorage.getItem('theme');
                 var dark = t ? t === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
                 document.documentElement.classList.toggle('dark', dark);
+
+                var lang = localStorage.getItem('lang') || 'en';
+                document.documentElement.setAttribute('lang', lang);
+                document.documentElement.setAttribute('data-lang', lang);
             } catch (e) {}
         })();
     </script>

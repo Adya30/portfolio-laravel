@@ -3,14 +3,15 @@
 
     $footerName = $profile->name ?? 'Adya Handika Putra AP';
     $footerTagline = $profile->tagline ?? 'Design UI for website, Building modular, Web applications with a focus on architecture and precise digital experiences.';
+    $footerTaglineIdn = $profile->tagline_idn ?? null;
 
     $quickLinks = [
-        ['href' => '#beranda', 'label' => 'Home'],
-        ['href' => '#tentang', 'label' => 'About'],
-        ['href' => '#skills', 'label' => 'Skills'],
-        ['href' => '#proyek', 'label' => 'Projects'],
-        ['href' => '#certificates', 'label' => 'Certificates'],
-        ['href' => '#kontak', 'label' => 'Contact'],
+        ['href' => '#beranda', 'label' => 'Home', 'tKey' => 'navHome'],
+        ['href' => '#tentang', 'label' => 'About', 'tKey' => 'navAbout'],
+        ['href' => '#skills', 'label' => 'Skills', 'tKey' => 'navSkills'],
+        ['href' => '#proyek', 'label' => 'Projects', 'tKey' => 'navProjects'],
+        ['href' => '#certificates', 'label' => 'Certificates', 'tKey' => 'navCertificates'],
+        ['href' => '#kontak', 'label' => 'Contact', 'tKey' => 'navContact'],
     ];
 
     $socials = [
@@ -30,20 +31,21 @@
                     <span class="font-poppins font-bold text-lg text-white">{{ $footerName }}</span>
                 </div>
                 <div class="space-y-4">
-                    <p class="text-sm leading-relaxed max-w-xs text-slate-400">
+                    <p class="text-sm leading-relaxed max-w-xs text-slate-400"
+                       x-text='L(@json($footerTagline), @json($footerTaglineIdn))'>
                         {{ $footerTagline }}
                     </p>
                 </div>
             </div>
 
             <div>
-                <h3 class="font-poppins font-bold text-sm text-white mb-6 uppercase tracking-wider">Quick Links</h3>
+                <h3 class="font-poppins font-bold text-sm text-white mb-6 uppercase tracking-wider" x-text="t('quickLinks')">Quick Links</h3>
                 <ul class="space-y-3.5">
                     @foreach ($quickLinks as $link)
                         <li>
                             <a href="{{ $link['href'] }}" @click.prevent="scrollToSection($event, '{{ $link['href'] }}')"
                                class="text-sm hover:text-white transition-colors duration-200">
-                                {{ $link['label'] }}
+                                <span x-text="t('{{ $link['tKey'] }}')">{{ $link['label'] }}</span>
                             </a>
                         </li>
                     @endforeach
@@ -51,7 +53,7 @@
             </div>
 
             <div>
-                <h3 class="font-poppins font-bold text-sm text-white mb-6 uppercase tracking-wider">Connect</h3>
+                <h3 class="font-poppins font-bold text-sm text-white mb-6 uppercase tracking-wider" x-text="t('connect')">Connect</h3>
                 <div class="space-y-4">
                     @foreach ($socials as $social)
                         <a href="{{ $social['url'] }}" target="_blank" rel="noopener noreferrer"

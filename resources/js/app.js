@@ -20,6 +20,183 @@ const experiences = serverData.experiences || [];
 const certificates = serverData.certificates || [];
 
 /* ============================================================
+   I18N — UI string dictionary for the language toggle (EN/ID).
+   The active language is stored in localStorage under 'lang'.
+   ============================================================ */
+const i18n = {
+    en: {
+        navHome: 'Home',
+        navAbout: 'About',
+        navSkills: 'Skills',
+        navProjects: 'Projects',
+        navExperiences: 'Experiences',
+        navCertificates: 'Certificates',
+        navContact: 'Contact',
+        downloadCv: 'Download CV',
+        viewProjects: 'View Projects',
+        certificates: 'Certificates',
+        projects: 'Projects',
+        aboutMe: 'About Me',
+        aboutSubtitle: 'A brief story about my journey in tech and what drives me',
+        projectsCompleted: 'Projects Completed',
+        certifications: 'Certifications',
+        toolsMastered: 'Tools Mastered',
+        toolsSkills: 'Tools & Skills',
+        toolsSkillsSubtitle: 'Any tools and skills I use regularly',
+        recentProjects: 'Recent Projects',
+        projectsSubtitle: 'Click on any project to see full details',
+        all: 'All',
+        view: 'View',
+        project: 'Project',
+        myExperience: 'My Experience',
+        experiencesSubtitle: 'Click on any experience to see the full details',
+        practicumResponsibilities: 'Practicum Responsibilities',
+        keyResponsibilities: 'Key Responsibilities',
+        skillsLabel: 'Skills:',
+        viewDetails: 'View Details',
+        certificatesAwards: 'Certificates & Awards',
+        certificatesSubtitle: 'Click on any certificate to see full details',
+        letsTalk: "Let's Talk",
+        contactSubtitle: 'Have a project in mind or just want to say hi? Feel free to reach out directly!',
+        contactBody: 'I am always open to discussing new projects, collaboration opportunities, or just to say hi. Send your email and I will respond as soon as possible!',
+        quickLinks: 'Quick Links',
+        connect: 'Connect',
+        home: 'Home',
+        backToProjects: 'Back to Projects',
+        aboutThisProject: 'About This Project',
+        keyFeatures: 'Key Features',
+        toolsSkillsUsed: 'Tools & Skills Used',
+        sourceCode: 'Source Code',
+        visitWebsite: 'Visit Website',
+        projectInfo: 'Project Info',
+        projectNumber: 'Project Number',
+        toolsUsed: 'Tools Used',
+        noToolsYet: 'No tools are listed for this project yet.',
+        previousProject: 'Previous Project',
+        nextProject: 'Next Project',
+        overview: 'Overview',
+        backToExperiences: 'Back to Experiences',
+        skillsUsed: 'Skills Used',
+        noSkillsYet: 'No skills are listed for this experience yet.',
+        atAGlance: 'At a Glance',
+        company: 'Company',
+        duration: 'Duration',
+        location: 'Location',
+        previous: 'Previous',
+        next: 'Next',
+        backToCertificates: 'Back to Certificates',
+        aboutThisCertificate: 'About This Certificate',
+        certificateDetails: 'Certificate Details',
+        issuer: 'Issuer',
+        issued: 'Issued',
+        type: 'Type',
+        certificate: 'Certificate',
+        experience: 'Experience',
+        projectsBreadcrumb: 'Projects',
+        experiencesBreadcrumb: 'Experiences',
+        certificatesBreadcrumb: 'Certificates',
+        toggleLanguage: 'Switch language',
+    },
+    id: {
+        navHome: 'Beranda',
+        navAbout: 'Tentang',
+        navSkills: 'Keahlian',
+        navProjects: 'Proyek',
+        navExperiences: 'Pengalaman',
+        navCertificates: 'Sertifikat',
+        navContact: 'Kontak',
+        downloadCv: 'Unduh CV',
+        viewProjects: 'Lihat Proyek',
+        certificates: 'Sertifikat',
+        projects: 'Proyek',
+        aboutMe: 'Tentang Saya',
+        aboutSubtitle: 'Kisah singkat tentang perjalanan saya di dunia teknologi dan apa yang memotivasi saya',
+        projectsCompleted: 'Proyek Selesai',
+        certifications: 'Sertifikasi',
+        toolsMastered: 'Tools Dikuasai',
+        toolsSkills: 'Tools & Keahlian',
+        toolsSkillsSubtitle: 'Berbagai tools dan keahlian yang saya gunakan secara rutin',
+        recentProjects: 'Proyek Terbaru',
+        projectsSubtitle: 'Klik salah satu proyek untuk melihat detail lengkap',
+        all: 'Semua',
+        view: 'Lihat',
+        project: 'Proyek',
+        myExperience: 'Pengalaman Saya',
+        experiencesSubtitle: 'Klik salah satu pengalaman untuk melihat detail lengkap',
+        practicumResponsibilities: 'Tanggung Jawab Praktikum',
+        keyResponsibilities: 'Tanggung Jawab Utama',
+        skillsLabel: 'Keahlian:',
+        viewDetails: 'Lihat Detail',
+        certificatesAwards: 'Sertifikat & Penghargaan',
+        certificatesSubtitle: 'Klik salah satu sertifikat untuk melihat detail lengkap',
+        letsTalk: 'Mari Berbicara',
+        contactSubtitle: 'Punya proyek atau sekadar ingin menyapa? Jangan ragu untuk menghubungi saya!',
+        contactBody: 'Saya selalu terbuka untuk berdiskusi soal proyek baru, peluang kolaborasi, atau sekadar menyapa. Kirim email Anda dan saya akan segera membalas!',
+        quickLinks: 'Tautan Cepat',
+        connect: 'Terhubung',
+        home: 'Beranda',
+        backToProjects: 'Kembali ke Proyek',
+        aboutThisProject: 'Tentang Proyek Ini',
+        keyFeatures: 'Fitur Utama',
+        toolsSkillsUsed: 'Tools & Keahlian yang Digunakan',
+        sourceCode: 'Kode Sumber',
+        visitWebsite: 'Kunjungi Website',
+        projectInfo: 'Info Proyek',
+        projectNumber: 'Nomor Proyek',
+        toolsUsed: 'Tools Digunakan',
+        noToolsYet: 'Belum ada tools yang terdaftar untuk proyek ini.',
+        previousProject: 'Proyek Sebelumnya',
+        nextProject: 'Proyek Berikutnya',
+        overview: 'Gambaran Umum',
+        backToExperiences: 'Kembali ke Pengalaman',
+        skillsUsed: 'Keahlian yang Digunakan',
+        noSkillsYet: 'Belum ada keahlian yang terdaftar untuk pengalaman ini.',
+        atAGlance: 'Sekilas Info',
+        company: 'Perusahaan',
+        duration: 'Periode',
+        location: 'Lokasi',
+        previous: 'Sebelumnya',
+        next: 'Berikutnya',
+        backToCertificates: 'Kembali ke Sertifikat',
+        aboutThisCertificate: 'Tentang Sertifikat Ini',
+        certificateDetails: 'Detail Sertifikat',
+        issuer: 'Penerbit',
+        issued: 'Diterbitkan',
+        type: 'Jenis',
+        certificate: 'Sertifikat',
+        experience: 'Pengalaman',
+        projectsBreadcrumb: 'Proyek',
+        experiencesBreadcrumb: 'Pengalaman',
+        certificatesBreadcrumb: 'Sertifikat',
+        toggleLanguage: 'Ganti bahasa',
+    },
+};
+
+/* ============================================================
+   LANGUAGE STORE — the current language lives in a reactive
+   Alpine store so that t()/L() reads (which go through the
+   store proxy) are tracked by Alpine effects and re-run when
+   the language changes.
+   ============================================================ */
+Alpine.store('lang', {
+    current: (() => {
+        try {
+            return document.documentElement.dataset.lang || localStorage.getItem('lang') || 'en';
+        } catch (e) {
+            return 'en';
+        }
+    })(),
+    set(lang) {
+        this.current = lang;
+        try {
+            localStorage.setItem('lang', lang);
+            document.documentElement.lang = lang;
+            document.documentElement.dataset.lang = lang;
+        } catch (e) {}
+    },
+});
+
+/* ============================================================
    ROOT APP COMPONENT
    ============================================================ */
 Alpine.data('app', () => ({
@@ -80,6 +257,27 @@ Alpine.data('app', () => ({
         this.dark = !this.dark;
         document.documentElement.classList.toggle('dark', this.dark);
         localStorage.setItem('theme', this.dark ? 'dark' : 'light');
+    },
+
+    /* --- Language helpers --- */
+    t(key) {
+        const lang = Alpine.store('lang').current;
+        return (i18n[lang] && i18n[lang][key]) || i18n.en[key] || key;
+    },
+
+    // Pick the right content language for a record: pass the English value and
+    // the optional Indonesian value. Falls back to English when Indonesian is
+    // missing (or when the two arrays differ in length).
+    L(en, idn) {
+        const lang = Alpine.store('lang').current;
+        if (lang === 'id') {
+            if (Array.isArray(en)) {
+                if (Array.isArray(idn) && idn.length === en.length) return idn;
+                return en;
+            }
+            if (idn !== null && idn !== undefined && idn !== '') return idn;
+        }
+        return en ?? '';
     },
 
     scrollToSection(e, href) {
@@ -206,6 +404,119 @@ Alpine.data('projectGallery', (categories) => ({
         const track = this.$refs.track;
         if (track) track.scrollLeft = 0;
         this.$nextTick(() => this.calc());
+    },
+}));
+
+/* ============================================================
+   STICKY PANEL — keeps the right-hand detail-page panel pinned
+   at its position for the whole scroll (lg+), so it never scrolls
+   away with the page (like the fixed left sidebar on the admin
+   pages). The CSS `lg:sticky` fallback can't hold the panel
+   beyond its grid cell, so this component takes over with
+   `position: fixed` once the panel scrolls past its offset and
+   keeps it exactly there until the very bottom.
+   ============================================================ */
+Alpine.data('stickyPanel', () => ({
+    // Matches the `lg:top-28` offset used by the CSS fallback.
+    offset: 112,
+    enabled: false,
+    naturalTop: null,
+    width: null,
+    height: null,
+
+    init() {
+        const mq = window.matchMedia('(min-width: 1024px)');
+
+        const apply = () => {
+            this.enabled = mq.matches;
+            this.enabled ? this.pin() : this.reset();
+        };
+
+        mq.addEventListener('change', apply);
+        window.addEventListener('scroll', () => this.pin(), { passive: true });
+        window.addEventListener('resize', () => {
+            // Re-measure from scratch after a layout change: drop the inline
+            // styles first so the element is back in normal flow.
+            this.naturalTop = null;
+            this.width = null;
+            this.height = null;
+            this.reset();
+            this.pin();
+        });
+
+        apply();
+
+        // Re-check after the browser restores the scroll position on reload
+        // (restoration happens after Alpine initializes).
+        setTimeout(() => this.pin(), 300);
+    },
+
+    // Document top of the panel in normal flow, computed from the layout so
+    // it is immune to both the `position: sticky` fallback and the AOS
+    // entrance transform (which would otherwise corrupt getBoundingClientRect).
+    measureNaturalTop() {
+        let top = 0;
+        let node = this.$el;
+        while (node && node.tagName !== 'BODY') {
+            top += node.offsetTop || 0;
+            node = node.offsetParent;
+        }
+        return top;
+    },
+
+    pin() {
+        if (!this.enabled) return;
+
+        const el = this.$el;
+        if (!el) return;
+
+        const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+        const rect = el.getBoundingClientRect();
+
+        // First measurement happens while the element is still in normal flow
+        // — capture its natural position and true size here, because once it
+        // becomes `position: fixed` it would shrink-wrap to its content.
+        if (this.naturalTop === null) {
+            this.naturalTop = this.measureNaturalTop();
+            this.width = el.offsetWidth;
+            this.height = el.offsetHeight;
+        }
+
+        if (scrollY <= this.naturalTop - this.offset) {
+            this.reset();
+            return;
+        }
+
+        // Stay put exactly at the offset for the whole scroll — never ride
+        // up past it (that's what pushed the panel off-screen before).
+        el.style.position = 'fixed';
+        el.style.top = this.offset + 'px';
+        // Horizontal position is constant on lg (centered container).
+        el.style.left = rect.left + 'px';
+        el.style.width = this.width + 'px';
+
+        // If the panel is taller than the space below the navbar, keep the
+        // whole panel reachable by scrolling inside it (same pattern as the
+        // fixed admin sidebar, which uses overflow-y-auto).
+        const maxHeight = window.innerHeight - this.offset - 24;
+        if (this.height > maxHeight) {
+            el.style.maxHeight = maxHeight + 'px';
+            el.style.overflowY = 'auto';
+        } else {
+            el.style.maxHeight = '';
+            el.style.overflowY = '';
+        }
+    },
+
+    reset() {
+        const el = this.$el;
+        if (!el) return;
+        el.style.position = '';
+        el.style.top = '';
+        el.style.left = '';
+        el.style.width = '';
+        el.style.maxHeight = '';
+        el.style.overflowY = '';
     },
 }));
 

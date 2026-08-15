@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['nama', 'desk', 'full_desk', 'link', 'tools', 'fitur', 'gambar', 'category_id', 'sort_order'])]
+#[Fillable(['nama', 'desk', 'desk_idn', 'full_desk', 'full_desk_idn', 'link', 'link_live', 'tools', 'fitur', 'fitur_idn', 'gambar', 'category_id', 'sort_order'])]
 class Project extends Model
 {
     protected function casts(): array
@@ -14,6 +14,7 @@ class Project extends Model
         return [
             'tools' => 'array',
             'fitur' => 'array',
+            'fitur_idn' => 'array',
         ];
     }
 

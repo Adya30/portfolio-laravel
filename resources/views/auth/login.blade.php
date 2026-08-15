@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon.png') }}">
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
     <title>Login — Admin Adya Portfolio</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -12,7 +12,7 @@
 <body class="admin-body bg-[#0a0a0f] text-white min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
 
     <div class="fixed inset-0 pointer-events-none overflow-hidden">
-        <div class="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.04)_1px,transparent_1px)] bg-[size:48px_48px]"></div>
+        <div class="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.04)_1px,transparent_1px)] bg-size-[48px_48px]"></div>
         <div class="absolute rounded-full blur-[120px] opacity-25"
              style="width: 400px; height: 400px; left: -10%; top: 10%; background: radial-gradient(circle, #3b82f6 0%, #8b5cf6 70%);"></div>
         <div class="absolute rounded-full blur-[120px] opacity-25"
@@ -33,7 +33,7 @@
 
                 @if ($errors->any())
                     <div class="flex items-start gap-2 bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-medium px-4 py-3 rounded-xl">
-                        <i class="ri-error-warning-line text-lg mt-0.5 flex-shrink-0"></i>
+                        <i class="ri-error-warning-line text-lg mt-0.5 shrink-0"></i>
                         <span>{{ $errors->first() }}</span>
                     </div>
                 @endif

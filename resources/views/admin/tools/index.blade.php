@@ -28,7 +28,7 @@
                             <td class="px-4 py-3 text-slate-500" data-order>{{ $i + 1 }}</td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center flex-shrink-0">
+                                    <div class="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0">
                                         <img src="{{ img_url($tool->gambar) }}" alt="{{ $tool->nama }}" class="w-6 h-6 object-contain">
                                     </div>
                                     <span class="font-semibold text-slate-800">{{ $tool->nama }}</span>

@@ -23,26 +23,47 @@
                     </div>
 
                     <div>
-                        <x-admin.field name="role_title" label="Role / Posisi" :value="$profile->role_title"
+                        <x-admin.field name="role_title" label="Role / Posisi (English)" :value="$profile->role_title"
                                        placeholder="Contoh: Web Developer | UI Design"
                                        help="Pisahkan dengan tanda | untuk menampilkan beberapa label." />
                     </div>
 
                     <div>
+                        <x-admin.field name="role_title_idn" label="Role / Posisi (Indonesia)" :value="$profile->role_title_idn"
+                                       placeholder="Contoh: Web Developer | Desain UI"
+                                       help="Kosongkan untuk memakai versi Inggris." />
+                    </div>
+
+                    <div class="sm:col-span-2">
                         <x-admin.field name="email" label="Email" type="email" :value="$profile->email" />
                     </div>
 
                     <div class="sm:col-span-2">
-                        <x-admin.field name="tagline" label="Tagline" type="textarea" rows="2" :value="$profile->tagline"
+                        <x-admin.field name="tagline" label="Tagline (English)" type="textarea" rows="2" :value="$profile->tagline"
                                        help="Kalimat singkat di hero section." />
                     </div>
 
                     <div class="sm:col-span-2">
-                        <x-admin.field name="about_1" label="Paragraf 1 (Tentang Saya)" type="textarea" rows="3" :value="$profile->about_1" />
+                        <x-admin.field name="tagline_idn" label="Tagline (Indonesia)" type="textarea" rows="2" :value="$profile->tagline_idn"
+                                       help="Kosongkan untuk memakai versi Inggris." />
                     </div>
 
                     <div class="sm:col-span-2">
-                        <x-admin.field name="about_2" label="Paragraf 2 (Tentang Saya)" type="textarea" rows="3" :value="$profile->about_2" />
+                        <x-admin.field name="about_1" label="Paragraf 1 (Tentang Saya, English)" type="textarea" rows="3" :value="$profile->about_1" />
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <x-admin.field name="about_1_idn" label="Paragraf 1 (Tentang Saya, Indonesia)" type="textarea" rows="3" :value="$profile->about_1_idn"
+                                       help="Kosongkan untuk memakai versi Inggris." />
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <x-admin.field name="about_2" label="Paragraf 2 (Tentang Saya, English)" type="textarea" rows="3" :value="$profile->about_2" />
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <x-admin.field name="about_2_idn" label="Paragraf 2 (Tentang Saya, Indonesia)" type="textarea" rows="3" :value="$profile->about_2_idn"
+                                       help="Kosongkan untuk memakai versi Inggris." />
                     </div>
 
                     <div class="sm:col-span-2">

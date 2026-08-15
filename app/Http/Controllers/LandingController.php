@@ -68,8 +68,19 @@ class LandingController extends Controller
 
     public function showProject(Project $project): View
     {
+        $allTools = Tool::orderBy('sort_order')->get();
+
+        // Resolve the project's tools (stored as tool ids, with a fallback for
+        // legacy free-text names) so the detail page can render their icons.
+        $projectTools = collect($project->tools ?? [])->map(
+            fn ($item) => $allTools->firstWhere('id', $item)
+                ?? $allTools->firstWhere('nama', $item)
+                ?? (object) ['nama' => (string) $item, 'gambar' => null]
+        )->values();
+
         return view('landing.project', [
             'project' => $project,
+            'projectTools' => $projectTools,
             ...$this->navigation($project, Project::orderBy('sort_order')->get()),
             'activeNav' => 'proyek',
             'seo' => [
@@ -86,7 +97,7 @@ class LandingController extends Controller
                     'description' => $project->full_desk ?? $project->desk,
                     'image' => $project->gambar ? url(img_url($project->gambar)) : null,
                     'url' => route('project.show', $project),
-                    'keywords' => implode(', ', $project->tools ?? []),
+                    'keywords' => $projectTools->map->nama->implode(', '),
                     'author' => ['@type' => 'Person', 'name' => 'Adya Handika Putra AP'],
                 ],
             ],
@@ -95,8 +106,18 @@ class LandingController extends Controller
 
     public function showExperience(Experience $experience): View
     {
+        $allTools = Tool::orderBy('sort_order')->get();
+
+        $experienceSkills = collect($experience->skills ?? [])->map(
+            fn ($item) => $allTools->firstWhere('id', $item)
+                ?? $allTools->firstWhere('nama', $item)
+                ?? $allTools->firstWhere(fn ($t) => strcasecmp($t->nama, (string) $item) === 0)
+                ?? (object) ['nama' => (string) $item, 'gambar' => null]
+        )->values();
+
         return view('landing.experience', [
             'experience' => $experience,
+            'experienceSkills' => $experienceSkills,
             ...$this->navigation($experience, Experience::orderBy('sort_order')->get()),
             'activeNav' => 'experiences',
             'seo' => [

@@ -32,7 +32,7 @@
              x-transition:leave-start="opacity-100 translate-y-0 scale-100"
              x-transition:leave-end="opacity-0 translate-y-2 scale-95">
             <div class="flex items-start gap-4">
-                <span class="w-11 h-11 flex-shrink-0 rounded-xl bg-red-50 text-red-500 flex items-center justify-center">
+                <span class="w-11 h-11 shrink-0 rounded-xl bg-red-50 text-red-500 flex items-center justify-center">
                     <i class="ri-delete-bin-6-line text-xl"></i>
                 </span>
                 <div class="min-w-0 flex-1">

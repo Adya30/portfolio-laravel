@@ -15,18 +15,40 @@
             </div>
 
             <div class="sm:col-span-2">
-                <x-admin.field name="desk" label="Deskripsi Singkat" type="textarea" rows="2" required
+                <x-admin.field name="desk" label="Deskripsi Singkat (English)" type="textarea" rows="2" required
                                help="Deskripsi singkat yang tampil di kartu project." />
             </div>
 
             <div class="sm:col-span-2">
-                <x-admin.field name="full_desk" label="Deskripsi Lengkap" type="textarea" rows="4"
+                <x-admin.field name="full_desk" label="Deskripsi Lengkap (English)" type="textarea" rows="4"
                                help="Deskripsi detail yang tampil di modal project." />
             </div>
 
+            <div class="sm:col-span-2 pt-4 border-t border-dashed border-slate-200">
+                <p class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                    <i class="ri-translate-2 text-accent"></i>Versi Bahasa Indonesia (opsional)
+                </p>
+                <p class="text-xs text-slate-400 mt-1">Kosongkan jika belum tersedia — pengunjung akan melihat versi Inggris.</p>
+            </div>
+
             <div class="sm:col-span-2">
-                <x-admin.field name="link" label="Link Project" type="url" placeholder="https://github.com/..."
-                               help="Link GitHub atau demo project." />
+                <x-admin.field name="desk_idn" label="Deskripsi Singkat (Indonesia)" type="textarea" rows="2"
+                               placeholder="Deskripsi singkat dalam bahasa Indonesia" />
+            </div>
+
+            <div class="sm:col-span-2">
+                <x-admin.field name="full_desk_idn" label="Deskripsi Lengkap (Indonesia)" type="textarea" rows="4"
+                               placeholder="Deskripsi detail dalam bahasa Indonesia" />
+            </div>
+
+            <div class="sm:col-span-2">
+                <x-admin.field name="link" label="Link GitHub" type="url" placeholder="https://github.com/..."
+                               help="Link repository GitHub project (opsional)." />
+            </div>
+
+            <div class="sm:col-span-2">
+                <x-admin.field name="link_live" label="Link Live / Demo" type="url" placeholder="https://contoh.com"
+                               help="Link website live / demo project (opsional)." />
             </div>
 
             <div class="sm:col-span-2">
@@ -42,13 +64,17 @@
             </div>
 
             <div class="sm:col-span-2">
-                <x-admin.field name="tools" label="Teknologi (Tools)" type="textarea" rows="4"
-                               help="Satu teknologi per baris. Contoh: Laravel, PHP, MySQL." />
+                <x-admin.tools-picker :tools="$tools" :selected="old('tools', [])" />
             </div>
 
             <div class="sm:col-span-2">
-                <x-admin.field name="fitur" label="Fitur Utama" type="textarea" rows="4"
+                <x-admin.field name="fitur" label="Fitur Utama (English)" type="textarea" rows="4"
                                help="Satu fitur per baris." />
+            </div>
+
+            <div class="sm:col-span-2">
+                <x-admin.field name="fitur_idn" label="Fitur Utama (Indonesia)" type="textarea" rows="4"
+                               help="Satu fitur per baris. Kosongkan untuk memakai versi Inggris." />
             </div>
 
             <div class="sm:col-span-2">

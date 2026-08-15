@@ -24,8 +24,25 @@
             </div>
 
             <div class="sm:col-span-2">
-                <x-admin.field name="desk" label="Deskripsi" type="textarea" rows="3" :value="$certificate->desk"
+                <x-admin.field name="desk" label="Deskripsi (English)" type="textarea" rows="3" :value="$certificate->desk"
                                help="Deskripsi detail yang tampil di modal sertifikat." />
+            </div>
+
+            <div class="sm:col-span-2 pt-4 border-t border-dashed border-slate-200">
+                <p class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+                    <i class="ri-translate-2 text-accent"></i>Versi Bahasa Indonesia (opsional)
+                </p>
+                <p class="text-xs text-slate-400 mt-1">Kosongkan jika belum tersedia — pengunjung akan melihat versi Inggris.</p>
+            </div>
+
+            <div class="sm:col-span-2">
+                <x-admin.field name="nama_idn" label="Nama Sertifikat (Indonesia)" :value="$certificate->nama_idn"
+                               placeholder="Contoh: Sertifikasi Junior Web Developer" />
+            </div>
+
+            <div class="sm:col-span-2">
+                <x-admin.field name="desk_idn" label="Deskripsi (Indonesia)" type="textarea" rows="3" :value="$certificate->desk_idn"
+                               placeholder="Deskripsi dalam bahasa Indonesia" />
             </div>
 
             <div>

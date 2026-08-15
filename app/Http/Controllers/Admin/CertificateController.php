@@ -29,9 +29,11 @@ class CertificateController extends Controller
 
         Certificate::create([
             'nama' => $data['nama'],
+            'nama_idn' => $data['nama_idn'] ?? null,
             'penerbit' => $data['penerbit'] ?? null,
             'tanggal' => $data['tanggal'] ?? null,
             'desk' => $data['desk'] ?? null,
+            'desk_idn' => $data['desk_idn'] ?? null,
             'icon' => $data['icon'] ?? null,
             'gambar' => $this->resolveImage($request, 'certificates'),
             'sort_order' => $data['sort_order'] ?? 0,
@@ -51,9 +53,11 @@ class CertificateController extends Controller
 
         $certificate->update([
             'nama' => $data['nama'],
+            'nama_idn' => $data['nama_idn'] ?? null,
             'penerbit' => $data['penerbit'] ?? null,
             'tanggal' => $data['tanggal'] ?? null,
             'desk' => $data['desk'] ?? null,
+            'desk_idn' => $data['desk_idn'] ?? null,
             'icon' => $data['icon'] ?? null,
             'gambar' => $this->resolveImage($request, 'certificates', $certificate->gambar),
             'sort_order' => $data['sort_order'] ?? $certificate->sort_order,
@@ -87,18 +91,22 @@ class CertificateController extends Controller
     {
         return $request->validate([
             'nama' => ['required', 'string', 'max:255'],
+            'nama_idn' => ['nullable', 'string', 'max:255'],
             'penerbit' => ['nullable', 'string', 'max:255'],
             'tanggal' => ['nullable', 'string', 'max:255'],
             'desk' => ['nullable', 'string'],
+            'desk_idn' => ['nullable', 'string'],
             'icon' => ['nullable', 'string', 'max:255'],
             'gambar' => ['nullable', 'image:allow_svg', 'mimes:jpeg,png,jpg,gif,webp,svg', 'max:4096'],
             'gambar_url' => ['nullable', 'url'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
         ], $this->validationMessages(), [
             'nama' => 'Nama sertifikat',
+            'nama_idn' => 'Nama sertifikat (Indonesia)',
             'penerbit' => 'Penerbit',
             'tanggal' => 'Tanggal',
             'desk' => 'Deskripsi',
+            'desk_idn' => 'Deskripsi (Indonesia)',
             'icon' => 'Ikon',
             'gambar' => 'Gambar sertifikat',
             'gambar_url' => 'URL gambar',

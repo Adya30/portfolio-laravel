@@ -27,7 +27,7 @@
 
     <div class="flex items-start gap-4">
 
-        <div class="relative w-24 h-24 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-center overflow-hidden flex-shrink-0">
+        <div class="relative w-24 h-24 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-center overflow-hidden shrink-0">
             <template x-if="previewSrc">
                 <img :src="previewSrc" alt="Pratinjau {{ $label }}" class="w-full h-full object-cover">
             </template>
@@ -46,7 +46,7 @@
             <div x-show="fileName" x-cloak class="flex items-center gap-2 text-xs text-slate-500">
                 <span class="truncate"><i class="ri-attachment-line mr-1 text-accent"></i><span x-text="fileName"></span></span>
                 <button type="button" @click="clearSelection"
-                        class="flex-shrink-0 inline-flex items-center gap-1 font-medium text-red-500 hover:text-red-600 transition-colors">
+                        class="shrink-0 inline-flex items-center gap-1 font-medium text-red-500 hover:text-red-600 transition-colors">
                     <i class="ri-delete-bin-line"></i>Hapus pilihan
                 </button>
             </div>
@@ -70,7 +70,7 @@
     @endif
 
     <div x-show="showCrop" x-cloak x-transition.opacity.duration.200ms
-         class="fixed inset-0 z-[200] flex items-center justify-center p-4" role="dialog" aria-modal="true">
+         class="fixed inset-0 z-200 flex items-center justify-center p-4" role="dialog" aria-modal="true">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" @click="cancelCrop"></div>
 
         <div class="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-2xl shadow-2xl overflow-hidden animate-scale-in"

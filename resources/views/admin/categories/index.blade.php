@@ -27,7 +27,7 @@
                             <td class="px-4 py-3 text-slate-500">{{ $i + 1 }}</td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center gap-3">
-                                    <span class="w-9 h-9 rounded-lg bg-accent/10 text-accent flex items-center justify-center flex-shrink-0">
+                                    <span class="w-9 h-9 rounded-lg bg-accent/10 text-accent flex items-center justify-center shrink-0">
                                         <i class="ri-price-tag-3-line"></i>
                                     </span>
                                     <span class="font-semibold text-slate-800">{{ $category->nama }}</span>
