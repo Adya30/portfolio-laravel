@@ -134,7 +134,7 @@
                 <div class="relative">
                     <div class="absolute -inset-4 bg-linear-to-br from-accent/20 via-purple-500/10 to-transparent rounded-full blur-3xl"></div>
                     <div class="relative w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 rounded-full overflow-hidden border-4 border-white dark:border-white/10 shadow-xl">
-                        <img src="{{ $heroImage }}" alt="{{ $profileName }}" class="w-full h-full object-cover">
+                        <img src="{{ $heroImage }}" alt="{{ $profileName }}" width="320" height="320" fetchpriority="high" class="w-full h-full object-cover">
                     </div>
 
                     <div class="absolute -bottom-2 -right-2 bg-white dark:bg-[#1a1a2e] rounded-xl px-4 py-2 shadow-lg border border-slate-100 dark:border-white/5 animate-float" style="animation-delay: 1s">

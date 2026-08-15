@@ -18,11 +18,12 @@
         $seoUrl = $seo['url'] ?? url()->current();
         $seoImage = null;
         if (! empty($seo['image'])) {
-            $isAbsolute = str_starts_with($seo['image'], 'http://')
-                || str_starts_with($seo['image'], 'https://');
-            $seoImage = $isAbsolute
-                ? $seo['image']
-                : (str_starts_with($seo['image'], '//') ? 'https:'.$seo['image'] : url($seo['image']));
+            // Resolve via img_url() so stored paths (full URLs, root-relative
+            // paths, storage paths) all become proper absolute image URLs.
+            $seoImage = img_url($seo['image']);
+            if (str_starts_with($seoImage, '//')) {
+                $seoImage = 'https:'.$seoImage;
+            }
         }
         $seoJsonLd = $seo['jsonld'] ?? [];
     @endphp
@@ -31,7 +32,10 @@
     <meta name="description" content="{{ $seoDescription }}">
     <meta name="keywords" content="{{ $seoKeywords }}">
     <meta name="author" content="Adya Handika Putra AP">
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    @if (config('services.google.site_verification'))
+        <meta name="google-site-verification" content="{{ config('services.google.site_verification') }}">
+    @endif
     <link rel="canonical" href="{{ $seoUrl }}">
 
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon.png') }}">
@@ -43,7 +47,8 @@
     <meta property="og:description" content="{{ $seoDescription }}">
     <meta property="og:type" content="{{ $seoType }}">
     <meta property="og:url" content="{{ $seoUrl }}">
-    <meta property="og:locale" content="en_US">
+    <meta property="og:locale" content="id_ID">
+    <meta property="og:locale:alternate" content="en_US">
     @if ($seoImage)
         <meta property="og:image" content="{{ $seoImage }}">
         <meta property="og:image:alt" content="{{ $seoTitle }}">

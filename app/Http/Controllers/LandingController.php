@@ -49,16 +49,26 @@ class LandingController extends Controller
                     '@graph' => [
                         [
                             '@type' => 'WebSite',
+                            '@id' => route('landing').'#website',
                             'name' => $name,
                             'url' => route('landing'),
                         ],
                         [
                             '@type' => 'Person',
+                            '@id' => route('landing').'#person',
                             'name' => $name,
                             'jobTitle' => $roleTitle,
                             'url' => route('landing'),
-                            'image' => $profile?->hero_image ? url(img_url($profile->hero_image)) : null,
+                            'image' => $profile?->hero_image ? img_url($profile->hero_image) : null,
                             'sameAs' => array_values($socials),
+                        ],
+                        [
+                            '@type' => 'ProfilePage',
+                            'name' => $name,
+                            'url' => route('landing'),
+                            'isPartOf' => ['@id' => route('landing').'#website'],
+                            'about' => ['@id' => route('landing').'#person'],
+                            'mainEntity' => ['@id' => route('landing').'#person'],
                         ],
                     ],
                 ],
@@ -91,14 +101,26 @@ class LandingController extends Controller
                 'type' => 'article',
                 'jsonld' => [
                     '@context' => 'https://schema.org',
-                    '@type' => 'CreativeWork',
-                    'name' => $project->nama,
-                    'headline' => $project->nama,
-                    'description' => $project->full_desk ?? $project->desk,
-                    'image' => $project->gambar ? url(img_url($project->gambar)) : null,
-                    'url' => route('project.show', $project),
-                    'keywords' => $projectTools->map->nama->implode(', '),
-                    'author' => ['@type' => 'Person', 'name' => 'Adya Handika Putra AP'],
+                    '@graph' => [
+                        [
+                            '@type' => 'CreativeWork',
+                            'name' => $project->nama,
+                            'headline' => $project->nama,
+                            'description' => $project->full_desk ?? $project->desk,
+                            'image' => $project->gambar ? img_url($project->gambar) : null,
+                            'url' => route('project.show', $project),
+                            'keywords' => $projectTools->map->nama->implode(', '),
+                            'author' => ['@type' => 'Person', 'name' => 'Adya Handika Putra AP'],
+                        ],
+                        [
+                            '@type' => 'BreadcrumbList',
+                            'itemListElement' => [
+                                ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => route('landing')],
+                                ['@type' => 'ListItem', 'position' => 2, 'name' => 'Projects', 'item' => route('landing').'#proyek'],
+                                ['@type' => 'ListItem', 'position' => 3, 'name' => $project->nama, 'item' => route('project.show', $project)],
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ]);
@@ -123,7 +145,21 @@ class LandingController extends Controller
             'seo' => [
                 'title' => $experience->role.' at '.$experience->company.' | Experience',
                 'description' => $experience->desk,
+                'image' => $experience->gambar ?? null,
                 'url' => route('experience.show', $experience),
+                'jsonld' => [
+                    '@context' => 'https://schema.org',
+                    '@graph' => [
+                        [
+                            '@type' => 'BreadcrumbList',
+                            'itemListElement' => [
+                                ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => route('landing')],
+                                ['@type' => 'ListItem', 'position' => 2, 'name' => 'Experiences', 'item' => route('landing').'#experiences'],
+                                ['@type' => 'ListItem', 'position' => 3, 'name' => $experience->role.' at '.$experience->company, 'item' => route('experience.show', $experience)],
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ]);
     }
@@ -140,14 +176,44 @@ class LandingController extends Controller
                     ?? 'Sertifikat '.$certificate->nama.' dari '.$certificate->penerbit,
                 'image' => $certificate->gambar ?? null,
                 'url' => route('certificate.show', $certificate),
+                'jsonld' => [
+                    '@context' => 'https://schema.org',
+                    '@graph' => [
+                        [
+                            '@type' => 'EducationalOccupationalCredential',
+                            'name' => $certificate->nama,
+                            'description' => $certificate->desk,
+                            'credentialCategory' => 'Certificate',
+                            'recognizedBy' => $certificate->penerbit
+                                ? ['@type' => 'Organization', 'name' => $certificate->penerbit]
+                                : null,
+                            'url' => route('certificate.show', $certificate),
+                            'image' => $certificate->gambar ? img_url($certificate->gambar) : null,
+                        ],
+                        [
+                            '@type' => 'BreadcrumbList',
+                            'itemListElement' => [
+                                ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => route('landing')],
+                                ['@type' => 'ListItem', 'position' => 2, 'name' => 'Certificates', 'item' => route('landing').'#certificates'],
+                                ['@type' => 'ListItem', 'position' => 3, 'name' => $certificate->nama, 'item' => route('certificate.show', $certificate)],
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ]);
     }
 
     public function sitemap(): Response
     {
+        $profile = Profile::first();
+
         $entries = [
-            ['loc' => route('landing'), 'priority' => '1.0'],
+            [
+                'loc' => route('landing'),
+                'priority' => '1.0',
+                'lastmod' => $profile?->updated_at ?? now(),
+            ],
         ];
 
         foreach (Project::orderBy('sort_order')->get() as $project) {
