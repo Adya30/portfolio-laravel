@@ -2,6 +2,18 @@
 
 use Illuminate\Support\Str;
 
+if (! function_exists('profile')) {
+    /**
+     * Ambil profil utama — hasilnya di-memoize sekali per request
+     * (via once()), jadi pemanggilan dari controller, footer, dll.
+     * hanya menjalankan SATU query dalam satu request.
+     */
+    function profile(): ?\App\Models\Profile
+    {
+        return once(fn () => \App\Models\Profile::first(), 'app.profile');
+    }
+}
+
 if (! function_exists('img_url')) {
     /**
      * Resolve a stored image path into a public URL.

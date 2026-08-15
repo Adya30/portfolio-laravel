@@ -1,5 +1,5 @@
 @php
-    $profile = \App\Models\Profile::first();
+    $profile = profile();
 
     $footerName = $profile->name ?? 'Adya Handika Putra AP';
     $footerTagline = $profile->tagline ?? 'Design UI for website, Building modular, Web applications with a focus on architecture and precise digital experiences.';

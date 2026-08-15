@@ -1,6 +1,3 @@
-import Cropper from 'cropperjs';
-import 'cropperjs/dist/cropper.css';
-
 /* ============================================================
    IMAGE UPLOADER — live preview + crop for admin forms.
    - ONLY WebP and SVG files are accepted; anything else is
@@ -15,6 +12,19 @@ import 'cropperjs/dist/cropper.css';
 const RATIOS = ['free', '1', '4/3', '3/2', '16/9', '21/9'];
 
 const ERROR_FORMAT = 'Format tidak didukung. Hanya file WebP atau SVG yang diperbolehkan.';
+
+// Cropper dimuat secara lazy (dynamic import) hanya saat user membuka modal
+// crop — jadi pengunjung halaman publik tidak perlu mengunduh Cropper + CSS-nya.
+let cropperModule = null;
+
+async function loadCropper() {
+    if (!cropperModule) {
+        cropperModule = await import('cropperjs');
+        await import('cropperjs/dist/cropper.css');
+    }
+
+    return cropperModule.default;
+}
 
 function parseRatio(value) {
     if (!value || value === 'free') return NaN;
@@ -93,9 +103,11 @@ document.addEventListener('alpine:init', () => {
             }
         },
 
-        openCrop(url) {
+        async openCrop(url) {
             this.showCrop = true;
             this.ratio = this.defaultRatio;
+
+            const Cropper = await loadCropper();
 
             this.$nextTick(() => {
                 const image = this.$refs.cropImage;

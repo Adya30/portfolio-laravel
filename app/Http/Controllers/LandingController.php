@@ -15,7 +15,7 @@ class LandingController extends Controller
 {
     public function index(): View
     {
-        $profile = Profile::first();
+        $profile = profile();
         $categories = Category::orderBy('id')->get();
         $projects = Project::with('category')->orderBy('sort_order')->get();
         $tools = Tool::orderBy('sort_order')->get();
@@ -206,7 +206,7 @@ class LandingController extends Controller
 
     public function sitemap(): Response
     {
-        $profile = Profile::first();
+        $profile = profile();
 
         $entries = [
             [

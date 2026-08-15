@@ -43,6 +43,7 @@
                     <div class="relative">
                         <i class="ri-mail-line absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base"></i>
                         <input type="email" name="email" id="email" value="{{ old('email') }}" required autofocus
+                               autocomplete="email"
                                placeholder="admin@adyahan.my.id"
                                class="w-full rounded-xl border border-white/10 bg-white/5 pl-10 pr-3.5 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none focus:border-accent focus:ring-4 focus:ring-accent/20 transition-all">
                     </div>
@@ -52,7 +53,8 @@
                     <label for="password" class="block text-sm font-semibold text-slate-300">Password</label>
                     <div class="relative">
                         <i class="ri-lock-line absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base"></i>
-                        <input type="password" name="password" id="password" required placeholder="••••••••"
+                        <input type="password" name="password" id="password" required
+                               autocomplete="current-password" placeholder="••••••••"
                                class="w-full rounded-xl border border-white/10 bg-white/5 pl-10 pr-3.5 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none focus:border-accent focus:ring-4 focus:ring-accent/20 transition-all">
                     </div>
                 </div>

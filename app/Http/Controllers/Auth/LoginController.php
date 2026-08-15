@@ -15,7 +15,11 @@ class LoginController extends Controller
 
     protected const MAX_ATTEMPTS = 5;
 
-    protected const DECAY_MINUTES = 1;
+    // Waktu tunggu dasar per percobaan gagal (detik).
+    protected const BASE_DECAY_SECONDS = 60;
+
+    // Batas atas waktu tunggu (30 menit).
+    protected const MAX_DECAY_SECONDS = 1800;
 
     public function showLoginForm(): View|RedirectResponse
     {
@@ -40,9 +44,10 @@ class LoginController extends Controller
 
         if (RateLimiter::tooManyAttempts($throttleKey, self::MAX_ATTEMPTS)) {
             $seconds = RateLimiter::availableIn($throttleKey);
+            $label = $seconds >= 60 ? ceil($seconds / 60).' menit' : $seconds.' detik';
 
             return back()->withErrors([
-                'email' => 'Terlalu banyak percobaan login. Silakan coba lagi dalam '.ceil($seconds / 60).' menit.',
+                'email' => 'Terlalu banyak percobaan login. Silakan coba lagi dalam '.$label.'.',
             ])->onlyInput('email');
         }
 
@@ -53,7 +58,14 @@ class LoginController extends Controller
             return redirect()->route('admin.dashboard');
         }
 
-        RateLimiter::hit($throttleKey, self::DECAY_MINUTES * 60);
+        // Backoff eksponensial: makin sering gagal, makin lama waktu tunggu
+        // (1, 2, 4, 8, 16 menit, dst. — dibatasi maksimal 30 menit).
+        $attempts = RateLimiter::attempts($throttleKey);
+        $decay = min(
+            self::BASE_DECAY_SECONDS * (2 ** $attempts),
+            self::MAX_DECAY_SECONDS
+        );
+        RateLimiter::hit($throttleKey, $decay);
 
         return back()->withErrors([
             'email' => 'Email atau password salah.',

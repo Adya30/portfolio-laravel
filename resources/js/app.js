@@ -118,18 +118,18 @@ const i18n = {
         toolsSkills: 'Tools & Keahlian',
         toolsSkillsSubtitle: 'Berbagai tools dan keahlian yang saya gunakan secara rutin',
         recentProjects: 'Proyek Terbaru',
-        projectsSubtitle: 'Klik salah satu proyek untuk melihat detail lengkap',
+        projectsSubtitle: 'Berbagai Projek yang telah saya kerjakan',
         all: 'Semua',
         view: 'Lihat',
         project: 'Proyek',
         myExperience: 'Pengalaman Saya',
-        experiencesSubtitle: 'Klik salah satu pengalaman untuk melihat detail lengkap',
+        experiencesSubtitle: 'Pengalaman yang telah saya tempuh dan masih saya tempuh',
         practicumResponsibilities: 'Tanggung Jawab Praktikum',
         keyResponsibilities: 'Tanggung Jawab Utama',
         skillsLabel: 'Keahlian:',
         viewDetails: 'Lihat Detail',
         certificatesAwards: 'Sertifikat & Penghargaan',
-        certificatesSubtitle: 'Klik salah satu sertifikat untuk melihat detail lengkap',
+        certificatesSubtitle: 'Sertifikat dan penghargaan yang saya raih',
         letsTalk: 'Mari Berbicara',
         contactSubtitle: 'Punya proyek atau sekadar ingin menyapa? Jangan ragu untuk menghubungi saya!',
         contactBody: 'Saya selalu terbuka untuk berdiskusi soal proyek baru, peluang kolaborasi, atau sekadar menyapa. Kirim email Anda dan saya akan segera membalas!',
@@ -215,6 +215,24 @@ Alpine.data('app', () => ({
         this.dark = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
         document.documentElement.classList.toggle('dark', this.dark);
 
+        // Landing page: when the page is refreshed, always go back to the
+        // top (beranda) — never restore the previous scroll position, and
+        // clear any URL hash (e.g. /#proyek) so the active nav resets too.
+        // Arriving from a detail-page navbar click (a fresh navigation with
+        // a hash) still scrolls to the target section below.
+        if (window.portfolioData) {
+            if ('scrollRestoration' in history) {
+                history.scrollRestoration = 'manual';
+            }
+
+            if (this.isReload()) {
+                if (window.location.hash) {
+                    history.replaceState(null, '', window.location.pathname + window.location.search);
+                }
+                window.scrollTo(0, 0);
+            }
+        }
+
         // Initial active nav item: on detail pages the server provides the
         // matching section via data-active-nav (e.g. 'proyek' on /project/1);
         // on the landing page a URL hash (e.g. /#proyek) wins.
@@ -252,6 +270,18 @@ Alpine.data('app', () => ({
                 const target = document.querySelector(window.location.hash);
                 if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 200);
+        }
+    },
+
+    isReload() {
+        try {
+            const entry = performance.getEntriesByType?.('navigation')?.[0];
+            if (entry) return entry.type === 'reload';
+
+            // Fallback for older browsers (legacy Navigation Timing API).
+            return typeof performance.navigation !== 'undefined' && performance.navigation.type === 1;
+        } catch (e) {
+            return false;
         }
     },
 

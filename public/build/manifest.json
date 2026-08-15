@@ -87,6 +87,19 @@
     "file": "assets/poppins-latin-800-normal-Bd8-pIP1.woff2",
     "src": "node_modules/@fontsource/poppins/files/poppins-latin-800-normal.woff2"
   },
+  "node_modules/cropperjs/dist/cropper.css": {
+    "file": "assets/cropper-cx_wrqbx.css",
+    "src": "node_modules/cropperjs/dist/cropper.css"
+  },
+  "node_modules/cropperjs/dist/cropper.js": {
+    "file": "assets/cropper-DPA_143X.js",
+    "name": "cropper",
+    "src": "node_modules/cropperjs/dist/cropper.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.js"
+    ]
+  },
   "node_modules/remixicon/fonts/remixicon.eot": {
     "file": "assets/remixicon-B25hvfAs.eot",
     "src": "node_modules/remixicon/fonts/remixicon.eot"
@@ -141,12 +154,15 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-BD59lxsM.js",
+    "file": "assets/app-BK000Fom.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
+    "dynamicImports": [
+      "node_modules/cropperjs/dist/cropper.js"
+    ],
     "css": [
-      "assets/app-B0-qLuLW.css"
+      "assets/app-Dc-ERbMj.css"
     ],
     "assets": [
       "assets/remixicon-B25hvfAs.eot",
