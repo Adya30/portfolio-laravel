@@ -79,14 +79,31 @@ abstract class Controller
             $image = @imagecreatefromstring((string) file_get_contents($file->getRealPath()));
 
             if ($image !== false) {
+                // imagewebp() rejects palette images (e.g. GIF) and would write
+                // a 0-byte file, so convert them to truecolor first.
+                if (! imageistruecolor($image)) {
+                    $truecolor = imagecreatetruecolor(imagesx($image), imagesy($image));
+
+                    if ($truecolor !== false) {
+                        imagealphablending($truecolor, false);
+                        imagesavealpha($truecolor, true);
+                        imagecopy($truecolor, $image, 0, 0, 0, 0, imagesx($image), imagesy($image));
+                        imagedestroy($image);
+                        $image = $truecolor;
+                    }
+                }
+
                 $dest = $targetDir.'/'.$name.'.webp';
 
                 imagealphablending($image, false);
                 imagesavealpha($image, true);
-                imagewebp($image, $dest, 85);
+
+                $converted = @imagewebp($image, $dest, 85);
                 imagedestroy($image);
 
-                return 'uploads/'.$dir.'/'.$name.'.webp';
+                if ($converted && file_exists($dest) && filesize($dest) > 0) {
+                    return 'uploads/'.$dir.'/'.$name.'.webp';
+                }
             }
         }
 

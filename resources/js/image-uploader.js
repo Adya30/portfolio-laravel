@@ -92,10 +92,11 @@ document.addEventListener('alpine:init', () => {
                     });
                 };
                 image.onerror = () => {
-                    // Unreadable/corrupt file: close the modal and revert.
+                    // Browser can't render this file (e.g. HEIC) — close the modal
+                    // but KEEP the file in the input so it can still be uploaded;
+                    // the server converts it. Only clear on explicit user action.
                     this.showCrop = false;
                     this.destroyCropper();
-                    this.clearSelection();
                 };
                 image.src = url;
             });

@@ -24,29 +24,12 @@
                         <header>
                             <div class="flex items-center gap-2 text-xs font-semibold text-accent uppercase tracking-wider mb-3">
                                 <i class="ri-award-line"></i>
-                                <span x-text="t('certificate')">Certificate</span> #{{ str_pad($certificate->id, 2, '0', STR_PAD_LEFT) }}
+                                <span x-text="t('certificate')">Certificate</span>
                             </div>
-                            <h1 class="font-poppins text-3xl sm:text-4xl lg:text-[2.75rem] font-bold leading-tight text-slate-800 dark:text-white mb-4" x-text='L(@json($certificate->nama), @json($certificate->nama_idn))'>
+                            <h1 class="font-poppins text-2xl sm:text-3xl lg:text-[2.75rem] font-bold leading-tight text-slate-800 dark:text-white mb-4" x-text='L(@json($certificate->nama), @json($certificate->nama_idn))'>
                                 {{ $certificate->nama }}
                             </h1>
 
-                            <div class="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-500 dark:text-slate-400">
-                                @if ($certificate->penerbit)
-                                    <span class="flex items-center gap-1.5">
-                                        <i class="ri-building-2-line"></i>{{ $certificate->penerbit }}
-                                    </span>
-                                @endif
-                                @if ($certificate->tanggal)
-                                    <span class="flex items-center gap-1.5">
-                                        <i class="ri-calendar-line"></i>{{ $certificate->tanggal }}
-                                    </span>
-                                @endif
-                                @if ($certificate->icon)
-                                    <span class="flex items-center gap-1.5">
-                                        <i class="{{ $certificate->icon }}"></i><span x-text="t('certificate')">Certificate</span>
-                                    </span>
-                                @endif
-                            </div>
                         </header>
 
                         <div class="bg-slate-100 dark:bg-slate-900 p-4 sm:p-6 rounded-2xl border border-slate-200/80 dark:border-white/5">
@@ -81,12 +64,6 @@
                                 <i class="ri-award-line text-accent text-lg"></i> <span x-text="t('certificateDetails')">Certificate Details</span>
                             </h2>
                             <ul class="space-y-3.5 text-sm">
-                                <li class="flex items-center justify-between gap-3">
-                                    <span class="text-slate-400 dark:text-slate-500 flex items-center gap-2">
-                                        <i class="ri-hashtag"></i> <span x-text="t('certificate')">Certificate</span> #
-                                    </span>
-                                    <span class="font-semibold text-slate-700 dark:text-slate-200">#{{ str_pad($certificate->id, 2, '0', STR_PAD_LEFT) }}</span>
-                                </li>
                                 @if ($certificate->penerbit)
                                     <li class="flex items-center justify-between gap-3">
                                         <span class="text-slate-400 dark:text-slate-500 flex items-center gap-2">
@@ -103,15 +80,14 @@
                                         <span class="font-semibold text-slate-700 dark:text-slate-200 text-right">{{ $certificate->tanggal }}</span>
                                     </li>
                                 @endif
-                                @if ($certificate->icon)
-                                    <li class="flex items-center justify-between gap-3">
-                                        <span class="text-slate-400 dark:text-slate-500 flex items-center gap-2">
-                                            <i class="{{ $certificate->icon }}"></i> <span x-text="t('type')">Type</span>
-                                        </span>
-                                        <span class="font-semibold text-slate-700 dark:text-slate-200" x-text="t('certificate')">Certificate</span>
-                                    </li>
-                                @endif
                             </ul>
+
+                            @if ($certificate->link)
+                                <a href="{{ $certificate->link }}" target="_blank" rel="noopener noreferrer"
+                                   class="w-full mt-6 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-white text-sm font-semibold transition-all duration-200 hover:bg-blue-600 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(59,130,246,0.25)]">
+                                    <i class="ri-external-link-line"></i> <span x-text="t('visitPlatform')">Visit Platform</span>
+                                </a>
+                            @endif
                         </div>
                     </div>
                 </aside>

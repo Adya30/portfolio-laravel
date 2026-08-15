@@ -34,7 +34,7 @@ class CertificateController extends Controller
             'tanggal' => $data['tanggal'] ?? null,
             'desk' => $data['desk'] ?? null,
             'desk_idn' => $data['desk_idn'] ?? null,
-            'icon' => $data['icon'] ?? null,
+            'link' => $data['link'] ?? null,
             'gambar' => $this->resolveImage($request, 'certificates'),
             'sort_order' => $data['sort_order'] ?? 0,
         ]);
@@ -58,7 +58,7 @@ class CertificateController extends Controller
             'tanggal' => $data['tanggal'] ?? null,
             'desk' => $data['desk'] ?? null,
             'desk_idn' => $data['desk_idn'] ?? null,
-            'icon' => $data['icon'] ?? null,
+            'link' => $data['link'] ?? null,
             'gambar' => $this->resolveImage($request, 'certificates', $certificate->gambar),
             'sort_order' => $data['sort_order'] ?? $certificate->sort_order,
         ]);
@@ -96,8 +96,8 @@ class CertificateController extends Controller
             'tanggal' => ['nullable', 'string', 'max:255'],
             'desk' => ['nullable', 'string'],
             'desk_idn' => ['nullable', 'string'],
-            'icon' => ['nullable', 'string', 'max:255'],
-            'gambar' => ['nullable', 'image:allow_svg', 'mimes:jpeg,png,jpg,gif,webp,svg', 'max:4096'],
+            'link' => ['nullable', 'url', 'max:255'],
+            'gambar' => ['nullable', 'image:allow_svg', 'mimes:jpeg,png,jpg,gif,webp,svg,avif,heic,heif,bmp', 'max:15360'],
             'gambar_url' => ['nullable', 'url'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
         ], $this->validationMessages(), [
@@ -107,7 +107,7 @@ class CertificateController extends Controller
             'tanggal' => 'Tanggal',
             'desk' => 'Deskripsi',
             'desk_idn' => 'Deskripsi (Indonesia)',
-            'icon' => 'Ikon',
+            'link' => 'Link platform',
             'gambar' => 'Gambar sertifikat',
             'gambar_url' => 'URL gambar',
             'sort_order' => 'Urutan',

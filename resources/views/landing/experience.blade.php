@@ -33,10 +33,9 @@
                                 @endif
                                 <div class="min-w-0 flex-1">
                                     <div class="flex items-center gap-2 text-xs font-semibold text-accent uppercase tracking-wider mb-3">
-                                        <i class="ri-briefcase-4-line"></i>
-                                        <span x-text="t('experience')">Experience</span> #{{ str_pad($experience->id, 2, '0', STR_PAD_LEFT) }}
+                                        <span x-text="t('experience')">Experience</span>
                                     </div>
-                                    <h1 class="font-poppins text-3xl sm:text-4xl lg:text-[2.75rem] font-bold leading-tight text-slate-800 dark:text-white mb-3" x-text='L(@json($experience->role), @json($experience->role_idn))'>
+                                    <h1 class="font-poppins text-2xl sm:text-3xl lg:text-[2.75rem] font-bold leading-tight text-slate-800 dark:text-white mb-3" x-text='L(@json($experience->role), @json($experience->role_idn))'>
                                         {{ $experience->role }}
                                     </h1>
                                     <p class="text-base font-semibold text-accent mb-3">{{ $experience->company }}</p>
@@ -107,21 +106,9 @@
                                 <i class="ri-tools-line text-accent text-lg"></i> <span x-text="t('skillsUsed')">Skills Used</span>
                             </h2>
                             @if (! empty($experienceSkills) && $experienceSkills->isNotEmpty())
-                                <ul class="space-y-3">
+                                <ul class="space-y-2.5 list-disc pl-4 marker:text-accent/70 text-sm text-slate-600 dark:text-slate-300">
                                     @foreach ($experienceSkills as $skill)
-                                        @php
-                                            $iconUrl = tool_icon_url($skill->nama, $skill->gambar ?? null);
-                                        @endphp
-                                        <li class="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
-                                            <span class="w-8 h-8 shrink-0 rounded-lg bg-slate-100 dark:bg-white/10 border border-slate-200/50 dark:border-white/5 flex items-center justify-center overflow-hidden p-1.5 shadow-2xs">
-                                                @if ($iconUrl)
-                                                    <img src="{{ $iconUrl }}" alt="{{ $skill->nama }}" class="w-5 h-5 object-contain">
-                                                @else
-                                                    <i class="ri-vip-diamond-line text-sm text-accent dark:text-[#60a5fa]"></i>
-                                                @endif
-                                            </span>
-                                            <span class="font-medium">{{ $skill->nama }}</span>
-                                        </li>
+                                        <li class="font-medium">{{ $skill->nama }}</li>
                                     @endforeach
                                 </ul>
                             @else
@@ -136,7 +123,7 @@
                             <ul class="space-y-3.5 text-sm">
                                 <li class="flex items-center justify-between gap-3">
                                     <span class="text-slate-400 dark:text-slate-500 flex items-center gap-2">
-                                        <i class="ri-briefcase-4-line"></i> <span x-text="t('company')">Company</span>
+                                        <span x-text="t('company')">Company</span>
                                     </span>
                                     <span class="font-semibold text-slate-700 dark:text-slate-200 text-right">{{ $experience->company }}</span>
                                 </li>

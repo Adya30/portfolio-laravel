@@ -50,7 +50,6 @@
             'tanggal' => $c->tanggal,
             'desk' => $c->desk,
             'deskIdn' => $c->desk_idn,
-            'icon' => $c->icon,
         ])->values(),
     ];
 
@@ -350,9 +349,7 @@
                                 </span>
                                 <div class="min-w-0 flex-1">
                                     <div class="flex items-center justify-between gap-3 mb-1">
-                                        <span class="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-accent dark:text-[#60a5fa] min-w-0">
-                                            <i class="ri-briefcase-4-line text-sm shrink-0"></i>
-                                            <span class="truncate" x-text="e.company"></span>
+                                        <span class="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-widest text-accent dark:text-[#60a5fa] min-w-0">                                            <span class="truncate" x-text="e.company"></span>
                                         </span>
                                         <span class="text-[11px] font-bold text-slate-300 dark:text-slate-600 select-none shrink-0" x-text="String(i + 1).padStart(2, '0')"></span>
                                     </div>
@@ -425,30 +422,32 @@
 
     <div class="relative max-w-6xl mx-auto px-4" data-aos="fade-up" data-aos-duration="600">
         <div x-data="carousel({{ $certificates->count() }})">
-            <div x-ref="track"
-                 class="grid grid-flow-col grid-rows-2 gap-6 overflow-x-auto scrollbar-none snap-x snap-mandatory pb-4 auto-cols-[100%] sm:auto-cols-[calc(50%-0.75rem)] lg:auto-cols-[calc(33.333%-1rem)] scroll-smooth">
-                <template x-for="c in certificates" :key="c.id">
-                    <a :href="c.url"
-                       class="block bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-2xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] overflow-hidden flex flex-col justify-between group snap-start w-full min-w-0">
-                        <div>
-                            <div class="relative h-48 w-full bg-slate-100 dark:bg-slate-900 flex items-center justify-center p-3 border-b border-slate-200/50 dark:border-white/5 overflow-hidden">
-                                <img :src="c.img" :alt="c.nama" class="max-h-full max-w-full object-contain group-hover:scale-[1.03] transition-transform duration-300" loading="lazy">
-                                <div class="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                <div class="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <span class="text-xs font-semibold px-3 py-1.5 rounded-full bg-white/90 dark:bg-black/60 text-slate-800 dark:text-white backdrop-blur-sm"><i class="ri-eye-line mr-1"></i><span x-text="t('view')">View</span></span>
-                                </div>
-                            </div>
-                            <div class="p-5">
-                                <div class="flex items-center justify-between gap-2 text-xs text-slate-400 dark:text-slate-500 font-medium mb-1">
-                                    <span x-text="c.penerbit"></span>
-                                    <span class="flex items-center gap-1 text-[11px]"><i class="ri-calendar-line"></i><span x-text="c.tanggal"></span></span>
-                                </div>
-                                <h3 class="font-bold text-slate-800 dark:text-slate-100 text-base group-hover:text-accent transition-colors leading-snug" x-text="L(c.nama, c.namaIdn)"></h3>
-                            </div>
-                        </div>
-                    </a>
-                </template>
+<div x-ref="track"
+     class="grid grid-flow-col grid-rows-2 gap-6 overflow-x-auto scrollbar-none snap-x snap-mandatory pb-4 auto-cols-[100%] sm:auto-cols-[calc(50%-0.75rem)] lg:auto-cols-[calc(33.333%-1rem)] scroll-smooth">
+    <template x-for="c in certificates" :key="c.id">
+        <a :href="c.url"
+           class="block bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-2xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] overflow-hidden flex flex-col justify-between group snap-start w-full min-w-0">
+            <div>
+                <!-- 1. Menghapus p-3 dan flex centering yang tidak diperlukan -->
+                <div class="relative h-60 w-full bg-slate-100 dark:bg-slate-900 border-b border-slate-200/50 dark:border-white/5 overflow-hidden">
+                    <!-- 2. Mengubah class gambar ke w-full h-full object-cover -->
+                    <img :src="c.img" :alt="c.nama" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" loading="lazy">
+                    <div class="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span class="text-xs font-semibold px-3 py-1.5 rounded-full bg-white/90 dark:bg-black/60 text-slate-800 dark:text-white backdrop-blur-sm"><i class="ri-eye-line mr-1"></i><span x-text="t('view')">View</span></span>
+                    </div>
+                </div>
+                <div class="p-5">
+                    <div class="flex items-center justify-between gap-2 text-xs text-slate-400 dark:text-slate-500 font-medium mb-1">
+                        <span x-text="c.penerbit"></span>
+                        <span class="flex items-center gap-1 text-[11px]"><i class="ri-calendar-line"></i><span x-text="c.tanggal"></span></span>
+                    </div>
+                    <h3 class="font-bold text-slate-800 dark:text-slate-100 text-base group-hover:text-accent transition-colors leading-snug" x-text="L(c.nama, c.namaIdn)"></h3>
+                </div>
             </div>
+        </a>
+    </template>
+</div>
             <div class="flex justify-center items-center gap-2 mt-6">
                 <template x-for="i in pages" :key="i">
                     <button @click="go(i)"

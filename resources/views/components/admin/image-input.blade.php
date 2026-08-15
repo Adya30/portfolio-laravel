@@ -40,7 +40,7 @@
 
         <div class="flex-1 min-w-0 space-y-2.5">
             <input type="file" x-ref="fileInput" name="{{ $name }}"
-                   accept=".jpg,.jpeg,.png,.gif,.webp,.svg,image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
+                   accept=".jpg,.jpeg,.png,.gif,.webp,.svg,.avif,.heic,.heif,.bmp,image/jpeg,image/png,image/gif,image/webp,image/svg+xml,image/avif,image/heic,image/heif,image/bmp"
                    class="block w-full text-sm text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-slate-100 file:text-sm file:font-semibold file:text-slate-600 hover:file:bg-slate-200">
 
             <div x-show="fileName" x-cloak class="flex items-center gap-2 text-xs text-slate-500">

@@ -23,6 +23,11 @@
             </div>
 
             <div class="sm:col-span-2">
+                <x-admin.field name="link" label="Link Platform" type="url" placeholder="https://..."
+                               help="Link menuju halaman/platform sertifikat, mis. halaman kursus Dicoding atau badge HackerRank (opsional)." />
+            </div>
+
+            <div class="sm:col-span-2">
                 <x-admin.field name="desk" label="Deskripsi (English)" type="textarea" rows="3"
                                help="Deskripsi detail yang tampil di modal sertifikat." />
             </div>
@@ -41,11 +46,6 @@
             <div class="sm:col-span-2">
                 <x-admin.field name="desk_idn" label="Deskripsi (Indonesia)" type="textarea" rows="3"
                                placeholder="Deskripsi dalam bahasa Indonesia" />
-            </div>
-
-            <div>
-                <x-admin.field name="icon" label="Ikon (Remix Icon)" placeholder="Contoh: ri-award-line"
-                               help="Kelas ikon remixicon. Kosongkan jika tidak dipakai." />
             </div>
 
             <div class="sm:col-span-2">

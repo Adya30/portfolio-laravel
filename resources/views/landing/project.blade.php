@@ -29,21 +29,21 @@
                         <header>
                             <div class="flex flex-wrap items-center gap-2 text-xs font-semibold text-accent uppercase tracking-wider mb-3">
                                 <i class="ri-folder-open-line"></i>
-                                <span x-text="t('project')">Project</span> #{{ str_pad($project->id, 2, '0', STR_PAD_LEFT) }}
+                                <span x-text="t('project')">Project</span>
                                 @if ($project->category)
                                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium normal-case tracking-normal text-accent dark:text-[#60a5fa] bg-accent/10 border border-accent/15">
                                         <i class="ri-price-tag-3-line"></i>{{ $project->category->nama }}
                                     </span>
                                 @endif
                             </div>
-                            <h1 class="font-poppins text-3xl sm:text-4xl lg:text-[2.75rem] font-bold leading-tight text-slate-800 dark:text-white mb-4">
+                            <h1 class="font-poppins text-2xl sm:text-3xl lg:text-[2.75rem] font-bold leading-tight text-slate-800 dark:text-white mb-4">
                                 {{ $project->nama }}
                             </h1>
                             <p class="text-sm sm:text-base text-slate-500 dark:text-slate-400 leading-relaxed max-w-2xl" x-text='L(@json($project->desk), @json($project->desk_idn))'>{{ $project->desk }}</p>
                         </header>
 
-                        <div class="rounded-2xl overflow-hidden border border-slate-200 dark:border-white/5 bg-slate-100 dark:bg-slate-900 shadow-sm">
-                            <img src="{{ img_url($project->gambar) }}" alt="{{ $project->nama }}" class="w-full object-cover" loading="lazy">
+                        <div class="border border-slate-200 dark:border-white/5 bg-slate-100 dark:bg-slate-900 shadow-sm">
+                            <img src="{{ img_url($project->gambar) }}" alt="{{ $project->nama }}" class="w  -full object-cover" loading="lazy">
                         </div>
 
                         <div>
@@ -87,21 +87,9 @@
                                 <i class="ri-tools-line text-accent text-lg"></i> <span x-text="t('toolsSkillsUsed')">Tools & Skills Used</span>
                             </h2>
                              @if ($projectTools->isNotEmpty())
-                                 <ul class="space-y-3">
+                                 <ul class="space-y-2.5 list-disc pl-4 marker:text-accent/70 text-sm text-slate-600 dark:text-slate-300">
                                      @foreach ($projectTools as $tool)
-                                         @php
-                                             $iconUrl = tool_icon_url($tool->nama, $tool->gambar ?? null);
-                                         @endphp
-                                         <li class="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
-                                             <span class="w-8 h-8 shrink-0 rounded-lg bg-slate-100 dark:bg-white/10 border border-slate-200/50 dark:border-white/5 flex items-center justify-center overflow-hidden p-1.5 shadow-2xs">
-                                                 @if ($iconUrl)
-                                                     <img src="{{ $iconUrl }}" alt="{{ $tool->nama }}" class="w-5 h-5 object-contain">
-                                                 @else
-                                                     <i class="ri-vip-diamond-line text-sm text-accent dark:text-[#60a5fa]"></i>
-                                                 @endif
-                                             </span>
-                                             <span class="font-medium">{{ $tool->nama }}</span>
-                                         </li>
+                                         <li class="font-medium">{{ $tool->nama }}</li>
                                      @endforeach
                                  </ul>
                             @else
@@ -131,12 +119,6 @@
                                 <i class="ri-information-line text-accent text-lg"></i> <span x-text="t('projectInfo')">Project Info</span>
                             </h2>
                             <ul class="space-y-3.5 text-sm">
-                                <li class="flex items-center justify-between gap-3">
-                                    <span class="text-slate-400 dark:text-slate-500 flex items-center gap-2">
-                                        <i class="ri-hashtag"></i> <span x-text="t('projectNumber')">Project Number</span>
-                                    </span>
-                                    <span class="font-semibold text-slate-700 dark:text-slate-200">#{{ str_pad($project->id, 2, '0', STR_PAD_LEFT) }}</span>
-                                </li>
                                 <li class="flex items-center justify-between gap-3">
                                     <span class="text-slate-400 dark:text-slate-500 flex items-center gap-2">
                                         <i class="ri-vip-diamond-line"></i> <span x-text="t('toolsUsed')">Tools Used</span>
