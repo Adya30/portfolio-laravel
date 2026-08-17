@@ -6,7 +6,7 @@
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
-    <title>Login — Admin Adya Portfolio</title>
+    <title>Login - Adya Portfolio</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="admin-body bg-[#0a0a0f] text-white min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
