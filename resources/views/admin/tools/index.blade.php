@@ -4,11 +4,7 @@
 @section('page_title', 'Tools')
 
 @section('content')
-    <x-admin.page-title
-        title="Tools"
-        subtitle="Daftar tools / skill yang tampil di landing page"
-        actionLabel="Tambah Tool"
-        actionRoute="admin.tools.create" />
+    <x-admin.page-title actionLabel="Tambah Tool" actionRoute="admin.tools.create" />
 
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="overflow-x-auto">

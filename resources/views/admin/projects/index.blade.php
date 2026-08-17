@@ -4,11 +4,7 @@
 @section('page_title', 'Kelola Project')
 
 @section('content')
-    <x-admin.page-title
-        title="Kelola Project"
-        subtitle="Daftar project yang tampil di landing page"
-        actionLabel="Tambah Project"
-        actionRoute="admin.projects.create" />
+    <x-admin.page-title actionLabel="Tambah Project" actionRoute="admin.projects.create" />
 
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="overflow-x-auto">

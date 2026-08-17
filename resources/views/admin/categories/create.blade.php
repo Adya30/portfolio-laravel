@@ -4,7 +4,7 @@
 @section('page_title', 'Tambah Kategori')
 
 @section('content')
-    <x-admin.page-title title="Tambah Kategori" subtitle="Buat kategori baru untuk mengelompokkan project" />
+    <x-admin.page-title/>
 
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 max-w-2xl">
         <form method="POST" action="{{ route('admin.categories.store') }}" class="space-y-5">

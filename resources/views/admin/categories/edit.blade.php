@@ -4,7 +4,7 @@
 @section('page_title', 'Edit Kategori')
 
 @section('content')
-    <x-admin.page-title title="Edit Kategori" subtitle="Perbarui nama kategori" />
+    <x-admin.page-title/>
 
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 max-w-2xl">
         <form method="POST" action="{{ route('admin.categories.update', $category) }}" class="space-y-5">

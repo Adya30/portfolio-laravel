@@ -4,11 +4,7 @@
 @section('page_title', 'Kategori')
 
 @section('content')
-    <x-admin.page-title
-        title="Kategori"
-        subtitle="Kategori untuk mengelompokkan project di landing page"
-        actionLabel="Tambah Kategori"
-        actionRoute="admin.categories.create" />
+    <x-admin.page-title actionLabel="Tambah Kategori" actionRoute="admin.categories.create" />
 
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="overflow-x-auto">

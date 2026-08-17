@@ -4,11 +4,7 @@
 @section('page_title', 'Sertifikat')
 
 @section('content')
-    <x-admin.page-title
-        title="Sertifikat"
-        subtitle="Daftar sertifikat & penghargaan yang tampil di landing page"
-        actionLabel="Tambah Sertifikat"
-        actionRoute="admin.certificates.create" />
+    <x-admin.page-title actionLabel="Tambah Sertifikat" actionRoute="admin.certificates.create" />
 
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="overflow-x-auto">

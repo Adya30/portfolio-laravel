@@ -428,9 +428,7 @@
         <a :href="c.url"
            class="block bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-2xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] overflow-hidden flex flex-col justify-between group snap-start w-full min-w-0">
             <div>
-                <!-- 1. Menghapus p-3 dan flex centering yang tidak diperlukan -->
                 <div class="relative h-60 w-full bg-slate-100 dark:bg-slate-900 border-b border-slate-200/50 dark:border-white/5 overflow-hidden">
-                    <!-- 2. Mengubah class gambar ke w-full h-full object-cover -->
                     <img :src="c.img" :alt="c.nama" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" loading="lazy">
                     <div class="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <div class="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">

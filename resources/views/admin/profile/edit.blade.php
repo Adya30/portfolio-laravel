@@ -4,7 +4,7 @@
 @section('page_title', 'Profil')
 
 @section('content')
-    <x-admin.page-title title="Profil" subtitle="Atur informasi yang tampil di landing page" />
+    <x-admin.page-title/>
 
     <form method="POST" action="{{ route('admin.profile.update') }}" enctype="multipart/form-data">
         @csrf

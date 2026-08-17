@@ -4,7 +4,7 @@
 @section('page_title', 'Tambah Sertifikat')
 
 @section('content')
-    <x-admin.page-title title="Tambah Sertifikat" subtitle="Isi data sertifikat baru" />
+    <x-admin.page-title/>
 
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 max-w-4xl">
         <form method="POST" action="{{ route('admin.certificates.store') }}" enctype="multipart/form-data" class="grid sm:grid-cols-2 gap-5">

@@ -4,11 +4,7 @@
 @section('page_title', 'Pengalaman')
 
 @section('content')
-    <x-admin.page-title
-        title="Pengalaman"
-        subtitle="Daftar pengalaman / riwayat yang tampil di landing page"
-        actionLabel="Tambah Pengalaman"
-        actionRoute="admin.experiences.create" />
+    <x-admin.page-title actionLabel="Tambah Pengalaman" actionRoute="admin.experiences.create" />
 
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
