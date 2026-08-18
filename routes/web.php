@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\ExperienceController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\ToolController;
+use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\LandingController;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +25,9 @@ Route::get('/robots.txt', function () {
 
     return response($content, 200, ['Content-Type' => 'text/plain']);
 })->name('robots');
+
+Route::get('/course', [LandingController::class, 'courseIndex'])->name('course.index');
+Route::get('/course/{course}', [LandingController::class, 'showCourse'])->name('course.show');
 
 Route::get('/project/{project}', [LandingController::class, 'showProject'])->name('project.show');
 Route::get('/experience/{experience}', [LandingController::class, 'showExperience'])->name('experience.show');
@@ -44,8 +48,11 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::post('tools/reorder', [ToolController::class, 'reorder'])->name('tools.reorder');
     Route::post('certificates/reorder', [CertificateController::class, 'reorder'])->name('certificates.reorder');
     Route::post('experiences/reorder', [ExperienceController::class, 'reorder'])->name('experiences.reorder');
+    Route::post('courses/reorder', [CourseController::class, 'reorder'])->name('courses.reorder');
+    Route::post('courses/upload-image', [CourseController::class, 'uploadBlockImage'])->name('courses.upload-image');
 
     Route::resource('categories', CategoryController::class);
+    Route::resource('courses', CourseController::class);
     Route::resource('projects', ProjectController::class);
     Route::resource('tools', ToolController::class);
     Route::resource('certificates', CertificateController::class);

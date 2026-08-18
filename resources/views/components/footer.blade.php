@@ -10,6 +10,7 @@
         ['href' => '#tentang', 'label' => 'About', 'tKey' => 'navAbout'],
         ['href' => '#skills', 'label' => 'Skills', 'tKey' => 'navSkills'],
         ['href' => '#proyek', 'label' => 'Projects', 'tKey' => 'navProjects'],
+        ['href' => route('course.index'), 'label' => 'Course', 'tKey' => 'navCourse', 'external' => true],
         ['href' => '#certificates', 'label' => 'Certificates', 'tKey' => 'navCertificates'],
         ['href' => '#kontak', 'label' => 'Contact', 'tKey' => 'navContact'],
     ];
@@ -43,10 +44,16 @@
                 <ul class="space-y-3.5">
                     @foreach ($quickLinks as $link)
                         <li>
-                            <a href="{{ $link['href'] }}" @click.prevent="scrollToSection($event, '{{ $link['href'] }}')"
-                               class="text-sm hover:text-white transition-colors duration-200">
-                                <span x-text="t('{{ $link['tKey'] }}')">{{ $link['label'] }}</span>
-                            </a>
+                            @if (! empty($link['external']))
+                                <a href="{{ $link['href'] }}" class="text-sm hover:text-white transition-colors duration-200">
+                                    <span x-text="t('{{ $link['tKey'] }}')">{{ $link['label'] }}</span>
+                                </a>
+                            @else
+                                <a href="{{ $link['href'] }}" @click.prevent="scrollToSection($event, '{{ $link['href'] }}')"
+                                   class="text-sm hover:text-white transition-colors duration-200">
+                                    <span x-text="t('{{ $link['tKey'] }}')">{{ $link['label'] }}</span>
+                                </a>
+                            @endif
                         </li>
                     @endforeach
                 </ul>

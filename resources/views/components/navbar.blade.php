@@ -1,12 +1,12 @@
 @php
     $menuItems = [
         ['id' => 'beranda', 'tKey' => 'navHome', 'label' => 'Home', 'href' => '#beranda', 'icon' => 'ri-home-5-line'],
-        ['id' => 'tentang', 'tKey' => 'navAbout', 'label' => 'About', 'href' => '#tentang', 'icon' => 'ri-user-line'],
         ['id' => 'skills', 'tKey' => 'navSkills', 'label' => 'Skills', 'href' => '#skills', 'icon' => 'ri-tools-line'],
         ['id' => 'proyek', 'tKey' => 'navProjects', 'label' => 'Projects', 'href' => '#proyek', 'icon' => 'ri-folder-open-line'],
         ['id' => 'experiences', 'tKey' => 'navExperiences', 'label' => 'Experiences', 'href' => '#experiences', 'icon' => 'ri-briefcase-line'],
         ['id' => 'certificates', 'tKey' => 'navCertificates', 'label' => 'Certificates', 'href' => '#certificates', 'icon' => 'ri-award-line'],
         ['id' => 'kontak', 'tKey' => 'navContact', 'label' => 'Contact', 'href' => '#kontak', 'icon' => 'ri-chat-3-line'],
+        ['id' => 'course', 'tKey' => 'navCourse', 'label' => 'Course', 'href' => route('course.index'), 'icon' => 'ri-book-open-line', 'external' => true],
     ];
 
     $langBtnBase = 'h-9 flex items-center justify-center text-xs font-bold cursor-pointer transition-all duration-300 select-none';
@@ -30,22 +30,38 @@
                 <span class="text-cyan-500 dark:text-cyan-400">.</span>
             </a>
 
-            <div class="flex items-center gap-2 lg:gap-4">
-                @foreach($menuItems as $item)
-                    <a href="{{ $item['href'] }}" @click.prevent="scrollToSection($event, '{{ $item['href'] }}')"
-                       class="relative px-3 py-4 text-xs font-semibold uppercase tracking-wider transition-all duration-300 group"
-                       :class="active === '{{ $item['id'] }}'
-                            ? 'text-cyan-500 dark:text-cyan-400'
-                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'">
-                        <span x-text="t('{{ $item['tKey'] }}')">{{ $item['label'] }}</span>
-                        <span class="absolute bottom-2 left-3 right-3 h-0.5 bg-cyan-500 dark:bg-cyan-400 rounded-full transition-all duration-300"
-                              :class="active === '{{ $item['id'] }}'
-                                    ? 'opacity-100 scale-x-100'
-                                    : 'opacity-0 scale-x-0 group-hover:opacity-50 group-hover:scale-x-75'"></span>
-                    </a>
-                @endforeach
+            <div class="flex items-center gap-2 lg:gap-4 min-w-0">
+                <div class="flex items-center gap-2 lg:gap-4 overflow-x-auto scrollbar-none">
+                    @foreach($menuItems as $item)
+                        @if (! empty($item['external']))
+                            <a href="{{ $item['href'] }}"
+                               class="relative px-3 py-4 text-xs font-semibold uppercase tracking-wider transition-all duration-300 group shrink-0"
+                               :class="active === '{{ $item['id'] }}'
+                                    ? 'text-cyan-500 dark:text-cyan-400'
+                                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'">
+                                <span x-text="t('{{ $item['tKey'] }}')">{{ $item['label'] }}</span>
+                                <span class="absolute bottom-2 left-3 right-3 h-0.5 bg-cyan-500 dark:bg-cyan-400 rounded-full transition-all duration-300"
+                                      :class="active === '{{ $item['id'] }}'
+                                            ? 'opacity-100 scale-x-100'
+                                            : 'opacity-0 scale-x-0 group-hover:opacity-50 group-hover:scale-x-75'"></span>
+                            </a>
+                        @else
+                            <a href="{{ $item['href'] }}" @click.prevent="scrollToSection($event, '{{ $item['href'] }}')"
+                               class="relative px-3 py-4 text-xs font-semibold uppercase tracking-wider transition-all duration-300 group shrink-0"
+                               :class="active === '{{ $item['id'] }}'
+                                    ? 'text-cyan-500 dark:text-cyan-400'
+                                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'">
+                                <span x-text="t('{{ $item['tKey'] }}')">{{ $item['label'] }}</span>
+                                <span class="absolute bottom-2 left-3 right-3 h-0.5 bg-cyan-500 dark:bg-cyan-400 rounded-full transition-all duration-300"
+                                      :class="active === '{{ $item['id'] }}'
+                                            ? 'opacity-100 scale-x-100'
+                                            : 'opacity-0 scale-x-0 group-hover:opacity-50 group-hover:scale-x-75'"></span>
+                            </a>
+                        @endif
+                    @endforeach
+                </div>
 
-                <div class="flex items-center rounded-lg border border-slate-200 dark:border-white/10 bg-slate-200/60 dark:bg-slate-950/40 overflow-hidden shadow-inner ml-1"
+                <div class="flex items-center rounded-lg border border-slate-200 dark:border-white/10 bg-slate-200/60 dark:bg-slate-950/40 overflow-hidden shadow-inner ml-1 shrink-0"
                      role="group" :aria-label="t('toggleLanguage')">
                     <button @click="$store.lang.set('en')" :class="$store.lang.current === 'en' ? '{{ $langBtnActive }}' : '{{ $langBtnInactive }}'"
                             class="{{ $langBtnBase }} px-2" aria-label="English">EN</button>
@@ -69,14 +85,25 @@
 
             <div class="flex items-center gap-1 flex-1 overflow-x-auto scrollbar-none">
                 @foreach($menuItems as $item)
-                    <a href="{{ $item['href'] }}" @click.prevent="scrollToSection($event, '{{ $item['href'] }}')"
-                       class="flex flex-col items-center justify-center p-1.5 min-w-14.5 rounded-xl transition-all duration-300"
-                       :class="active === '{{ $item['id'] }}'
-                            ? 'text-cyan-500 dark:text-cyan-400 bg-slate-200/70 dark:bg-white/5'
-                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'">
-                        <i class="{{ $item['icon'] }} text-base mb-0.5"></i>
-                        <span class="text-[9px] font-medium tracking-wide whitespace-nowrap" x-text="t('{{ $item['tKey'] }}')">{{ $item['label'] }}</span>
-                    </a>
+                    @if (! empty($item['external']))
+                        <a href="{{ $item['href'] }}"
+                           class="flex flex-col items-center justify-center p-1.5 min-w-14.5 rounded-xl transition-all duration-300 shrink-0"
+                           :class="active === '{{ $item['id'] }}'
+                                ? 'text-cyan-500 dark:text-cyan-400 bg-slate-200/70 dark:bg-white/5'
+                                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'">
+                            <i class="{{ $item['icon'] }} text-base mb-0.5"></i>
+                            <span class="text-[9px] font-medium tracking-wide whitespace-nowrap" x-text="t('{{ $item['tKey'] }}')">{{ $item['label'] }}</span>
+                        </a>
+                    @else
+                        <a href="{{ $item['href'] }}" @click.prevent="scrollToSection($event, '{{ $item['href'] }}')"
+                           class="flex flex-col items-center justify-center p-1.5 min-w-14.5 rounded-xl transition-all duration-300 shrink-0"
+                           :class="active === '{{ $item['id'] }}'
+                                ? 'text-cyan-500 dark:text-cyan-400 bg-slate-200/70 dark:bg-white/5'
+                                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'">
+                            <i class="{{ $item['icon'] }} text-base mb-0.5"></i>
+                            <span class="text-[9px] font-medium tracking-wide whitespace-nowrap" x-text="t('{{ $item['tKey'] }}')">{{ $item['label'] }}</span>
+                        </a>
+                    @endif
                 @endforeach
             </div>
 

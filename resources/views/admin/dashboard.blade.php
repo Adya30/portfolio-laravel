@@ -4,13 +4,14 @@
 @section('page_title', 'Dashboard')
 
 @section('content')
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-8">
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-5 mb-8">
         @php
             $stats = [
                 ['label' => 'Total Project', 'value' => $projectsCount, 'icon' => 'ri-folder-open-line', 'route' => 'admin.projects.index', 'color' => 'text-accent bg-accent/10'],
                 ['label' => 'Total Tools', 'value' => $toolsCount, 'icon' => 'ri-tools-line', 'route' => 'admin.tools.index', 'color' => 'text-cyan-600 bg-cyan-500/10'],
                 ['label' => 'Total Sertifikat', 'value' => $certificatesCount, 'icon' => 'ri-award-line', 'route' => 'admin.certificates.index', 'color' => 'text-amber-600 bg-amber-500/10'],
                 ['label' => 'Total Pengalaman', 'value' => $experiencesCount, 'icon' => 'ri-briefcase-line', 'route' => 'admin.experiences.index', 'color' => 'text-purple-600 bg-purple-500/10'],
+                ['label' => 'Total Materi', 'value' => $coursesCount, 'icon' => 'ri-book-open-line', 'route' => 'admin.courses.index', 'color' => 'text-emerald-600 bg-emerald-500/10'],
             ];
         @endphp
 
@@ -63,6 +64,7 @@
                         ['label' => 'Tambah Tool', 'icon' => 'ri-add-circle-line', 'route' => 'admin.tools.create'],
                         ['label' => 'Tambah Sertifikat', 'icon' => 'ri-add-circle-line', 'route' => 'admin.certificates.create'],
                         ['label' => 'Tambah Pengalaman', 'icon' => 'ri-add-circle-line', 'route' => 'admin.experiences.create'],
+                        ['label' => 'Tambah Materi', 'icon' => 'ri-add-circle-line', 'route' => 'admin.courses.create'],
                         ['label' => 'Edit Profil', 'icon' => 'ri-user-settings-line', 'route' => 'admin.profile.edit'],
                         ['label' => 'Lihat Website', 'icon' => 'ri-eye-line', 'route' => 'landing', 'external' => true],
                     ];

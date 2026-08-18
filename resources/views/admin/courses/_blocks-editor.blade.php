@@ -1,0 +1,295 @@
+@php
+    $blocksValue = old('konten', ($course ?? null)?->konten ?? []);
+    if (is_string($blocksValue)) {
+        $blocksValue = json_decode($blocksValue, true) ?: [];
+    }
+    $blocksValue = is_array($blocksValue) ? $blocksValue : [];
+@endphp
+
+<div x-data="courseContentEditor(@js($blocksValue), @js(route('admin.courses.upload-image')))" class="space-y-6">
+    <input type="hidden" name="konten" x-ref="kontenInput" value="{{ json_encode($blocksValue) }}">
+    <div x-effect="$refs.kontenInput.value = JSON.stringify(blocks)"></div>
+
+    {{-- Microsoft Word / Blogger Document Worksheet Paper --}}
+    <div class="bg-white border border-slate-300 rounded-2xl shadow-xl p-6 sm:p-10 max-w-4xl mx-auto space-y-5 min-h-[550px] relative">
+        {{-- Paper Top Ruler Line --}}
+        <div class="border-b-2 border-dashed border-slate-200 pb-3 flex items-center justify-between text-xs text-slate-400 font-mono select-none">
+            <span>[ Halaman Dokumen Materi ]</span>
+            <span>Word & Blogger Worksheet Canvas</span>
+        </div>
+
+        <template x-for="(block, i) in blocks" :key="i">
+            <div class="group relative">
+
+                {{-- Document Block Element --}}
+                <div :id="'blok-' + i"
+                     draggable="true"
+                     @dragstart="dragStart(i, $event)"
+                     @dragover="dragOver(i, $event)"
+                     @drop="dropBlock(i, $event)"
+                     @dragend="dragEnd"
+                     :class="draggedIndex === i ? 'opacity-40 border-dashed border-accent' : 'border-slate-200/90'"
+                     class="bg-white border rounded-2xl p-4 sm:p-5 shadow-sm space-y-3 transition-all hover:border-accent/40">
+
+                    {{-- Element Header & Actions --}}
+                    <div class="flex items-center justify-between gap-3 border-b border-slate-100 pb-2.5">
+                        <div class="flex items-center gap-2">
+                            <span class="cursor-grab active:cursor-grabbing text-slate-400 hover:text-slate-700 transition-colors p-1"
+                                  title="Tahan & geser untuk memindahkan posisi elemen ini">
+                                <i class="ri-drag-move-2-line text-base"></i>
+                            </span>
+                            <span class="text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-lg bg-slate-100 text-slate-700 border border-slate-200"
+                                  x-text="blockLabel(block.type)"></span>
+                            <span class="text-xs text-slate-400 font-semibold">#<span x-text="i + 1"></span></span>
+                        </div>
+
+                        {{-- Action Buttons --}}
+                        <div class="flex items-center gap-1">
+                            <button type="button" @click="moveBlock(i, -1)"
+                                    class="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer" title="Naik">
+                                <i class="ri-arrow-up-line text-sm"></i>
+                            </button>
+                            <button type="button" @click="moveBlock(i, 1)"
+                                    class="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer" title="Turun">
+                                <i class="ri-arrow-down-line text-sm"></i>
+                            </button>
+                            <button type="button" @click="removeBlock(i)"
+                                    class="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer" title="Hapus">
+                                <i class="ri-delete-bin-line text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    {{-- 1. Subbab / Heading --}}
+                    <template x-if="block.type === 'subbab'">
+                        <div class="pt-1">
+                            <label class="block text-xs font-bold text-slate-500 mb-1.5">Judul Subbab (Subjudul Utama)</label>
+                            <input type="text" x-model="block.judul" placeholder="Tulis judul subbab di sini..."
+                                   class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-base font-poppins font-bold text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/15 transition-all">
+                        </div>
+                    </template>
+
+                    {{-- 2. Paragraf / Text Block with Formatting Bar --}}
+                    <template x-if="block.type === 'paragraf'">
+                        <div class="pt-1 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <label class="block text-xs font-bold text-slate-500">Isi Paragraf / Penjelasan Dokumen</label>
+
+                                {{-- Mini Text Formatting Toolbar --}}
+                                <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs">
+                                    <button type="button" @click="applyFormat(i, 'bold')" class="px-2 py-0.5 font-bold hover:bg-white rounded" title="Tebal (Bold)">B</button>
+                                    <button type="button" @click="applyFormat(i, 'italic')" class="px-2 py-0.5 italic hover:bg-white rounded" title="Miring (Italic)">I</button>
+                                    <button type="button" @click="applyFormat(i, 'underline')" class="px-2 py-0.5 underline hover:bg-white rounded" title="Garis Bawah">U</button>
+                                    <button type="button" @click="applyFormat(i, 'bullet')" class="px-2 py-0.5 hover:bg-white rounded" title="Daftar Bullet">• List</button>
+                                    <button type="button" @click="applyFormat(i, 'number')" class="px-2 py-0.5 hover:bg-white rounded" title="Daftar Angka">1. List</button>
+                                    <button type="button" @click="applyFormat(i, 'quote')" class="px-2 py-0.5 hover:bg-white rounded" title="Kutipan">” Quote</button>
+                                </div>
+                            </div>
+                            <textarea x-model="block.teks" rows="5" placeholder="Tulis isi paragraf / penjelasan di lembar kerja ini..."
+                                      class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm text-slate-800 leading-relaxed placeholder:text-slate-400 outline-none focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/15 transition-all"></textarea>
+                        </div>
+                    </template>
+
+                    {{-- 3. Gambar / Image Upload --}}
+                    <template x-if="block.type === 'gambar'">
+                        <div class="space-y-4 pt-1">
+                            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2">
+                                <label class="block text-xs font-bold text-slate-500">Gambar Ilustrasi Dokumen</label>
+                                <div class="flex items-center gap-2">
+                                    <label class="text-xs font-semibold text-slate-600">Ukuran Tampilan Gambar:</label>
+                                    <select x-model="block.ukuran"
+                                            class="rounded-xl border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-800 outline-none focus:border-accent shadow-2xs">
+                                        <option value="penuh">Penuh / Max (100%)</option>
+                                        <option value="besar">Besar (75%)</option>
+                                        <option value="sedang">Sedang (50%)</option>
+                                        <option value="kecil">Kecil / Ringkas (25%)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="flex flex-col sm:flex-row items-start gap-4">
+                                <div class="w-full sm:w-48 h-32 rounded-2xl border border-slate-200 bg-slate-50 flex items-center justify-center overflow-hidden shrink-0 shadow-inner relative">
+                                    <template x-if="block.url">
+                                        <img :src="block.url" alt="Pratinjau gambar" class="w-full h-full object-cover">
+                                    </template>
+                                    <template x-if="!block.url">
+                                        <div class="text-center p-3 text-slate-400">
+                                            <i class="ri-image-add-line text-3xl block mb-1 text-slate-300"></i>
+                                            <span class="text-[11px]">Belum ada gambar</span>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="flex-1 min-w-0 space-y-3 w-full">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-600 mb-1">Unggah dari Komputer (Khusus WebP atau SVG)</label>
+                                        <input type="file" accept=".webp,.svg,image/webp,image/svg+xml"
+                                               @change="uploadImage(i, $event.target.files[0])"
+                                               class="block w-full text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-accent/10 file:text-xs file:font-bold file:text-accent hover:file:bg-accent/20 cursor-pointer">
+                                        <p x-show="uploadingIndex === i" x-cloak class="text-xs text-accent font-semibold mt-1">
+                                            <i class="ri-loader-4-line animate-spin"></i> Mengunggah gambar...
+                                        </p>
+                                        <p x-show="uploadError" x-cloak class="text-xs text-red-500 font-medium mt-1" x-text="uploadError"></p>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-600 mb-1">Atau Tempel URL Gambar</label>
+                                        <input type="text" x-model="block.url" placeholder="https://..."
+                                               class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2 text-xs text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent focus:bg-white transition-all">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Caption / Keterangan Gambar (Opsional)</label>
+                                <input type="text" x-model="block.caption" placeholder="Contoh: Ilustrasi alur kerja controller dan model di Laravel"
+                                       class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2 text-xs text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent focus:bg-white transition-all">
+                            </div>
+                        </div>
+                    </template>
+
+                    {{-- 4. Kode / Code Block --}}
+                    <template x-if="block.type === 'kode'">
+                        <div class="pt-1">
+                            <div class="rounded-2xl border border-slate-700 overflow-hidden bg-[#0d1117] shadow-md">
+                                <div class="flex items-center justify-between gap-3 px-4 py-2.5 bg-[#161b22] border-b border-slate-800">
+                                    <div class="flex items-center gap-2">
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-[#ff5f56]"></span>
+                                            <span class="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]"></span>
+                                            <span class="w-2.5 h-2.5 rounded-full bg-[#27c93f]"></span>
+                                        </div>
+                                        <span class="text-[11px] font-mono text-slate-400 font-bold uppercase tracking-wider ml-1">Editor Kode Snippet (VS Code Dark Theme)</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <label class="text-[11px] font-medium text-slate-400">Bahasa:</label>
+                                        <select x-model="block.bahasa"
+                                                class="rounded-lg border border-slate-700 bg-slate-800 text-slate-200 px-2.5 py-1 text-xs font-mono outline-none focus:border-accent">
+                                            <option value="php">PHP</option>
+                                            <option value="javascript">JavaScript</option>
+                                            <option value="typescript">TypeScript</option>
+                                            <option value="html">HTML</option>
+                                            <option value="css">CSS</option>
+                                            <option value="sql">SQL</option>
+                                            <option value="python">Python</option>
+                                            <option value="bash">Bash / Shell</option>
+                                            <option value="json">JSON</option>
+                                            <option value="csharp">C#</option>
+                                            <option value="java">Java</option>
+                                            <option value="plaintext">Plain Text</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <textarea x-model="block.kode"
+                                          @keydown.tab.prevent="insertTab($event)"
+                                          rows="8"
+                                          placeholder="// Tulis atau tempel contoh kode di sini (Tekan Tab untuk mentab/indentasi)..."
+                                          class="w-full bg-[#0d1117] p-4 text-xs sm:text-sm font-mono text-slate-100 placeholder:text-slate-600 outline-none focus:ring-1 focus:ring-accent/40 tab-size-4 leading-relaxed whitespace-pre overflow-x-auto custom-scrollbar border-0 resize-y"></textarea>
+                            </div>
+                        </div>
+                    </template>
+                    {{-- 5. Link / Sisipan Link --}}
+                    <template x-if="block.type === 'link'">
+                        <div class="pt-1 space-y-3">
+                            <label class="block text-xs font-bold text-slate-500 mb-1">Sisipan Link / Referensi</label>
+                            <div class="space-y-2">
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-500 mb-1">URL / Tautan</label>
+                                    <input type="url" x-model="block.href" placeholder="https://contoh.com/halaman"
+                                           class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/15 transition-all">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-500 mb-1">Label Tombol / Teks Anchor</label>
+                                    <input type="text" x-model="block.label" placeholder="Contoh: Lihat Dokumentasi Resmi Laravel"
+                                           class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/15 transition-all">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-semibold text-slate-500 mb-1">Deskripsi Singkat (Opsional)</label>
+                                    <input type="text" x-model="block.desc" placeholder="Contoh: Referensi untuk mempelajari lebih lanjut tentang Eloquent ORM"
+                                           class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/15 transition-all">
+                                </div>
+                            </div>
+                            {{-- Live Preview --}}
+                            <div class="mt-2 rounded-xl border border-accent/30 bg-accent/5 p-3.5 flex items-start gap-3">
+                                <div class="shrink-0 w-8 h-8 rounded-lg bg-accent/15 text-accent flex items-center justify-center mt-0.5">
+                                    <i class="ri-external-link-line text-base"></i>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-semibold text-accent truncate" x-text="block.label || 'Label Link (belum diisi)'"></p>
+                                    <p class="text-xs text-slate-500 truncate mt-0.5" x-text="block.href || 'https://...' "></p>
+                                    <p class="text-xs text-slate-400 mt-1" x-show="block.desc" x-text="block.desc"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+
+                    {{-- 6. Pembatas / Separator --}}
+                    <template x-if="block.type === 'pembatas'">
+                        <div class="pt-1 space-y-3">
+                            <label class="block text-xs font-bold text-slate-500 mb-1">Pembatas / Pemisah Konten</label>
+                            <div class="flex items-center gap-3">
+                                <label class="text-xs font-semibold text-slate-600">Gaya Pembatas:</label>
+                                <select x-model="block.style"
+                                        class="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 outline-none focus:border-accent shadow-2xs">
+                                    <option value="garis">Garis Tipis</option>
+                                    <option value="garis-tebal">Garis Tebal</option>
+                                    <option value="dots">Titik-Titik (· · ·)</option>
+                                    <option value="spasi">Spasi Kosong</option>
+                                </select>
+                            </div>
+                            {{-- Preview --}}
+                            <div class="py-3">
+                                <template x-if="block.style === 'garis'">
+                                    <hr class="border-slate-300">
+                                </template>
+                                <template x-if="block.style === 'garis-tebal'">
+                                    <hr class="border-2 border-slate-400 rounded">
+                                </template>
+                                <template x-if="block.style === 'dots'">
+                                    <div class="text-center text-slate-400 text-lg tracking-[0.5em] select-none">· · ·</div>
+                                </template>
+                                <template x-if="block.style === 'spasi'">
+                                    <div class="h-8 rounded-lg border border-dashed border-slate-200 bg-slate-50 flex items-center justify-center">
+                                        <span class="text-[10px] text-slate-300 select-none">SPASI KOSONG</span>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                {{-- In-Between Quick Insert Bar (shows on hover) --}}
+                <div class="py-2 flex items-center justify-center opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
+                    <div class="inline-flex items-center gap-1 bg-white border border-slate-300 rounded-full px-3 py-1 shadow-md text-xs font-bold text-slate-700">
+                        <span class="text-[10px] text-slate-400 mr-1 uppercase">Sisipkan di sini:</span>
+                        <button type="button" @click="addBlockAt('subbab', i + 1)" class="px-2 py-0.5 rounded-md hover:bg-slate-100 hover:text-accent transition-colors">+ Subbab</button>
+                        <button type="button" @click="addBlockAt('paragraf', i + 1)" class="px-2 py-0.5 rounded-md hover:bg-slate-100 hover:text-accent transition-colors">+ Paragraf</button>
+                        <button type="button" @click="addBlockAt('gambar', i + 1)" class="px-2 py-0.5 rounded-md hover:bg-slate-100 hover:text-accent transition-colors">+ Gambar</button>
+                        <button type="button" @click="addBlockAt('kode', i + 1)" class="px-2 py-0.5 rounded-md hover:bg-slate-100 hover:text-accent transition-colors">+ Kode</button>
+                        <button type="button" @click="addBlockAt('link', i + 1)" class="px-2 py-0.5 rounded-md hover:bg-slate-100 hover:text-accent transition-colors">+ Link</button>
+                        <button type="button" @click="addBlockAt('pembatas', i + 1)" class="px-2 py-0.5 rounded-md hover:bg-slate-100 hover:text-accent transition-colors">+ Pembatas</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        {{-- Empty Lembar Kerja State --}}
+        <div x-show="blocks.length === 0" x-cloak
+             class="bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl p-12 text-center text-slate-400 space-y-3">
+            <div class="w-14 h-14 mx-auto rounded-2xl bg-accent/10 text-accent flex items-center justify-center text-2xl">
+                <i class="ri-file-text-line"></i>
+            </div>
+            <h4 class="font-poppins font-bold text-slate-700 text-base">Lembar Kerja Dokumen Kosong</h4>
+            <p class="text-xs text-slate-400 max-w-md mx-auto">
+                Gunakan toolbar di atas untuk menyisipkan subbab, teks penjelasan, gambar ilustrasi, atau contoh kode berwarna ke dalam lembar kerja.
+            </p>
+            <div class="pt-2 flex flex-wrap items-center justify-center gap-2">
+                <button type="button" @click="addBlock('subbab')" class="px-3 py-1.5 rounded-xl bg-accent text-white text-xs font-bold hover:bg-blue-600 transition-colors">+ Subbab</button>
+                <button type="button" @click="addBlock('paragraf')" class="px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-colors">+ Paragraf</button>
+                <button type="button" @click="addBlock('gambar')" class="px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-colors">+ Gambar</button>
+                <button type="button" @click="addBlock('kode')" class="px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-colors">+ Kode</button>
+                <button type="button" @click="addBlock('link')" class="px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-colors">+ Link</button>
+                <button type="button" @click="addBlock('pembatas')" class="px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-colors">+ Pembatas</button>
+            </div>
+        </div>
+    </div>
+</div>

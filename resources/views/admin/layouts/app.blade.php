@@ -2,6 +2,7 @@
     $adminNav = [
         ['route' => 'admin.dashboard', 'active' => 'admin.dashboard', 'label' => 'Dashboard', 'icon' => 'ri-dashboard-line'],
         ['route' => 'admin.projects.index', 'active' => 'admin.projects', 'label' => 'Kelola Project', 'icon' => 'ri-folder-open-line'],
+        ['route' => 'admin.courses.index', 'active' => 'admin.courses', 'label' => 'Materi', 'icon' => 'ri-book-open-line'],
         ['route' => 'admin.categories.index', 'active' => 'admin.categories', 'label' => 'Kategori', 'icon' => 'ri-price-tag-3-line'],
         ['route' => 'admin.tools.index', 'active' => 'admin.tools', 'label' => 'Tools', 'icon' => 'ri-tools-line'],
         ['route' => 'admin.certificates.index', 'active' => 'admin.certificates', 'label' => 'Sertifikat', 'icon' => 'ri-award-line'],

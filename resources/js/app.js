@@ -1,6 +1,35 @@
 import 'remixicon/fonts/remixicon.css';
 import 'animate.css/animate.min.css';
 import 'aos/dist/aos.css';
+// highlight.js — only the languages used by the course code blocks, to keep
+// the bundle small (registering the full package would add ~900 kB).
+import hljs from 'highlight.js/lib/core';
+import 'highlight.js/styles/atom-one-dark.min.css';
+import php from 'highlight.js/lib/languages/php';
+import javascript from 'highlight.js/lib/languages/javascript';
+import typescript from 'highlight.js/lib/languages/typescript';
+import xml from 'highlight.js/lib/languages/xml';
+import css from 'highlight.js/lib/languages/css';
+import sql from 'highlight.js/lib/languages/sql';
+import python from 'highlight.js/lib/languages/python';
+import bash from 'highlight.js/lib/languages/bash';
+import json from 'highlight.js/lib/languages/json';
+import csharp from 'highlight.js/lib/languages/csharp';
+import java from 'highlight.js/lib/languages/java';
+import plaintext from 'highlight.js/lib/languages/plaintext';
+
+hljs.registerLanguage('php', php);
+hljs.registerLanguage('javascript', javascript);
+hljs.registerLanguage('typescript', typescript);
+hljs.registerLanguage('html', xml);
+hljs.registerLanguage('css', css);
+hljs.registerLanguage('sql', sql);
+hljs.registerLanguage('python', python);
+hljs.registerLanguage('bash', bash);
+hljs.registerLanguage('json', json);
+hljs.registerLanguage('csharp', csharp);
+hljs.registerLanguage('java', java);
+hljs.registerLanguage('plaintext', plaintext);
 import AOS from 'aos';
 import Alpine from 'alpinejs';
 import './image-uploader';
@@ -31,6 +60,7 @@ const i18n = {
         navProjects: 'Projects',
         navExperiences: 'Experiences',
         navCertificates: 'Certificates',
+        navCourse: 'Course',
         navContact: 'Contact',
         downloadCv: 'Download CV',
         viewProjects: 'View Projects',
@@ -97,6 +127,21 @@ const i18n = {
         experiencesBreadcrumb: 'Experiences',
         certificatesBreadcrumb: 'Certificates',
         toggleLanguage: 'Switch language',
+        course: 'Course',
+        courseTitle: 'Learning Materials',
+        courseSubtitle: 'Collection of learning materials to sharpen your skills in web development, programming, and UI design.',
+        material: 'Material',
+        noCoursesYet: 'No materials have been added yet.',
+        backToHome: 'Back to Home',
+        backToOverview: 'Back to Overview',
+        chapter: 'Chapter',
+        of: 'of',
+        previousChapter: 'Previous Chapter',
+        nextChapter: 'Next Chapter',
+        copy: 'Copy',
+        copied: 'Copied!',
+        toggleSidebar: 'Toggle sidebar',
+        onThisPage: 'On This Page',
     },
     id: {
         navHome: 'Beranda',
@@ -105,6 +150,7 @@ const i18n = {
         navProjects: 'Proyek',
         navExperiences: 'Pengalaman',
         navCertificates: 'Sertifikat',
+        navCourse: 'Kursus',
         navContact: 'Kontak',
         downloadCv: 'Unduh CV',
         viewProjects: 'Lihat Proyek',
@@ -171,6 +217,21 @@ const i18n = {
         experiencesBreadcrumb: 'Pengalaman',
         certificatesBreadcrumb: 'Sertifikat',
         toggleLanguage: 'Ganti bahasa',
+        course: 'Kursus',
+        courseTitle: 'Materi Pembelajaran',
+        courseSubtitle: 'Kumpulan materi belajar untuk mengasah keahlianmu di bidang pengembangan web, pemrograman, dan desain UI.',
+        material: 'Materi',
+        noCoursesYet: 'Belum ada materi yang ditambahkan.',
+        backToHome: 'Kembali ke Beranda',
+        backToOverview: 'Kembali ke Daftar Materi',
+        chapter: 'Bab',
+        of: 'dari',
+        previousChapter: 'Bab Sebelumnya',
+        nextChapter: 'Bab Berikutnya',
+        copy: 'Salin',
+        copied: 'Tersalin!',
+        toggleSidebar: 'Buka/Tutup sidebar',
+        onThisPage: 'Di Halaman Ini',
     },
 };
 
@@ -204,6 +265,18 @@ Alpine.store('lang', {
 Alpine.data('app', () => ({
     dark: false,
     scrolled: false,
+
+    // Course detail sidebar: hidden by default on mobile (slide-in drawer),
+    // open by default on desktop, where the collapsed state is persisted.
+    sidebarOpen: (() => {
+        try {
+            return window.matchMedia('(min-width: 1024px)').matches
+                ? localStorage.getItem('courseSidebar') !== 'closed'
+                : false;
+        } catch (e) {
+            return false;
+        }
+    })(),
     active: 'beranda',
     tools,
     projects,
@@ -263,6 +336,15 @@ Alpine.data('app', () => ({
         // AOS animations
         AOS.init({ once: true, duration: 800, offset: 40 });
 
+        // Code block syntax highlighting via highlight.js
+        this.$nextTick(() => {
+            document.querySelectorAll('pre code').forEach((el) => {
+                try {
+                    hljs.highlightElement(el);
+                } catch (e) {}
+            });
+        });
+
         // When arriving with a URL hash (e.g. /#proyek from a detail page
         // navbar click), scroll to that section once the page is ready.
         if (window.location.hash) {
@@ -289,6 +371,17 @@ Alpine.data('app', () => ({
         this.dark = !this.dark;
         document.documentElement.classList.toggle('dark', this.dark);
         localStorage.setItem('theme', this.dark ? 'dark' : 'light');
+    },
+
+    // Open/close the course detail sidebar. On mobile it's a slide-in drawer;
+    // on desktop the sidebar collapses to give the content full width.
+    toggleSidebar() {
+        this.sidebarOpen = !this.sidebarOpen;
+        try {
+            if (window.matchMedia('(min-width: 1024px)').matches) {
+                localStorage.setItem('courseSidebar', this.sidebarOpen ? 'open' : 'closed');
+            }
+        } catch (e) {}
     },
 
     /* --- Language helpers --- */
@@ -322,6 +415,264 @@ Alpine.data('app', () => ({
             // detail pages) — go to the landing page and scroll to the section.
             window.location.href = window.landingUrl + href;
         }
+    },
+
+    // Copy a code block's content to the clipboard (used by the course
+    // detail page code blocks).
+    // The button lives in the header bar, so we walk up to the outer
+    // code-block wrapper (closest div with overflow-hidden) and then
+    // find the <code> element inside it.
+    copyCode(button) {
+        // Walk up to the outermost code-block container div, then find code inside.
+        const wrapper = button.closest('div[class*="rounded-2xl"]');
+        const codeEl  = wrapper ? wrapper.querySelector('pre code') : null;
+        const text    = codeEl ? (codeEl.innerText || codeEl.textContent || '') : '';
+
+        if (text) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).catch(() => {
+                    // Fallback for browsers that deny clipboard without interaction.
+                    this._fallbackCopy(text);
+                });
+            } else {
+                this._fallbackCopy(text);
+            }
+        }
+
+        const icon     = button.querySelector('i');
+        const label    = button.querySelector('span');
+        const original = label ? label.textContent : '';
+        if (icon)  icon.className    = 'ri-check-line';
+        if (label) label.textContent = this.t('copied') || 'Tersalin!';
+        setTimeout(() => {
+            if (icon)  icon.className    = 'ri-file-copy-line';
+            if (label) label.textContent = original;
+        }, 2000);
+    },
+
+    _fallbackCopy(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        try { document.execCommand('copy'); } catch (_) {}
+        document.body.removeChild(ta);
+    },
+}));
+
+/* ============================================================
+   COURSE CONTENT EDITOR — admin block builder for course
+   materials (subbab, paragraf, gambar, kode). The block list is
+   serialized to the hidden `konten` input as JSON on submit.
+   ============================================================ */
+Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
+    blocks: Array.isArray(initialBlocks) ? initialBlocks : [],
+    uploadUrl,
+    uploadingIndex: null,
+    uploadError: '',
+    draggedIndex: null,
+
+    init() {
+        // When arriving from the admin subbab list (edit#blok-{index}), scroll
+        // to that block once the x-for items have been rendered.
+        this.$nextTick(() => {
+            const hash = window.location.hash;
+            if (!hash) return;
+            const el = this.$el.querySelector(hash);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    },
+
+    insertTab(e) {
+        const textarea = e.target;
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const value = textarea.value;
+        textarea.value = value.substring(0, start) + "    " + value.substring(end);
+        textarea.selectionStart = textarea.selectionEnd = start + 4;
+        textarea.dispatchEvent(new Event('input'));
+    },
+
+    applyFormat(index, fmt) {
+        if (!this.blocks[index] || this.blocks[index].type !== 'paragraf') return;
+        let text = this.blocks[index].teks || '';
+        if (fmt === 'bold') text += ' **teks tebal**';
+        else if (fmt === 'italic') text += ' *teks miring*';
+        else if (fmt === 'underline') text += ' <u>teks garis bawah</u>';
+        else if (fmt === 'quote') text += '\n> Tulis kutipan di sini...';
+        else if (fmt === 'bullet') text += '\n- Poin 1\n- Poin 2';
+        else if (fmt === 'number') text += '\n1. Poin 1\n2. Poin 2';
+        this.blocks[index].teks = text;
+    },
+
+    blockLabel(type) {
+        return {
+            subbab: 'Subbab',
+            paragraf: 'Paragraf',
+            gambar: 'Gambar',
+            kode: 'Kode',
+            link: 'Sisipan Link',
+            pembatas: 'Pembatas',
+        }[type] || 'Blok';
+    },
+
+    addBlock(type) {
+        const base = { type };
+        if (type === 'subbab') {
+            base.judul = '';
+        } else if (type === 'paragraf') {
+            base.teks = '';
+        } else if (type === 'gambar') {
+            base.url = '';
+            base.caption = '';
+            base.ukuran = 'penuh';
+        } else if (type === 'kode') {
+            base.bahasa = 'php';
+            base.kode = '';
+        } else if (type === 'link') {
+            base.href = '';
+            base.label = '';
+            base.desc = '';
+        } else if (type === 'pembatas') {
+            base.style = 'garis';
+        }
+        this.blocks.push(base);
+    },
+
+    addBlockAt(type, index) {
+        const base = { type };
+        if (type === 'subbab') {
+            base.judul = '';
+        } else if (type === 'paragraf') {
+            base.teks = '';
+        } else if (type === 'gambar') {
+            base.url = '';
+            base.caption = '';
+            base.ukuran = 'penuh';
+        } else if (type === 'kode') {
+            base.bahasa = 'php';
+            base.kode = '';
+        } else if (type === 'link') {
+            base.href = '';
+            base.label = '';
+            base.desc = '';
+        } else if (type === 'pembatas') {
+            base.style = 'garis';
+        }
+        this.blocks.splice(index, 0, base);
+    },
+
+    removeBlock(index) {
+        this.blocks.splice(index, 1);
+    },
+
+    moveBlock(index, direction) {
+        const target = index + direction;
+        if (target < 0 || target >= this.blocks.length) return;
+        const [block] = this.blocks.splice(index, 1);
+        this.blocks.splice(target, 0, block);
+    },
+
+    // HTML5 Drag & Drop reordering for blocks
+    dragStart(index, e) {
+        this.draggedIndex = index;
+        if (e.dataTransfer) {
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', index);
+        }
+    },
+
+    dragOver(index, e) {
+        if (this.draggedIndex === null || this.draggedIndex === index) return;
+        e.preventDefault();
+    },
+
+    dropBlock(targetIndex, e) {
+        if (this.draggedIndex === null || this.draggedIndex === targetIndex) return;
+        e.preventDefault();
+        const [moved] = this.blocks.splice(this.draggedIndex, 1);
+        this.blocks.splice(targetIndex, 0, moved);
+        this.draggedIndex = null;
+    },
+
+    dragEnd() {
+        this.draggedIndex = null;
+    },
+
+    async uploadImage(index, file) {
+        if (!file) return;
+
+        const name = (file.name || '').toLowerCase();
+        const isWebp = file.type === 'image/webp' || name.endsWith('.webp');
+        const isSvg = file.type === 'image/svg+xml' || name.endsWith('.svg');
+
+        if (!isWebp && !isSvg) {
+            this.uploadError = 'Format gambar ditolak! Hanya file berformat WebP (.webp) atau SVG (.svg) yang diperbolehkan.';
+            return;
+        }
+
+        this.uploadError = '';
+        this.uploadingIndex = index;
+
+        try {
+            const formData = new FormData();
+            formData.append('gambar', file);
+
+            const res = await fetch(this.uploadUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                    'Accept': 'application/json',
+                },
+                body: formData,
+            });
+
+            const data = await res.json();
+            if (!res.ok || !data.url) {
+                throw new Error(data.error || 'Upload gagal');
+            }
+
+            this.blocks[index].url = data.url;
+        } catch (err) {
+            this.uploadError = err.message || 'Upload gambar gagal.';
+        } finally {
+            this.uploadingIndex = null;
+        }
+    },
+}));
+
+/* ============================================================
+   TOC SPY — highlights the current subbab in the right-side
+   "On This Page" navigation as the reader scrolls (course
+   detail page). Used by the right aside via x-data="tocSpy".
+   ============================================================ */
+Alpine.data('tocSpy', () => ({
+    active: '',
+
+    init() {
+        const ids = Array.from(this.$el.querySelectorAll('a[href^="#subbab-"]'))
+            .map((a) => a.getAttribute('href').slice(1));
+        const sections = ids.map((id) => document.getElementById(id)).filter(Boolean);
+        if (!sections.length || typeof IntersectionObserver === 'undefined') return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) this.active = entry.target.id;
+                });
+            },
+            // A heading counts as active when it enters the top band of the
+            // viewport (below the floating top bar), not when it's merely
+            // visible at the bottom of the screen.
+            { rootMargin: '-80px 0px -75% 0px', threshold: 0 }
+        );
+        sections.forEach((s) => observer.observe(s));
+    },
+
+    isActive(id) {
+        return this.active === id;
     },
 }));
 
@@ -563,47 +914,49 @@ Alpine.data('reorderTable', (url) => ({
     dragging: null,
 
     init() {
-        const tbody = this.$el;
-        if (!tbody) return;
+        const container = this.$el;
+        if (!container) return;
 
-        tbody.addEventListener('dragstart', (e) => {
-            const row = e.target.closest('tr[data-id]');
-            if (!row) return;
-            this.dragging = row;
-            row.classList.add('opacity-40');
+        container.addEventListener('dragstart', (e) => {
+            const item = e.target.closest('[data-id]');
+            if (!item) return;
+            this.dragging = item;
+            item.classList.add('opacity-40');
             e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/plain', row.dataset.id);
+            e.dataTransfer.setData('text/plain', item.dataset.id);
         });
 
-        tbody.addEventListener('dragover', (e) => {
+        container.addEventListener('dragover', (e) => {
             if (!this.dragging) return;
             e.preventDefault();
-            const target = e.target.closest('tr[data-id]');
+            const target = e.target.closest('[data-id]');
             if (!target || target === this.dragging) return;
             const rect = target.getBoundingClientRect();
-            const after = e.clientY > rect.top + rect.height / 2;
-            tbody.insertBefore(this.dragging, after ? target.nextSibling : target);
+            const afterY = e.clientY > rect.top + rect.height / 2;
+            const afterX = e.clientX > rect.left + rect.width / 2;
+            const after = afterY || afterX;
+            container.insertBefore(this.dragging, after ? target.nextSibling : target);
         });
 
-        tbody.addEventListener('drop', (e) => {
+        container.addEventListener('drop', (e) => {
             if (!this.dragging) return;
             e.preventDefault();
             this.save();
         });
 
-        tbody.addEventListener('dragend', () => {
+        container.addEventListener('dragend', () => {
             if (this.dragging) this.dragging.classList.remove('opacity-40');
             this.dragging = null;
         });
     },
 
     async save() {
-        const rows = Array.from(this.$el.querySelectorAll('tr[data-id]'));
-        const ids = rows.map((row) => row.dataset.id);
+        const items = Array.from(this.$el.querySelectorAll('[data-id]'));
+        const ids = items.map((item) => item.dataset.id);
 
-        // Keep the visible row numbers in sync with the new order.
-        rows.forEach((row, i) => {
-            const num = row.querySelector('[data-order]');
+        // Keep the visible row/card numbers in sync with the new order.
+        items.forEach((item, i) => {
+            const num = item.querySelector('[data-order]');
             if (num) num.textContent = i + 1;
         });
 
@@ -683,5 +1036,8 @@ document.addEventListener('submit', (event) => {
         icon.className = 'ri-loader-4-line animate-spin';
     }
 });
+
+// Syntax-highlight server-rendered code blocks (course detail page).
+document.querySelectorAll('pre > code[class*="language-"]').forEach((el) => hljs.highlightElement(el));
 
 Alpine.start();

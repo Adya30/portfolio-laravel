@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Certificate;
+use App\Models\Course;
 use App\Models\Experience;
 use App\Models\Profile;
 use App\Models\Project;
@@ -69,6 +70,63 @@ class LandingController extends Controller
                             'isPartOf' => ['@id' => route('landing').'#website'],
                             'about' => ['@id' => route('landing').'#person'],
                             'mainEntity' => ['@id' => route('landing').'#person'],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+    }
+
+    public function courseIndex(): View
+    {
+        $courses = Course::orderBy('sort_order')->get();
+
+        return view('course.index', [
+            'courses' => $courses,
+            'activeNav' => 'course',
+            'seo' => [
+                'title' => 'Course | Learning Materials',
+                'description' => 'Collection of learning materials (materi) covering web development, programming, and UI design.',
+                'url' => route('course.index'),
+            ],
+        ]);
+    }
+
+    public function showCourse(Course $course): View
+    {
+        $allCourses = Course::orderBy('sort_order')->get();
+        $courseIndex = $allCourses->search(fn ($item) => $item->id === $course->id);
+
+        return view('course.show', [
+            'course' => $course,
+            'allCourses' => $allCourses,
+            'courseIndex' => $courseIndex === false ? 0 : $courseIndex,
+            'totalCourses' => $allCourses->count(),
+            ...$this->navigation($course, $allCourses),
+            'activeNav' => 'course',
+            'seo' => [
+                'title' => $course->nama.' | Course Material',
+                'description' => $course->desk,
+                'image' => $course->gambar ?? null,
+                'url' => route('course.show', $course),
+                'jsonld' => [
+                    '@context' => 'https://schema.org',
+                    '@graph' => [
+                        [
+                            '@type' => 'LearningResource',
+                            'name' => $course->nama,
+                            'description' => $course->desk,
+                            'image' => $course->gambar ? img_url($course->gambar) : null,
+                            'url' => route('course.show', $course),
+                            'learningResourceType' => 'Course material',
+                        ],
+                        [
+                            '@type' => 'BreadcrumbList',
+                            'itemListElement' => [
+                                ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => route('landing')],
+                                ['@type' => 'ListItem', 'position' => 2, 'name' => 'Course', 'item' => route('course.index')],
+                                ['@type' => 'ListItem', 'position' => 3, 'name' => $course->nama, 'item' => route('course.show', $course)],
+                            ],
                         ],
                     ],
                 ],
@@ -226,6 +284,12 @@ class LandingController extends Controller
 
         foreach (Certificate::orderBy('sort_order')->get() as $certificate) {
             $entries[] = ['loc' => route('certificate.show', $certificate), 'priority' => '0.7', 'lastmod' => $certificate->updated_at];
+        }
+
+        $entries[] = ['loc' => route('course.index'), 'priority' => '0.8', 'lastmod' => Course::max('updated_at') ?? now()];
+
+        foreach (Course::orderBy('sort_order')->get() as $course) {
+            $entries[] = ['loc' => route('course.show', $course), 'priority' => '0.7', 'lastmod' => $course->updated_at];
         }
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n"
