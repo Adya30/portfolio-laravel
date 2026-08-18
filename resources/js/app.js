@@ -128,8 +128,8 @@ const i18n = {
         certificatesBreadcrumb: 'Certificates',
         toggleLanguage: 'Switch language',
         course: 'Course',
-        courseTitle: 'Learning Materials',
-        courseSubtitle: 'Collection of learning materials to sharpen your skills in web development, programming, and UI design.',
+        courseTitle: 'Course Programming',
+        courseSubtitle: 'Welcome To Programming Course',
         material: 'Material',
         noCoursesYet: 'No materials have been added yet.',
         backToHome: 'Back to Home',
@@ -141,7 +141,7 @@ const i18n = {
         copy: 'Copy',
         copied: 'Copied!',
         toggleSidebar: 'Toggle sidebar',
-        onThisPage: 'On This Page',
+        onThisPage: 'Sub Heading',
     },
     id: {
         navHome: 'Beranda',
@@ -411,7 +411,7 @@ Alpine.data('app', () => ({
         if (el) {
             el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else if (window.landingUrl) {
-            // Section is not on this page (e.g. project/experience/certificate
+            // Section is not Sub Heading (e.g. project/experience/certificate
             // detail pages) — go to the landing page and scroll to the section.
             window.location.href = window.landingUrl + href;
         }
@@ -422,20 +422,21 @@ Alpine.data('app', () => ({
     // The button lives in the header bar, so we walk up to the outer
     // code-block wrapper (closest div with overflow-hidden) and then
     // find the <code> element inside it.
-    copyCode(button) {
+    async copyCode(button) {
         // Walk up to the outermost code-block container div, then find code inside.
-        const wrapper = button.closest('div[class*="rounded-2xl"]');
+        const wrapper = button.closest('div[class*="rounded-xl"]');
         const codeEl  = wrapper ? wrapper.querySelector('pre code') : null;
         const text    = codeEl ? (codeEl.innerText || codeEl.textContent || '') : '';
 
         if (text) {
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text).catch(() => {
-                    // Fallback for browsers that deny clipboard without interaction.
-                    this._fallbackCopy(text);
-                });
-            } else {
-                this._fallbackCopy(text);
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(text);
+                } else {
+                    await this._fallbackCopy(text);
+                }
+            } catch {
+                await this._fallbackCopy(text);
             }
         }
 
@@ -451,14 +452,21 @@ Alpine.data('app', () => ({
     },
 
     _fallbackCopy(text) {
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
-        document.body.appendChild(ta);
-        ta.focus();
-        ta.select();
-        try { document.execCommand('copy'); } catch (_) {}
-        document.body.removeChild(ta);
+        return new Promise((resolve) => {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.setAttribute('readonly', '');
+            ta.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;padding:0;border:none;outline:none;box-shadow:none;background:transparent;';
+            document.body.appendChild(ta);
+            ta.focus({ preventScroll: true });
+            ta.select();
+            ta.setSelectionRange(0, ta.value.length);
+            try {
+                document.execCommand('copy');
+            } catch (_) {}
+            document.body.removeChild(ta);
+            resolve();
+        });
     },
 }));
 
@@ -495,9 +503,38 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
         textarea.dispatchEvent(new Event('input'));
     },
 
-    applyFormat(index, fmt) {
+    // Wrap the selected text of the paragraph with the clicked format. When
+    // nothing is selected, append a placeholder marker (old behaviour).
+    applyFormat(index, fmt, btnEl = null) {
         if (!this.blocks[index] || this.blocks[index].type !== 'paragraf') return;
+
+        const textarea = btnEl ? btnEl.closest('.paragraf-block')?.querySelector('textarea') : null;
         let text = this.blocks[index].teks || '';
+        const start = textarea ? textarea.selectionStart : null;
+        const end = textarea ? textarea.selectionEnd : null;
+        const hasSelection = start !== null && end !== null && end > start;
+
+        if (hasSelection) {
+            const selected = text.substring(start, end);
+            let formatted = selected;
+
+            if (fmt === 'bold') formatted = '**' + selected + '**';
+            else if (fmt === 'italic') formatted = '*' + selected + '*';
+            else if (fmt === 'underline') formatted = '<u>' + selected + '</u>';
+            else if (fmt === 'quote') formatted = selected.split('\n').map((line) => '> ' + line).join('\n');
+            else if (fmt === 'bullet') formatted = selected.split('\n').map((line) => '- ' + line).join('\n');
+            else if (fmt === 'number') formatted = selected.split('\n').map((line, i) => (i + 1) + '. ' + line).join('\n');
+
+            this.blocks[index].teks = text.substring(0, start) + formatted + text.substring(end);
+
+            // Keep the formatted text highlighted so more formats can be stacked.
+            this.$nextTick(() => {
+                textarea.focus();
+                textarea.setSelectionRange(start, start + formatted.length);
+            });
+            return;
+        }
+
         if (fmt === 'bold') text += ' **teks tebal**';
         else if (fmt === 'italic') text += ' *teks miring*';
         else if (fmt === 'underline') text += ' <u>teks garis bawah</u>';
@@ -645,7 +682,7 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
 
 /* ============================================================
    TOC SPY — highlights the current subbab in the right-side
-   "On This Page" navigation as the reader scrolls (course
+   "Sub Heading" navigation as the reader scrolls (course
    detail page). Used by the right aside via x-data="tocSpy".
    ============================================================ */
 Alpine.data('tocSpy', () => ({
@@ -673,6 +710,50 @@ Alpine.data('tocSpy', () => ({
 
     isActive(id) {
         return this.active === id;
+    },
+}));
+
+/* ============================================================
+   COURSE INDEX SEARCH — real-time client-side filtering for the
+   course listing page. Input is sanitised to prevent XSS; we only
+   compare plain-text strings, never inject user input into the DOM.
+   ============================================================ */
+Alpine.data('courseSearch', () => ({
+    query: '',
+    visibleCount: 0,
+    _cards: [],
+    _texts: [],
+
+    init() {
+        const cards = this.$refs.grid.querySelectorAll('.course-card');
+        this._cards = Array.from(cards);
+        this._texts = this._cards.map((c) => (c.dataset.search || '').toLowerCase());
+        this.visibleCount = this._cards.length;
+    },
+
+    filter() {
+        // Sanitise: strip anything that isn't alphanumeric / whitespace /
+        // common accented characters, then collapse whitespace. This
+        // prevents injection of HTML entities, script payloads, or
+        // regex metacharacters through the search box.
+        const raw = this.query || '';
+        const safe = raw
+            .replace(/<[^>]*>/g, '')        // strip any HTML tags
+            .replace(/[&<>"]/g, '')        // strip dangerous chars
+            .replace(/\/\/|javascript:/gi, '') // strip protocol/script schemes
+            .trim()
+            .substring(0, 100);             // hard limit
+
+        const terms = safe.toLowerCase().split(/\s+/).filter(Boolean);
+
+        let count = 0;
+        this._cards.forEach((card, i) => {
+            const text = this._texts[i];
+            const match = terms.length === 0 || terms.every((t) => text.includes(t));
+            card.style.display = match ? '' : 'none';
+            if (match) count++;
+        });
+        this.visibleCount = count;
     },
 }));
 

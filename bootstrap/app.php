@@ -27,7 +27,9 @@ $isTestRun = in_array(getenv('APP_ENV'), ['testing'], true)
 
 $envFilePath = dirname(__DIR__).'/.env';
 
-if (! $isTestRun && is_file($envFilePath)) {
+if (is_file($envFilePath)) {
+    $envNames = [];
+
     foreach (file($envFilePath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [] as $line) {
         $line = trim($line);
 
@@ -39,6 +41,24 @@ if (! $isTestRun && is_file($envFilePath)) {
         $name = trim($name);
 
         if (preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $name)) {
+            $envNames[] = $name;
+        }
+    }
+
+    if ($isTestRun) {
+        // During PHPUnit, phpunit.xml forces its own values via putenv() and
+        // $_ENV. But the shell/IDE exports of the .env contents are still
+        // visible in $_SERVER — which Laravel's env() reads first — and Git
+        // Bash even mangles *PATH vars there (e.g. SESSION_PATH becomes
+        // "C:/Program Files/Git/"). Drop the stale $_SERVER entries so the
+        // forced phpunit.xml values win.
+        foreach ($envNames as $name) {
+            unset($_SERVER[$name]);
+        }
+    } else {
+        // Shell/IDE exports would otherwise shadow the .env file (dotenv is
+        // immutable), so remove them and let the .env file win.
+        foreach ($envNames as $name) {
             putenv($name);
             unset($_ENV[$name], $_SERVER[$name]);
         }

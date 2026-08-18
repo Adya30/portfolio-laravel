@@ -9,8 +9,8 @@
     @php
         $seo = $seo ?? [];
 
-        $seoTitle = $seo['title'] ?? 'Course | Learning Materials';
-        $seoDescription = $seo['description'] ?? 'Collection of learning materials covering web development, programming, and UI design.';
+        $seoTitle = $seo['title'] ?? 'Course | Course Programming';
+        $seoDescription = $seo['description'] ?? 'Collection of Course Programming covering web development, programming, and UI design.';
         $seoType = $seo['type'] ?? 'website';
         $seoUrl = $seo['url'] ?? url()->current();
         $seoImage = null;

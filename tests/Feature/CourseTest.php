@@ -58,7 +58,7 @@ test('course detail page renders subbab, paragraph, and code blocks', function (
         ->assertSee('JavaScript membuat halaman web interaktif.')
         ->assertSee("const nama = 'Adya';")
         ->assertSee('language-javascript', false)
-        ->assertSee('On This Page')
+        ->assertSee('Sub Heading')
         ->assertSee('#subbab-0', false)
         ->assertSee('tocSpy', false);
 });
@@ -74,10 +74,10 @@ test('course detail page renders a collapsible sidebar toggle', function () {
         ->assertSee('toggleSidebar', false)
         ->assertSee('@click="toggleSidebar"', false)
         ->assertSee('translate-x-0', false)
-        ->assertSee('lg:w-14', false)
-        ->assertSee('ri-chevron-left-line text-lg hidden lg:block', false)
-        ->assertSee("sidebarOpen ? 'lg:pl-[22rem]' : 'lg:pl-20'", false)
-        ->assertSee('xl:pr-[17rem]', false)
+        ->assertSee('lg:w-16', false)
+        ->assertSee('ri-menu-line text-lg hidden lg:block', false)
+        ->assertSee("sidebarOpen ? 'lg:pl-[22rem]' : 'lg:pl-[5.5rem]'", false)
+        ->assertSee('xl:pr-[19rem]', false)
         ->assertSee('ri-menu-line', false)
         ->assertSee('ri-menu-unfold-line', false);
 });

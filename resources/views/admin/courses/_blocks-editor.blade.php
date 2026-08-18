@@ -18,6 +18,45 @@
             <span>Word & Blogger Worksheet Canvas</span>
         </div>
 
+        {{-- Insert Block Toolbar --}}
+        <div class="flex flex-wrap items-center gap-2 -mt-2">
+            <div class="relative" x-data="{ blockMenuOpen: false }">
+                <button type="button" @click="blockMenuOpen = !blockMenuOpen"
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent text-white text-xs font-bold hover:bg-blue-600 transition-colors">
+                    <i class="ri-add-line text-sm"></i> Tambah Blok
+                    <i class="ri-arrow-down-s-line text-sm transition-transform" :class="blockMenuOpen && 'rotate-180'"></i>
+                </button>
+                <div x-show="blockMenuOpen" x-cloak @click.outside="blockMenuOpen = false"
+                     class="absolute left-0 top-full mt-1.5 z-20 w-48 bg-white border border-slate-200 rounded-xl shadow-lg p-1.5 space-y-0.5">
+                    <button type="button" @click="addBlock('subbab'); blockMenuOpen = false"
+                            class="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-left text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-accent transition-colors">
+                        <i class="ri-heading text-accent text-sm"></i> Subbab
+                    </button>
+                    <button type="button" @click="addBlock('paragraf'); blockMenuOpen = false"
+                            class="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-left text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-accent transition-colors">
+                        <i class="ri-paragraph text-accent text-sm"></i> Paragraf
+                    </button>
+                    <button type="button" @click="addBlock('gambar'); blockMenuOpen = false"
+                            class="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-left text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-accent transition-colors">
+                        <i class="ri-image-line text-accent text-sm"></i> Gambar
+                    </button>
+                    <button type="button" @click="addBlock('kode'); blockMenuOpen = false"
+                            class="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-left text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-accent transition-colors">
+                        <i class="ri-code-box-line text-accent text-sm"></i> Kode
+                    </button>
+                    <button type="button" @click="addBlock('link'); blockMenuOpen = false"
+                            class="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-left text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-accent transition-colors">
+                        <i class="ri-external-link-line text-accent text-sm"></i> Link
+                    </button>
+                    <button type="button" @click="addBlock('pembatas'); blockMenuOpen = false"
+                            class="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-left text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-accent transition-colors">
+                        <i class="ri-separator text-accent text-sm"></i> Pembatas
+                    </button>
+                </div>
+            </div>
+            <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400">Sisipkan blok baru ke lembar kerja dokumen</span>
+        </div>
+
         <template x-for="(block, i) in blocks" :key="i">
             <div class="group relative">
 
@@ -71,18 +110,18 @@
 
                     {{-- 2. Paragraf / Text Block with Formatting Bar --}}
                     <template x-if="block.type === 'paragraf'">
-                        <div class="pt-1 space-y-2">
+                        <div class="paragraf-block pt-1 space-y-2">
                             <div class="flex items-center justify-between">
                                 <label class="block text-xs font-bold text-slate-500">Isi Paragraf / Penjelasan Dokumen</label>
 
                                 {{-- Mini Text Formatting Toolbar --}}
                                 <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs">
-                                    <button type="button" @click="applyFormat(i, 'bold')" class="px-2 py-0.5 font-bold hover:bg-white rounded" title="Tebal (Bold)">B</button>
-                                    <button type="button" @click="applyFormat(i, 'italic')" class="px-2 py-0.5 italic hover:bg-white rounded" title="Miring (Italic)">I</button>
-                                    <button type="button" @click="applyFormat(i, 'underline')" class="px-2 py-0.5 underline hover:bg-white rounded" title="Garis Bawah">U</button>
-                                    <button type="button" @click="applyFormat(i, 'bullet')" class="px-2 py-0.5 hover:bg-white rounded" title="Daftar Bullet">• List</button>
-                                    <button type="button" @click="applyFormat(i, 'number')" class="px-2 py-0.5 hover:bg-white rounded" title="Daftar Angka">1. List</button>
-                                    <button type="button" @click="applyFormat(i, 'quote')" class="px-2 py-0.5 hover:bg-white rounded" title="Kutipan">” Quote</button>
+                                    <button type="button" @click="applyFormat(i, 'bold', $event.currentTarget)" class="px-2 py-0.5 font-bold hover:bg-white rounded" title="Tebal (Bold)">B</button>
+                                    <button type="button" @click="applyFormat(i, 'italic', $event.currentTarget)" class="px-2 py-0.5 italic hover:bg-white rounded" title="Miring (Italic)">I</button>
+                                    <button type="button" @click="applyFormat(i, 'underline', $event.currentTarget)" class="px-2 py-0.5 underline hover:bg-white rounded" title="Garis Bawah">U</button>
+                                    <button type="button" @click="applyFormat(i, 'bullet', $event.currentTarget)" class="px-2 py-0.5 hover:bg-white rounded" title="Daftar Bullet">• List</button>
+                                    <button type="button" @click="applyFormat(i, 'number', $event.currentTarget)" class="px-2 py-0.5 hover:bg-white rounded" title="Daftar Angka">1. List</button>
+                                    <button type="button" @click="applyFormat(i, 'quote', $event.currentTarget)" class="px-2 py-0.5 hover:bg-white rounded" title="Kutipan">” Quote</button>
                                 </div>
                             </div>
                             <textarea x-model="block.teks" rows="5" placeholder="Tulis isi paragraf / penjelasan di lembar kerja ini..."

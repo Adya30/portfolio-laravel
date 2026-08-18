@@ -85,8 +85,8 @@ class LandingController extends Controller
             'courses' => $courses,
             'activeNav' => 'course',
             'seo' => [
-                'title' => 'Course | Learning Materials',
-                'description' => 'Collection of learning materials (materi) covering web development, programming, and UI design.',
+                'title' => 'Course Programming',
+                'description' => 'Collection of Course Programming (materi) covering web development, programming, and UI design.',
                 'url' => route('course.index'),
             ],
         ]);

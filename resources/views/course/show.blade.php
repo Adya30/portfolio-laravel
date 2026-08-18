@@ -41,7 +41,7 @@
            class="fixed top-4 left-4 z-110 flex flex-col w-80 max-w-[85vw] border border-slate-200 dark:border-white/10 h-[calc(100vh-2rem)] bg-white dark:bg-[#0a0a0f] rounded-2xl shadow-lg shadow-slate-200/50 dark:shadow-black/50 overflow-hidden transition-all duration-300 ease-in-out"
            :class="sidebarOpen
                ? 'translate-x-0 lg:w-80'
-               : '-translate-x-[calc(100%+1rem)] lg:translate-x-0 lg:w-14'">
+               : '-translate-x-[calc(100%+1rem)] lg:translate-x-0 lg:w-16'">
 
         <div :class="sidebarOpen ? 'hidden' : 'flex'"
              class="flex-col items-center gap-2 py-4 h-full overflow-y-auto custom-scrollbar">
@@ -53,7 +53,7 @@
             <button type="button" @click="toggleSidebar"
                     :aria-label="t('toggleSidebar')" :title="t('toggleSidebar')"
                     class="w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer">
-                <i class="ri-menu-line text-lg"></i>
+                <i class="ri-menu-unfold-line text-lg"></i>
             </button>
             <div class="w-6 border-t border-slate-200 dark:border-white/10 my-1"></div>
             @foreach ($allCourses as $i => $item)
@@ -113,11 +113,11 @@
 
     @if (count($subbabs))
         <aside x-cloak x-data="tocSpy"
-               class="hidden xl:flex flex-col fixed top-20 right-4 w-64 h-[calc(100vh-6rem)] border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0a0a0f] rounded-2xl shadow-lg shadow-slate-200/50 dark:shadow-black/50 overflow-hidden z-30">
+               class="hidden xl:flex flex-col fixed top-20 right-4 w-72 h-[calc(100vh-6rem)] border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0a0a0f] rounded-2xl shadow-lg shadow-slate-200/50 dark:shadow-black/50 overflow-hidden z-30">
             <div class="p-4 border-b border-slate-200 dark:border-white/10">
                 <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
                     <i class="ri-list-unordered text-sm text-blue-600 dark:text-blue-400"></i>
-                    <span x-text="t('onThisPage')">On This Page</span>
+                    <span x-text="t('onThisPage')">Sub Heading</span>
                 </h2>
             </div>
             <nav class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-1">
@@ -134,11 +134,11 @@
         </aside>
     @endif
 
-    <main class="flex-1 w-full transition-all duration-300 ease-in-out xl:pr-68"
-          :class="sidebarOpen ? 'lg:pl-22rem' : 'lg:pl-20'">
+    <main class="flex-1 w-full transition-all duration-300 ease-in-out xl:pr-[19rem]"
+          :class="sidebarOpen ? 'lg:pl-[22rem]' : 'lg:pl-[5.5rem]'">
         <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
 
-            <header class="pt-8 lg:pt-2" data-aos="fade-up" data-aos-duration="600">
+            <header class="pt-16 sm:pt-14 lg:pt-2" data-aos="fade-up" data-aos-duration="600">
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 dark:bg-blue-900/20 rounded-full text-xs font-medium text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
                     <i class="ri-book-open-line"></i>
                     <span x-text="t('chapter')">Chapter</span> {{ $courseIndex + 1 }} <span x-text="t('of')">of</span> {{ $totalCourses }}
@@ -154,8 +154,34 @@
                 @endif
             </header>
 
+            {{-- Mobile TOC drawer (visible only on small screens where the right sidebar is hidden) --}}
+            @if (count($subbabs))
+                <div x-data="{ tocOpen: false }" class="xl:hidden mt-4">
+                    <button type="button" @click="tocOpen = !tocOpen"
+                            class="w-full flex items-center justify-between gap-2 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0a0a0f] text-sm font-semibold text-slate-700 dark:text-slate-300 hover:border-blue-300 dark:hover:border-blue-700 transition-all cursor-pointer">
+                        <span class="flex items-center gap-2">
+                            <i class="ri-list-unordered text-blue-600 dark:text-blue-400"></i>
+                            <span x-text="t('onThisPage')">Sub Heading</span>
+                        </span>
+                        <i class="ri-arrow-down-s-line text-slate-400 transition-transform duration-200" :class="tocOpen && 'rotate-180'"></i>
+                    </button>
+                    <div x-show="tocOpen" x-cloak x-collapse
+                         class="mt-2 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0a0a0f] overflow-hidden">
+                        <nav class="p-3 space-y-1 max-h-60 overflow-y-auto custom-scrollbar">
+                            @foreach ($subbabs as $sub)
+                                <a href="#{{ $sub['id'] }}" @click="tocOpen = false"
+                                   class="block px-3 py-2 rounded-lg text-sm leading-snug transition-all duration-200 border-l-2
+                                          text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 border-transparent">
+                                    {{ $sub['judul'] }}
+                                </a>
+                            @endforeach
+                        </nav>
+                    </div>
+                </div>
+            @endif
+
             @if (count($blocks))
-                <article class="min-h-75 mt-6 space-y-4" data-aos="fade-up" data-aos-duration="600">
+                <article class="min-h-75 mt-4 sm:mt-6 space-y-4" data-aos="fade-up" data-aos-duration="600">
                     @foreach ($blocks as $block)
                         @php $type = $block['type'] ?? 'paragraf'; @endphp
 
@@ -164,9 +190,9 @@
                                 {{ $block['judul'] ?? '' }}
                             </h2>
                         @elseif ($type === 'paragraf')
-                            <p class="text-base sm:text-lg text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
-                                {{ $block['teks'] ?? '' }}
-                            </p>
+                            <div class="text-base sm:text-lg text-slate-700 dark:text-slate-300 leading-relaxed markdown-content">
+                                {!! render_markdown($block['teks'] ?? '') !!}
+                            </div>
                         @elseif ($type === 'gambar')
                             @php
                                 $ukuran = $block['ukuran'] ?? 'penuh';
@@ -180,7 +206,7 @@
                             <figure class="my-4 text-center">
                                 <div class="inline-block rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-800 mx-auto {{ $sizeClass }}">
                                     <img src="{{ img_url($block['url'] ?? '') }}" alt="{{ $block['caption'] ?? $course->nama }}"
-                                         class="w-full h-auto object-contain max-h-135" loading="lazy">
+                                         class="w-full h-auto object-contain max-h-48 sm:max-h-80 md:max-h-135" loading="lazy">
                                 </div>
                                 @if (! empty($block['caption']))
                                     <figcaption class="mt-2 text-center text-xs text-slate-500 dark:text-slate-400">
@@ -196,7 +222,7 @@
                             @endphp
                             <div class="rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 bg-[#0d1117] my-4">
                                 {{-- Header --}}
-                                <div class="flex items-center justify-between gap-3 px-4 py-2.5 bg-[#161b22] border-b border-slate-800 select-none">
+                                <div class="flex items-center justify-between gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-2.5 bg-[#161b22] border-b border-slate-800 select-none">
                                     <div class="flex items-center gap-3">
                                         <div class="flex items-center gap-1.5">
                                             <span class="w-3 h-3 rounded-full bg-[#ff5f56]"></span>
@@ -213,8 +239,8 @@
                                     </button>
                                 </div>
                                 <div class="overflow-x-auto custom-scrollbar bg-[#0d1117]">
-                                    <div class="p-4 sm:p-5 font-mono text-xs sm:text-sm text-slate-100 leading-6 tab-size-4 flex min-w-full bg-[#0d1117]">
-                                        <div class="select-none text-slate-500 text-right pr-4 border-r border-slate-800 shrink-0 font-mono text-xs sm:text-sm leading-6">
+                                    <div class="p-3 sm:p-5 font-mono text-xs sm:text-sm text-slate-100 leading-6 tab-size-4 flex min-w-full bg-[#0d1117]">
+                                        <div class="select-none text-slate-500 text-right pr-2 sm:pr-4 border-r border-slate-800 shrink-0 font-mono text-xs sm:text-sm leading-6">
                                             @foreach ($lines as $lineIndex => $lineContent)
                                                 <div>{{ $lineIndex + 1 }}</div>
                                             @endforeach
@@ -227,8 +253,8 @@
                             @php $href = $block['href'] ?? '#'; $label = $block['label'] ?? $href; $desc = $block['desc'] ?? ''; @endphp
                             <div class="my-4">
                                 <a href="{{ $href }}" target="_blank" rel="noopener noreferrer"
-                                   class="group flex items-start gap-4 rounded-xl border border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/10 hover:bg-blue-100/50 dark:hover:bg-blue-900/20 p-4 sm:p-5 transition-all duration-200">
-                                    <div class="shrink-0 w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center mt-0.5">
+                                   class="group flex items-start gap-3 sm:gap-4 rounded-xl border border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/10 hover:bg-blue-100/50 dark:hover:bg-blue-900/20 p-3 sm:p-5 transition-all duration-200">
+                                    <div class="shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center mt-0.5">
                                         <i class="ri-external-link-line text-lg"></i>
                                     </div>
                                     <div class="flex-1 min-w-0">
@@ -260,10 +286,10 @@
             @endif
 
             {{-- Navigation --}}
-            <div class="mt-10 pt-6 border-t border-slate-200 dark:border-white/10 flex flex-col sm:flex-row justify-between gap-4">
+            <div class="mt-8 sm:mt-10 pt-5 sm:pt-6 border-t border-slate-200 dark:border-white/10 flex flex-col sm:flex-row justify-between gap-3 sm:gap-4">
                 @if ($prev)
                     <a href="{{ route('course.show', $prev) }}"
-                       class="group flex-1 min-w-0 p-5 border rounded-xl hover:border-blue-300 dark:hover:border-blue-700 bg-white dark:bg-[#0a0a0f] hover:shadow-lg transition-all text-left">
+                       class="group flex-1 min-w-0 p-3 sm:p-5 border rounded-xl hover:border-blue-300 dark:hover:border-blue-700 bg-white dark:bg-[#0a0a0f] hover:shadow-lg transition-all text-left">
                         <div class="text-xs font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-1.5 flex items-center gap-1">
                             <i class="ri-arrow-left-line group-hover:-translate-x-1 transition-transform"></i>
                             <span x-text="t('previousChapter')">Previous Chapter</span>
@@ -278,7 +304,7 @@
 
                 @if ($next)
                     <a href="{{ route('course.show', $next) }}"
-                       class="group flex-1 min-w-0 p-5 border rounded-xl hover:border-blue-300 dark:hover:border-blue-700 bg-white dark:bg-[#0a0a0f] hover:shadow-lg transition-all text-right">
+                       class="group flex-1 min-w-0 p-3 sm:p-5 border rounded-xl hover:border-blue-300 dark:hover:border-blue-700 bg-white dark:bg-[#0a0a0f] hover:shadow-lg transition-all text-right">
                         <div class="text-xs font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-1.5 flex items-center justify-end gap-1">
                             <span x-text="t('nextChapter')">Next Chapter</span>
                             <i class="ri-arrow-right-line group-hover:translate-x-1 transition-transform"></i>

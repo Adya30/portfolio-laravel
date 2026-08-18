@@ -1,6 +1,43 @@
 <?php
 
 use Illuminate\Support\Str;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+use League\CommonMark\Extension\Table\TableExtension;
+use League\CommonMark\MarkdownConverter;
+
+if (! function_exists('render_markdown')) {
+    /**
+     * Convert a Markdown string to safe HTML.
+     * Only permits a whitelist of inline & block elements that are
+     * produced by the course content editor.
+     */
+    function render_markdown(?string $text): string
+    {
+        if ($text === null || $text === '') {
+            return '';
+        }
+
+        $converter = once(function () {
+            $env = new Environment([
+                'html_input'         => 'strip',
+                'allow_unsafe_links' => false,
+                'max_nesting_level'  => 10,
+            ]);
+            $env->addExtension(new CommonMarkCoreExtension);
+            $env->addExtension(new TableExtension);
+
+            return new MarkdownConverter($env);
+        });
+
+        $html = $converter->convert($text)->getContent();
+
+        // Strip any remaining tags that aren't in our whitelist.
+        $allowed = '<p><br><strong><em><u><s><del><ul><ol><li><blockquote><code><pre><a><hr><h1><h2><h3><h4><h5><h6><table><thead><tbody><tr><th><td>';
+
+        return strip_tags($html, $allowed);
+    }
+}
 
 if (! function_exists('profile')) {
     /**
