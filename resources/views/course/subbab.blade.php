@@ -66,8 +66,8 @@
             <div class="w-6 border-t border-slate-200 dark:border-white/10 my-1"></div>
             @foreach ($subbabs as $i => $sub)
                 @php $isActive = $sub['index'] === $currentSubbabIndex; @endphp
-                <a href="{{ route('course.subbab', [$course, $sub['index']]) }}" title="{{ $sub['judul'] ?: 'Subbab '.($i + 1) }}"
-                   @click.prevent="navigateSubbab('{{ route('course.subbab', [$course, $sub['index']]) }}', $event)"
+                <a href="{{ route('course.subbab', [$course, $sub['slug']]) }}" title="{{ $sub['judul'] ?: 'Subbab '.($i + 1) }}"
+                   @click.prevent="navigateSubbab('{{ route('course.subbab', [$course, $sub['slug']]) }}', $event)"
                    class="w-9 h-9 flex items-center justify-center rounded-lg text-xs font-semibold transition-all duration-200
                           {{ $isActive
                               ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-700'
@@ -101,8 +101,8 @@
             <div class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-1">
                 @foreach ($subbabs as $i => $sub)
                     @php $isActive = $sub['index'] === $currentSubbabIndex; @endphp
-                    <a href="{{ route('course.subbab', [$course, $sub['index']]) }}"
-                       @click.prevent="navigateSubbab('{{ route('course.subbab', [$course, $sub['index']]) }}', $event)"
+                    <a href="{{ route('course.subbab', [$course, $sub['slug']]) }}"
+                       @click.prevent="navigateSubbab('{{ route('course.subbab', [$course, $sub['slug']]) }}', $event)"
                        class="flex items-start gap-3 p-2.5 rounded-xl text-sm transition-all duration-200
                           {{ $isActive
                               ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 font-semibold border border-blue-200 dark:border-blue-800'
@@ -308,8 +308,8 @@
             {{-- Navigation --}}
             <div class="mt-8 sm:mt-10 pt-5 sm:pt-6 border-t border-slate-200 dark:border-white/10 flex flex-col sm:flex-row justify-between gap-3 sm:gap-4">
                 @if ($prevSubbab)
-                    <a href="{{ route('course.subbab', [$course, $prevSubbab['index']]) }}"
-                       @click.prevent="navigateSubbab('{{ route('course.subbab', [$course, $prevSubbab['index']]) }}', $event)"
+                    <a href="{{ route('course.subbab', [$course, $prevSubbab['slug']]) }}"
+                       @click.prevent="navigateSubbab('{{ route('course.subbab', [$course, $prevSubbab['slug']]) }}', $event)"
                        class="group flex-1 min-w-0 p-3 sm:p-5 border rounded-xl hover:border-blue-300 dark:hover:border-blue-700 bg-white dark:bg-[#0a0a0f] hover:shadow-lg transition-all text-left">
                         <div class="text-xs font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-1.5 flex items-center gap-1">
                             <i class="ri-arrow-left-line group-hover:-translate-x-1 transition-transform"></i>
@@ -333,8 +333,8 @@
                 @endif
 
                 @if ($nextSubbab)
-                    <a href="{{ route('course.subbab', [$course, $nextSubbab['index']]) }}"
-                       @click.prevent="navigateSubbab('{{ route('course.subbab', [$course, $nextSubbab['index']]) }}', $event)"
+                    <a href="{{ route('course.subbab', [$course, $nextSubbab['slug']]) }}"
+                       @click.prevent="navigateSubbab('{{ route('course.subbab', [$course, $nextSubbab['slug']]) }}', $event)"
                        class="group flex-1 min-w-0 p-3 sm:p-5 border rounded-xl hover:border-blue-300 dark:hover:border-blue-700 bg-white dark:bg-[#0a0a0f] hover:shadow-lg transition-all text-right">
                         <div class="text-xs font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-1.5 flex items-center justify-end gap-1">
                             <span x-text="t('nextSubchapter')">Subbab Berikutnya</span>

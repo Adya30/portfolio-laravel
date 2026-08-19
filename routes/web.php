@@ -28,7 +28,7 @@ Route::get('/robots.txt', function () {
 
 Route::get('/course', [LandingController::class, 'courseIndex'])->name('course.index');
 Route::get('/course/{course}', [LandingController::class, 'showCourse'])->name('course.show');
-Route::get('/course/{course}/subbab/{index}', [LandingController::class, 'showSubbab'])->name('course.subbab');
+Route::get('/course/{course}/{subbabSlug}', [LandingController::class, 'showSubbab'])->name('course.subbab');
 
 Route::get('/project/{project}', [LandingController::class, 'showProject'])->name('project.show');
 Route::get('/experience/{experience}', [LandingController::class, 'showExperience'])->name('experience.show');

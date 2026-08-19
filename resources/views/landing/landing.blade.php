@@ -10,7 +10,7 @@
         'tools' => $tools->map(fn ($t) => ['id' => $t->id, 'img' => img_url($t->gambar), 'nama' => $t->nama, 'ket' => $t->ket])->values(),
         'projects' => $projects->map(fn ($p) => [
             'id' => $p->id,
-            'url' => route('project.show', $p->id),
+            'url' => route('project.show', $p),
             'img' => img_url($p->gambar),
             'nama' => $p->nama,
             'desk' => $p->desk,
@@ -25,7 +25,7 @@
         ])->values(),
         'experiences' => $experiences->map(fn ($e) => [
             'id' => $e->id,
-            'url' => route('experience.show', $e->id),
+            'url' => route('experience.show', $e),
             'role' => $e->role,
             'roleIdn' => $e->role_idn,
             'company' => $e->company,
@@ -42,7 +42,7 @@
         ])->values(),
         'certificates' => $certificates->map(fn ($c) => [
             'id' => $c->id,
-            'url' => route('certificate.show', $c->id),
+            'url' => route('certificate.show', $c),
             'img' => img_url($c->gambar),
             'nama' => $c->nama,
             'namaIdn' => $c->nama_idn,

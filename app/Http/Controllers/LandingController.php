@@ -134,8 +134,15 @@ class LandingController extends Controller
         ]);
     }
 
-    public function showSubbab(Course $course, int $index): View
+    public function showSubbab(Course $course, string $subbabSlug): View
     {
+        // Get index from slug
+        $index = $course->getSubbabIndexBySlug($subbabSlug);
+        
+        if ($index === null) {
+            abort(404);
+        }
+
         $blocks = $course->konten ?? [];
 
         // Find all subbab indices
@@ -159,10 +166,15 @@ class LandingController extends Controller
         // Build subbab list for navigation
         $subbabs = [];
         foreach ($subbabIndices as $si) {
-            $subbabs[] = [
-                'index' => $si,
-                'judul' => $blocks[$si]['judul'] ?? '',
-            ];
+            $slug = $course->getSubbabSlugByIndex($si);
+            // Only add subbab if it has a valid slug (non-empty title)
+            if ($slug) {
+                $subbabs[] = [
+                    'index' => $si,
+                    'judul' => $blocks[$si]['judul'] ?? '',
+                    'slug' => $slug,
+                ];
+            }
         }
 
         $subbabPos = $pos;
@@ -183,7 +195,7 @@ class LandingController extends Controller
             'seo' => [
                 'title' => ($blocks[$index]['judul'] ?? '').' | '.$course->nama,
                 'description' => $course->desk ?? $course->nama,
-                'url' => route('course.subbab', [$course, $index]),
+                'url' => route('course.subbab', [$course, $subbabSlug]),
             ],
         ]);
     }

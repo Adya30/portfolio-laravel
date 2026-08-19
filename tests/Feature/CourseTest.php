@@ -56,7 +56,7 @@ test('course show page lists subbab overview with links to detail', function () 
         ->assertSee('JavaScript Dasar')
         ->assertSee('Variabel')
         ->assertSee('Daftar Subbab')
-        ->assertSee(route('course.subbab', [$course, 0]), false);
+        ->assertSee(route('course.subbab', [$course, 'variabel']), false);
 });
 
 test('course subbab detail page renders content blocks', function () {
@@ -70,7 +70,7 @@ test('course subbab detail page renders content blocks', function () {
         ],
     ]);
 
-    $this->get(route('course.subbab', [$course, 0]))
+    $this->get(route('course.subbab', [$course, 'variabel']))
         ->assertOk()
         ->assertSee('Variabel')
         ->assertSee('JavaScript membuat halaman web interaktif.')
@@ -88,12 +88,12 @@ test('course subbab detail page has sidebar navigation', function () {
         ],
     ]);
 
-    $this->get(route('course.subbab', [$course, 0]))
+    $this->get(route('course.subbab', [$course, 'variabel']))
         ->assertOk()
         ->assertSee('Variabel')
         ->assertSee('Fungsi')
-        ->assertSee(route('course.subbab', [$course, 0]), false)
-        ->assertSee(route('course.subbab', [$course, 1]), false);
+        ->assertSee(route('course.subbab', [$course, 'variabel']), false)
+        ->assertSee(route('course.subbab', [$course, 'fungsi']), false);
 });
 
 test('admin show page lists the materi subbabs with editor links', function () {

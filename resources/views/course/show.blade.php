@@ -27,12 +27,17 @@
     $currentSubbabBlocks = 0;
     foreach ($blocks as $idx => $block) {
         if (($block['type'] ?? '') === 'subbab') {
-            $subbabs[] = [
-                'index' => $idx,
-                'judul' => $block['judul'] ?? '',
-                'block_count' => 0,
-            ];
-            $currentSubbabBlocks = 0;
+            $slug = $course->getSubbabSlugByIndex($idx);
+            // Only add subbab if it has a valid slug (non-empty title)
+            if ($slug) {
+                $subbabs[] = [
+                    'index' => $idx,
+                    'judul' => $block['judul'] ?? '',
+                    'slug' => $slug,
+                    'block_count' => 0,
+                ];
+                $currentSubbabBlocks = 0;
+            }
         } elseif (!empty($subbabs)) {
             $subbabs[count($subbabs) - 1]['block_count']++;
         }
@@ -73,7 +78,7 @@
 
                 <div class="space-y-3">
                     @foreach ($subbabs as $i => $sub)
-                        <a href="{{ route('course.subbab', [$course, $sub['index']]) }}"
+                        <a href="{{ route('course.subbab', [$course, $sub['slug']]) }}"
                            class="group flex items-center gap-4 p-4 sm:p-5 bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/10 rounded-2xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-200/50 dark:hover:shadow-black/30 hover:border-blue-300 dark:hover:border-blue-700"
                            data-aos="fade-up" data-aos-duration="600" data-aos-delay="{{ $i * 50 }}">
 
