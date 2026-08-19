@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 #[Fillable(['slug', 'role', 'role_idn', 'company', 'duration', 'location', 'desk', 'desk_idn', 'practicum_desc', 'practicum_desc_idn', 'gambar', 'responsibilities', 'responsibilities_idn', 'skills', 'sort_order'])]
@@ -14,17 +15,44 @@ class Experience extends Model
         return 'slug';
     }
 
+    public function getRouteKey(): string|int
+    {
+        $slug = $this->getAttribute('slug');
+
+        if (!empty($slug)) {
+            return $slug;
+        }
+
+        $name = trim(($this->role ?? '') . ' ' . ($this->company ?? '')) ?: 'experience';
+        $generatedSlug = $this->generateUniqueSlug($name, $this->id);
+
+        if (!empty($generatedSlug)) {
+            $this->slug = $generatedSlug;
+            if ($this->exists && !empty($this->id)) {
+                DB::table('experiences')->where('id', $this->id)->update(['slug' => $generatedSlug]);
+            }
+
+            return $generatedSlug;
+        }
+
+        return $this->id ?? '';
+    }
+
+    public function resolveRouteBinding($value, $field = null): ?Model
+    {
+        return $this->where($field ?? $this->getRouteKeyName(), $value)
+            ->orWhere('id', $value)
+            ->first();
+    }
+
     protected static function booted(): void
     {
-        static::creating(function (Experience $model) {
+        static::saving(function (Experience $model) {
+            $name = trim(($model->role ?? '') . ' ' . ($model->company ?? '')) ?: 'experience';
             if (empty($model->slug)) {
-                $model->slug = $model->generateUniqueSlug($model->role . '-' . $model->company);
-            }
-        });
-
-        static::updating(function (Experience $model) {
-            if (($model->isDirty('role') || $model->isDirty('company')) && !$model->isDirty('slug')) {
-                $model->slug = $model->generateUniqueSlug($model->role . '-' . $model->company, $model->id);
+                $model->slug = $model->generateUniqueSlug($name, $model->id);
+            } elseif (($model->isDirty('role') || $model->isDirty('company')) && !$model->isDirty('slug')) {
+                $model->slug = $model->generateUniqueSlug($name, $model->id);
             }
         });
     }
@@ -38,9 +66,9 @@ class Experience extends Model
         ];
     }
 
-    private function generateUniqueSlug(string $name, ?int $ignoreId = null): string
+    public function generateUniqueSlug(string $name, ?int $ignoreId = null): string
     {
-        $slug = Str::slug($name);
+        $slug = Str::slug($name) ?: 'experience';
         $baseSlug = $slug;
         $counter = 1;
 

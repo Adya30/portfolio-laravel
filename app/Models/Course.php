@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 #[Fillable(['slug', 'nama', 'nama_idn', 'desk', 'desk_idn', 'konten', 'gambar', 'sort_order'])]
@@ -14,16 +15,41 @@ class Course extends Model
         return 'slug';
     }
 
+    public function getRouteKey(): string|int
+    {
+        $slug = $this->getAttribute('slug');
+
+        if (!empty($slug)) {
+            return $slug;
+        }
+
+        $generatedSlug = $this->generateUniqueSlug($this->nama ?? 'course', $this->id);
+
+        if (!empty($generatedSlug)) {
+            $this->slug = $generatedSlug;
+            if ($this->exists && !empty($this->id)) {
+                DB::table('courses')->where('id', $this->id)->update(['slug' => $generatedSlug]);
+            }
+
+            return $generatedSlug;
+        }
+
+        return $this->id ?? '';
+    }
+
+    public function resolveRouteBinding($value, $field = null): ?Model
+    {
+        return $this->where($field ?? $this->getRouteKeyName(), $value)
+            ->orWhere('id', $value)
+            ->first();
+    }
+
     protected static function booted(): void
     {
-        static::creating(function (Course $model) {
+        static::saving(function (Course $model) {
             if (empty($model->slug)) {
-                $model->slug = $model->generateUniqueSlug($model->nama);
-            }
-        });
-
-        static::updating(function (Course $model) {
-            if ($model->isDirty('nama') && !$model->isDirty('slug')) {
+                $model->slug = $model->generateUniqueSlug($model->nama ?? 'course', $model->id);
+            } elseif ($model->isDirty('nama') && !$model->isDirty('slug')) {
                 $model->slug = $model->generateUniqueSlug($model->nama, $model->id);
             }
         });
@@ -36,9 +62,9 @@ class Course extends Model
         ];
     }
 
-    private function generateUniqueSlug(string $name, ?int $ignoreId = null): string
+    public function generateUniqueSlug(string $name, ?int $ignoreId = null): string
     {
-        $slug = Str::slug($name);
+        $slug = Str::slug($name) ?: 'course';
         $baseSlug = $slug;
         $counter = 1;
 
