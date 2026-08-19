@@ -67,6 +67,7 @@
             @foreach ($subbabs as $i => $sub)
                 @php $isActive = $sub['index'] === $currentSubbabIndex; @endphp
                 <a href="{{ route('course.subbab', [$course, $sub['index']]) }}" title="{{ $sub['judul'] ?: 'Subbab '.($i + 1) }}"
+                   @click.prevent="navigateSubbab('{{ route('course.subbab', [$course, $sub['index']]) }}', $event)"
                    class="w-9 h-9 flex items-center justify-center rounded-lg text-xs font-semibold transition-all duration-200
                           {{ $isActive
                               ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-700'
@@ -101,6 +102,7 @@
                 @foreach ($subbabs as $i => $sub)
                     @php $isActive = $sub['index'] === $currentSubbabIndex; @endphp
                     <a href="{{ route('course.subbab', [$course, $sub['index']]) }}"
+                       @click.prevent="navigateSubbab('{{ route('course.subbab', [$course, $sub['index']]) }}', $event)"
                        class="flex items-start gap-3 p-2.5 rounded-xl text-sm transition-all duration-200
                           {{ $isActive
                               ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 font-semibold border border-blue-200 dark:border-blue-800'
@@ -166,31 +168,24 @@
           :class="sidebarOpen ? 'lg:pl-[22rem]' : 'lg:pl-[5.5rem]'">
         <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
 
-            <header class="pt-16 sm:pt-14 lg:pt-2" data-aos="fade-up" data-aos-duration="600">
+            <header class="pt-16 sm:pt-14 lg:pt-2">
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 dark:bg-blue-900/20 rounded-full text-xs font-medium text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
                     <i class="ri-book-open-line"></i>
                     <span x-text="t('subchapter')">Subbab</span> {{ $currentSubbabPos + 1 }} / {{ count($subbabs) }}
                 </span>
-                <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white leading-tight mt-3">
+                <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 dark:text-white leading-tight mt-2">
                     {{ $subbabs[$currentSubbabPos]['judul'] ?? 'Subbab '.($currentSubbabPos + 1) }}
                 </h1>
-
-                @if ($desk)
-                    <p class="mt-3 text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed">
-                        {{ $desk }}
-                    </p>
-                @endif
             </header>
 
-            {{-- Content Blocks --}}
             @if (count($subbabBlocks))
-                <article class="min-h-75 mt-4 sm:mt-6 space-y-4" data-aos="fade-up" data-aos-duration="600">
+                <article class="min-h-75 mt-2 sm:mt-4 space-y-4">
                     @foreach ($subbabBlocks as $block)
                         @php $type = $block['type'] ?? 'paragraf'; @endphp
 
                         @if ($type === 'subheading')
                             @php $slug = Str::slug($block['teks'] ?? ''); @endphp
-                            <h2 id="{{ $slug }}" class="scroll-mt-24 border-l-4 border-blue-600 dark:border-blue-400 pl-4 font-poppins text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mt-8 mb-3">
+                            <h2 id="{{ $slug }}" class="scroll-mt-24 border-l-4 border-blue-600 dark:border-blue-400 pl-4 font-poppins text-lg sm:text-xl font-bold text-slate-900 dark:text-white mt-6 mb-2">
                                 {{ $block['teks'] ?? '' }}
                             </h2>
                         @elseif ($type === 'paragraf')
@@ -203,7 +198,7 @@
                                     default => 'text-left',
                                 };
                             @endphp
-                            <div class="text-base sm:text-lg text-slate-700 dark:text-slate-300 leading-relaxed markdown-content {{ $alignClass }}">
+                            <div class="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed markdown-content {{ $alignClass }}">
                                 {!! render_markdown($block['teks'] ?? '') !!}
                             </div>
                         @elseif ($type === 'gambar')
@@ -301,12 +296,13 @@
             <div class="mt-8 sm:mt-10 pt-5 sm:pt-6 border-t border-slate-200 dark:border-white/10 flex flex-col sm:flex-row justify-between gap-3 sm:gap-4">
                 @if ($prevSubbab)
                     <a href="{{ route('course.subbab', [$course, $prevSubbab['index']]) }}"
+                       @click.prevent="navigateSubbab('{{ route('course.subbab', [$course, $prevSubbab['index']]) }}', $event)"
                        class="group flex-1 min-w-0 p-3 sm:p-5 border rounded-xl hover:border-blue-300 dark:hover:border-blue-700 bg-white dark:bg-[#0a0a0f] hover:shadow-lg transition-all text-left">
                         <div class="text-xs font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-1.5 flex items-center gap-1">
                             <i class="ri-arrow-left-line group-hover:-translate-x-1 transition-transform"></i>
                             <span x-text="t('previousSubchapter')">Subbab Sebelumnya</span>
                         </div>
-                        <div class="font-semibold text-base sm:text-lg text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex items-center gap-2">
+                        <div class="font-semibold text-sm sm:text-base text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex items-center gap-2">
                             <span class="line-clamp-1">{{ $prevSubbab['judul'] ?: 'Subbab '.($currentSubbabPos) }}</span>
                         </div>
                     </a>
@@ -317,7 +313,7 @@
                             <i class="ri-arrow-left-line group-hover:-translate-x-1 transition-transform"></i>
                             <span x-text="t('backToOverview')">Kembali ke Daftar Materi</span>
                         </div>
-                        <div class="font-semibold text-base sm:text-lg text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex items-center gap-2">
+                        <div class="font-semibold text-sm sm:text-base text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex items-center gap-2">
                             <span class="line-clamp-1">{{ $nama }}</span>
                         </div>
                     </a>
@@ -325,12 +321,13 @@
 
                 @if ($nextSubbab)
                     <a href="{{ route('course.subbab', [$course, $nextSubbab['index']]) }}"
+                       @click.prevent="navigateSubbab('{{ route('course.subbab', [$course, $nextSubbab['index']]) }}', $event)"
                        class="group flex-1 min-w-0 p-3 sm:p-5 border rounded-xl hover:border-blue-300 dark:hover:border-blue-700 bg-white dark:bg-[#0a0a0f] hover:shadow-lg transition-all text-right">
                         <div class="text-xs font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-1.5 flex items-center justify-end gap-1">
                             <span x-text="t('nextSubchapter')">Subbab Berikutnya</span>
                             <i class="ri-arrow-right-line group-hover:translate-x-1 transition-transform"></i>
                         </div>
-                        <div class="font-semibold text-base sm:text-lg text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex items-center justify-end gap-2">
+                        <div class="font-semibold text-sm sm:text-base text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex items-center justify-end gap-2">
                             <span class="line-clamp-1">{{ $nextSubbab['judul'] ?: 'Subbab '.($currentSubbabPos + 2) }}</span>
                         </div>
                     </a>

@@ -346,6 +346,15 @@ Alpine.data('app', () => ({
         // AOS animations
         AOS.init({ once: true, duration: 800, offset: 40 });
 
+        // Browser back/forward support for SPA subbab navigation
+        window.addEventListener('popstate', () => {
+            if (window.location.pathname.includes('/course/') && window.location.pathname.includes('/subbab/')) {
+                this.navigateSubbab(window.location.href);
+            } else {
+                window.location.reload();
+            }
+        });
+
         // Code block syntax highlighting via highlight.js
         this.$nextTick(() => {
             document.querySelectorAll('pre code').forEach((el) => {
@@ -392,6 +401,87 @@ Alpine.data('app', () => ({
                 localStorage.setItem('courseSidebar', this.sidebarOpen ? 'open' : 'closed');
             }
         } catch (e) {}
+    },
+
+    // AJAX navigation for subbab links — replaces only the main content
+    // area and updates sidebar active states without a full page reload.
+    // The sidebar DOM stays untouched so it never re-renders or animates.
+    navigateSubbab(url, event) {
+        if (event) event.preventDefault();
+        if (this._navigating) return;
+        this._navigating = true;
+
+        fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'text/html' } })
+            .then(res => res.text())
+            .then(html => {
+                const doc = new DOMParser().parseFromString(html, 'text/html');
+
+                // 1. Replace main content only
+                const newMain = doc.querySelector('main');
+                const oldMain = document.querySelector('main');
+                if (newMain && oldMain) {
+                    oldMain.innerHTML = newMain.innerHTML;
+                }
+
+                // 2. Update sidebar active states by tweaking classes,
+                //    NOT by replacing the sidebar innerHTML (keeps shape).
+                const oldSidebar = document.querySelector('aside[x-cloak]');
+                if (oldSidebar) {
+                    const newSidebar = doc.querySelector('aside[x-cloak]');
+                    if (newSidebar) {
+                        // Update collapsed sidebar links
+                        const oldCollapsedLinks = oldSidebar.querySelectorAll('.flex-col.items-center a[href*="/subbab/"]');
+                        const newCollapsedLinks = newSidebar.querySelectorAll('.flex-col.items-center a[href*="/subbab/"]');
+                        oldCollapsedLinks.forEach((link, i) => {
+                            if (newCollapsedLinks[i]) {
+                                link.className = newCollapsedLinks[i].className;
+                            }
+                        });
+
+                        // Update expanded sidebar links
+                        const oldExpandedLinks = oldSidebar.querySelectorAll('.overflow-y-auto a[href*="/subbab/"]');
+                        const newExpandedLinks = newSidebar.querySelectorAll('.overflow-y-auto a[href*="/subbab/"]');
+                        oldExpandedLinks.forEach((link, i) => {
+                            if (newExpandedLinks[i]) {
+                                link.className = newExpandedLinks[i].className;
+                                // Also update inner span classes (number badge)
+                                const oldSpan = link.querySelector('span');
+                                const newSpan = newExpandedLinks[i].querySelector('span');
+                                if (oldSpan && newSpan) oldSpan.className = newSpan.className;
+                            }
+                        });
+                    }
+                }
+
+                // 3. Update TOC sidebar
+                const newToc = doc.querySelector('aside[x-data="tocSpy"]');
+                const oldToc = document.querySelector('aside[x-data="tocSpy"]');
+                if (newToc && oldToc) {
+                    oldToc.innerHTML = newToc.innerHTML;
+                    oldToc.style.display = '';
+                } else if (oldToc && !newToc) {
+                    oldToc.style.display = 'none';
+                }
+
+                // 4. Update URL without reload
+                history.pushState({}, '', url);
+                window.scrollTo(0, 0);
+
+                // 5. Re-run AOS for new elements
+                if (window.AOS) AOS.refresh();
+
+                // 6. Re-highlight code blocks
+                this.$nextTick(() => {
+                    document.querySelectorAll('pre code').forEach(el => {
+                        try { hljs.highlightElement(el); } catch (e) {}
+                    });
+                });
+
+                this._navigating = false;
+            })
+            .catch(() => {
+                window.location.href = url;
+            });
     },
 
     /* --- Language helpers --- */
