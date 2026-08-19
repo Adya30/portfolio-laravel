@@ -459,6 +459,12 @@ Alpine.data('app', () => ({
                 if (newToc && oldToc) {
                     oldToc.innerHTML = newToc.innerHTML;
                     oldToc.style.display = '';
+                    // Re-observe headings so the active state tracks correctly
+                    // after the innerHTML replacement.
+                    const tocData = Alpine.$data(oldToc);
+                    if (tocData && typeof tocData._observe === 'function') {
+                        tocData._observe();
+                    }
                 } else if (oldToc && !newToc) {
                     oldToc.style.display = 'none';
                 }
@@ -818,14 +824,37 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
    ============================================================ */
 Alpine.data('tocSpy', () => ({
     active: '',
+    _observer: null,
 
     init() {
+        // Handle TOC link clicks with explicit scroll — native anchor
+        // links don't reliably scroll the main document when the link
+        // lives inside a fixed, scrollable container.
+        this.$el.addEventListener('click', (e) => {
+            const link = e.target.closest('a[href^="#"]');
+            if (!link) return;
+            const id = link.getAttribute('href').slice(1);
+            const target = document.getElementById(id);
+            if (target) {
+                e.preventDefault();
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                history.replaceState(null, '', '#' + id);
+            }
+        });
+
+        this._observe();
+    },
+
+    /** (Re-)build the IntersectionObserver for the current TOC links. */
+    _observe() {
+        if (this._observer) { this._observer.disconnect(); this._observer = null; }
+
         const ids = Array.from(this.$el.querySelectorAll('a[href^="#"]'))
             .map((a) => a.getAttribute('href').slice(1));
         const sections = ids.map((id) => document.getElementById(id)).filter(Boolean);
         if (!sections.length || typeof IntersectionObserver === 'undefined') return;
 
-        const observer = new IntersectionObserver(
+        this._observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) this.active = entry.target.id;
@@ -836,7 +865,7 @@ Alpine.data('tocSpy', () => ({
             // visible at the bottom of the screen.
             { rootMargin: '-80px 0px -75% 0px', threshold: 0 }
         );
-        sections.forEach((s) => observer.observe(s));
+        sections.forEach((s) => this._observer.observe(s));
     },
 
     isActive(id) {

@@ -151,9 +151,22 @@
             </button>
             <div x-show="tocOpen" x-cloak x-collapse
                  class="pointer-events-auto mt-2 mr-0 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0a0a0f] shadow-lg overflow-hidden max-h-60">
-                <nav class="p-3 space-y-1 overflow-y-auto custom-scrollbar">
+                <nav @click="
+                        const link = $event.target.closest('a[href^="#"]');
+                        if (link) {
+                            $event.preventDefault();
+                            tocOpen = false;
+                            const id = link.getAttribute('href').slice(1);
+                            const target = document.getElementById(id);
+                            if (target) {
+                                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                history.replaceState(null, '', '#' + id);
+                            }
+                        }
+                     "
+                     class="p-3 space-y-1 overflow-y-auto custom-scrollbar">
                     @foreach ($tocItems as $toc)
-                        <a href="#{{ $toc['id'] }}" @click="tocOpen = false"
+                        <a href="#{{ $toc['id'] }}"
                            class="block px-3 py-2 rounded-lg text-sm leading-snug transition-all duration-200 border-l-2
                                   text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 border-transparent">
                             {{ $toc['judul'] }}
