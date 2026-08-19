@@ -23,7 +23,6 @@
     $deskIdn = $course->desk_idn ?? null;
     $blocks = $course->konten ?? [];
 
-    // Extract subbab list with their indices
     $subbabs = [];
     $currentSubbabBlocks = 0;
     foreach ($blocks as $idx => $block) {
@@ -43,28 +42,9 @@
 <section class="relative z-20 pt-24 sm:pt-28 pb-16 overflow-hidden">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {{-- Breadcrumb --}}
-        <nav class="mb-6" data-aos="fade-up" data-aos-duration="600">
-            <ol class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-                <li>
-                    <a href="{{ route('course.index') }}" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                        <span x-text="t('course')">Kursus</span>
-                    </a>
-                </li>
-                <li><i class="ri-arrow-right-s-line text-xs"></i></li>
-                <li class="font-semibold text-slate-800 dark:text-white">{{ $nama }}</li>
-            </ol>
-        </nav>
 
         {{-- Course Header --}}
         <header class="mb-10" data-aos="fade-up" data-aos-duration="600">
-            @if ($course->gambar)
-                <div class="rounded-2xl overflow-hidden mb-6 border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-800">
-                    <img src="{{ img_url($course->gambar) }}" alt="{{ $nama }}"
-                         class="w-full aspect-[2/1] object-cover" loading="lazy">
-                </div>
-            @endif
-
             <h1 class="font-poppins text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white leading-tight">
                 {{ $nama }}
             </h1>

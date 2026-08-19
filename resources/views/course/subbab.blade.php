@@ -23,7 +23,6 @@
     $blocks = $course->konten ?? [];
     $codeLangs = ['php', 'javascript', 'typescript', 'html', 'css', 'sql', 'python', 'bash', 'json', 'csharp', 'java'];
 
-    // Extract heading IDs for the TOC (from subbab blocks and rendered paragraphs)
     $tocItems = [];
     foreach ($subbabBlocks as $bIdx => $block) {
         $type = $block['type'] ?? '';
@@ -50,14 +49,8 @@
     <div x-show="sidebarOpen" x-cloak @click="sidebarOpen = false"
          class="fixed inset-0 z-105 bg-black/50 backdrop-blur-sm lg:hidden"></div>
 
-    {{-- Left sidebar: subbab navigation --}}
-    <aside x-cloak
-           class="fixed top-4 left-4 z-110 flex flex-col w-80 max-w-[85vw] border border-slate-200 dark:border-white/10 h-[calc(100vh-2rem)] bg-white dark:bg-[#0a0a0f] rounded-2xl shadow-lg shadow-slate-200/50 dark:shadow-black/50 overflow-hidden transition-all duration-300 ease-in-out"
-           :class="sidebarOpen
-               ? 'translate-x-0 lg:w-80'
-               : '-translate-x-[calc(100%+1rem)] lg:translate-x-0 lg:w-16'">
+    <aside x-cloak class="fixed top-4 left-4 z-110 flex flex-col w-80 max-w-[85vw] border border-slate-200 dark:border-white/10 h-[calc(100vh-2rem)] bg-white dark:bg-[#0a0a0f] rounded-2xl shadow-lg shadow-slate-200/50 dark:shadow-black/50 overflow-hidden transition-all duration-300 ease-in-out" :class="sidebarOpen ? 'translate-x-0 lg:w-80' : '-translate-x-[calc(100%+1rem)] lg:translate-x-0 lg:w-16'">
 
-        {{-- Collapsed sidebar (icon-only) --}}
         <div :class="sidebarOpen ? 'hidden' : 'flex'"
              class="flex-col items-center gap-2 py-4 h-full overflow-y-auto custom-scrollbar">
             <a href="{{ route('course.show', $course) }}"
@@ -83,7 +76,6 @@
             @endforeach
         </div>
 
-        {{-- Expanded sidebar --}}
         <div :class="sidebarOpen ? '' : 'lg:hidden'"
              class="flex flex-col flex-1 min-h-0">
             <div class="p-5 border-b border-slate-200 dark:border-white/10 flex items-start justify-between gap-3">
@@ -94,7 +86,6 @@
                         <span x-text="t('backToOverview')">Kembali ke Daftar Materi</span>
                     </a>
                     <h2 class="font-poppins font-semibold text-lg text-slate-900 dark:text-white flex items-center gap-2">
-                        <i class="ri-book-open-line text-blue-600 dark:text-blue-400"></i>
                         <span>{{ $nama }}</span>
                     </h2>
                 </div>
@@ -127,7 +118,6 @@
         </div>
     </aside>
 
-    {{-- Right sidebar: TOC (Sub Heading) — desktop only --}}
     @if ($hasToc)
         <aside x-cloak x-data="tocSpy"
                class="hidden xl:flex flex-col fixed top-20 right-4 w-72 h-[calc(100vh-6rem)] border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0a0a0f] rounded-2xl shadow-lg shadow-slate-200/50 dark:shadow-black/50 overflow-hidden z-30">
@@ -151,7 +141,6 @@
         </aside>
     @endif
 
-    {{-- Mobile TOC drawer --}}
     @if ($hasToc)
         <div x-data="{ tocOpen: false }" class="xl:hidden fixed top-4 right-4 z-100 pointer-events-none" x-cloak>
             <button type="button" @click="tocOpen = !tocOpen"
@@ -180,7 +169,6 @@
             <header class="pt-16 sm:pt-14 lg:pt-2" data-aos="fade-up" data-aos-duration="600">
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 dark:bg-blue-900/20 rounded-full text-xs font-medium text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
                     <i class="ri-book-open-line"></i>
-                    {{ $courseIndex + 1 }} / {{ $allCourses->count() }} &middot;
                     <span x-text="t('subchapter')">Subbab</span> {{ $currentSubbabPos + 1 }} / {{ count($subbabs) }}
                 </span>
                 <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white leading-tight mt-3">
@@ -222,7 +210,7 @@
                             <figure class="my-4 text-center">
                                 <div class="inline-block rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-800 mx-auto {{ $sizeClass }}">
                                     <img src="{{ img_url($block['url'] ?? '') }}" alt="{{ $block['caption'] ?? $course->nama }}"
-                                         class="w-full h-auto object-contain max-h-48 sm:max-h-80 md:max-h-135" loading="lazy">
+                                         class="w-full h-auto object-contain max-h-30 sm:max-h-50 md:max-h-100" loading="lazy">
                                 </div>
                                 @if (! empty($block['caption']))
                                     <figcaption class="mt-2 text-center text-xs text-slate-500 dark:text-slate-400">
