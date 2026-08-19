@@ -75,7 +75,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Pengguna yang belum login diarahkan ke halaman login,
         // dan pengguna yang sudah login dijauhkan dari form login.
         $middleware->redirectGuestsTo(fn () => route('login'));
-        $middleware->redirectUsersTo(fn () => route('admin.dashboard'));
+        $middleware->redirectUsersTo(fn () => auth()->user()?->isMateriOnly() ? route('admin.courses.index') : route('admin.dashboard'));
 
         // Keamanan dasar: header keamanan + batas permintaan per IP
         // per menit (120) untuk semua halaman web sebagai mitigasi

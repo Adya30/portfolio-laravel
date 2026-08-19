@@ -8,8 +8,10 @@ use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\ToolController;
 use App\Http\Controllers\Admin\CourseController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\LandingController;
+use App\Http\Middleware\EnsureMateriRoleAccess;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingController::class, 'index'])->name('landing');
@@ -41,7 +43,7 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
 
-Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', EnsureMateriRoleAccess::class])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     // Drag & drop row ordering (kept before the resource routes).
@@ -57,6 +59,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::post('courses/{course}/subbab', [CourseController::class, 'storeSubbab'])->name('courses.subbab.store');
     Route::delete('courses/{course}/subbab/{blockIndex}', [CourseController::class, 'destroySubbab'])->name('courses.subbab.destroy');
 
+    Route::resource('users', UserController::class);
     Route::resource('categories', CategoryController::class);
     Route::resource('courses', CourseController::class);
     Route::resource('projects', ProjectController::class);
@@ -67,3 +70,4 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
 });
+

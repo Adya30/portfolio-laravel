@@ -58,6 +58,10 @@
                             class="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-left text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-accent transition-colors">
                         <i class="ri-separator text-accent text-sm"></i> Pembatas
                     </button>
+                    <button type="button" @click="addBlock('tabel'); blockMenuOpen = false"
+                            class="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-left text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-accent transition-colors">
+                        <i class="ri-table-2 text-accent text-sm"></i> Tabel Data
+                    </button>
                 </div>
             </div>
         </div>
@@ -96,6 +100,7 @@
                                 <i class="ri-arrow-down-line text-sm"></i>
                             </button>
                             <button type="button" @click="removeBlock(i)"
+                                    @if ($hideSubbab ?? false) x-show="!(i === 0 && block.type === 'subbab')" @endif
                                     class="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer" title="Hapus">
                                 <i class="ri-delete-bin-line text-sm"></i>
                             </button>
@@ -163,8 +168,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <textarea x-model="block.teks" rows="5" placeholder="Tulis isi paragraf / penjelasan di lembar kerja ini..."
+                            <textarea x-model="block.teks"
+                                      @paste="handleSmartPaste(i, $event)"
+                                      rows="5" placeholder="Tulis isi paragraf / penjelasan di lembar kerja ini..."
                                       class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm text-slate-800 leading-relaxed placeholder:text-slate-400 outline-none focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/15 transition-all"></textarea>
+                            <div class="flex items-center justify-between text-[11px] text-slate-400 pt-0.5">
+                                <span class="flex items-center gap-1 text-accent font-medium">
+                                    <i class="ri-magic-line"></i> Smart Copas Aktif (otomatis rapikan format list, bold, miring, quote, & tabel)
+                                </span>
+                            </div>
                         </div>
                     </template>
 
@@ -333,6 +345,78 @@
                             </div>
                         </div>
                     </template>
+
+                    {{-- 7. Tabel / Table Data --}}
+                    <template x-if="block.type === 'tabel'">
+                        <div class="pt-1 space-y-4">
+                            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500">Editor Tabel Data Dokumen</label>
+                                    <p class="text-[11px] text-slate-400">Atur kolom & baris tabel. Teks sel mendukung format Markdown.</p>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button type="button" @click="addTableCol(i)"
+                                            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-200 transition-colors">
+                                        <i class="ri-add-line"></i> Kolom
+                                    </button>
+                                    <button type="button" @click="addTableRow(i)"
+                                            class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-accent/10 border border-accent/20 text-accent text-xs font-bold hover:bg-accent/20 transition-colors">
+                                        <i class="ri-add-line"></i> Baris
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="overflow-x-auto border border-slate-200 rounded-xl bg-white shadow-2xs">
+                                <table class="w-full text-left text-xs">
+                                    <thead class="bg-slate-50 border-b border-slate-200">
+                                        <tr>
+                                            <th class="p-2 w-10 text-center text-slate-400">#</th>
+                                            <template x-for="(head, cIdx) in (block.headers || [])" :key="cIdx">
+                                                <th class="p-2 min-w-[140px]">
+                                                    <div class="flex items-center justify-between gap-1">
+                                                        <input type="text" x-model="block.headers[cIdx]" placeholder="Judul Kolom..."
+                                                               class="w-full rounded-lg border border-slate-300 px-2 py-1 text-xs font-bold text-slate-800 bg-white outline-none focus:border-accent">
+                                                        <button type="button" @click="removeTableCol(i, cIdx)"
+                                                                x-show="(block.headers || []).length > 1"
+                                                                class="text-slate-400 hover:text-red-500 p-0.5" title="Hapus Kolom Ini">
+                                                            <i class="ri-close-circle-line text-sm"></i>
+                                                        </button>
+                                                    </div>
+                                                </th>
+                                            </template>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100">
+                                        <template x-for="(row, rIdx) in (block.rows || [])" :key="rIdx">
+                                            <tr class="hover:bg-slate-50/50 transition-colors">
+                                                <td class="p-2 text-center text-slate-400 font-bold text-[10px]">
+                                                    <div class="flex items-center justify-center gap-1">
+                                                        <span x-text="rIdx + 1"></span>
+                                                        <button type="button" @click="removeTableRow(i, rIdx)"
+                                                                class="text-slate-400 hover:text-red-500" title="Hapus Baris Ini">
+                                                            <i class="ri-delete-bin-line text-xs"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                                <template x-for="(cell, cIdx) in row" :key="cIdx">
+                                                    <td class="p-2">
+                                                        <input type="text" x-model="block.rows[rIdx][cIdx]" placeholder="Isi sel..."
+                                                               class="w-full rounded-lg border border-slate-200 px-2 py-1 text-xs text-slate-700 bg-slate-50/50 outline-none focus:bg-white focus:border-accent transition-all">
+                                                    </td>
+                                                </template>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 mb-1">Keterangan / Caption Tabel (Opsional)</label>
+                                <input type="text" x-model="block.caption" placeholder="Contoh: Tabel perbandingan fitur role pengguna"
+                                       class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-3.5 py-2 text-xs text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent focus:bg-white transition-all">
+                            </div>
+                        </div>
+                    </template>
                 </div>
 
                 {{-- In-Between Quick Insert Bar (shows on hover) --}}
@@ -348,6 +432,7 @@
                         <button type="button" @click="addBlockAt('kode', i + 1)" class="px-2 py-0.5 rounded-md hover:bg-slate-100 hover:text-accent transition-colors">+ Kode</button>
                         <button type="button" @click="addBlockAt('link', i + 1)" class="px-2 py-0.5 rounded-md hover:bg-slate-100 hover:text-accent transition-colors">+ Link</button>
                         <button type="button" @click="addBlockAt('pembatas', i + 1)" class="px-2 py-0.5 rounded-md hover:bg-slate-100 hover:text-accent transition-colors">+ Pembatas</button>
+                        <button type="button" @click="addBlockAt('tabel', i + 1)" class="px-2 py-0.5 rounded-md hover:bg-slate-100 hover:text-accent transition-colors">+ Tabel</button>
                     </div>
                 </div>
             </div>
@@ -373,6 +458,7 @@
                 <button type="button" @click="addBlock('kode')" class="px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-colors">+ Kode</button>
                 <button type="button" @click="addBlock('link')" class="px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-colors">+ Link</button>
                 <button type="button" @click="addBlock('pembatas')" class="px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-colors">+ Pembatas</button>
+                <button type="button" @click="addBlock('tabel')" class="px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-colors">+ Tabel</button>
             </div>
         </div>
     </div>

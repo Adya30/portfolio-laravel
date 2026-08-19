@@ -36,7 +36,7 @@ class CourseController extends Controller
                     'block_index' => $i,
                     'judul' => $block['judul'] ?? '',
                     'judul_idn' => $block['judul_idn'] ?? null,
-                    'stats' => ['paragraf' => 0, 'gambar' => 0, 'kode' => 0, 'subheading' => 0],
+                    'stats' => ['paragraf' => 0, 'gambar' => 0, 'kode' => 0, 'subheading' => 0, 'tabel' => 0, 'link' => 0],
                 ];
                 $subbabs[] = $current;
             } elseif ($current !== null && array_key_exists($type, $subbabs[count($subbabs) - 1]['stats'])) {
@@ -165,14 +165,36 @@ class CourseController extends Controller
         }
 
         $pos = array_search($blockIndex, $subbabIndices, true);
+        if ($pos === false) {
+            abort(404);
+        }
+
         $end = isset($subbabIndices[$pos + 1]) ? $subbabIndices[$pos + 1] : count($allBlocks);
 
         // Decode new blocks from editor
-        $newBlocks = $this->decodeBlocks($request);
+        $newBlocks = $this->decodeBlocks($request) ?? [];
 
-        // If empty, preserve at least the subbab heading block
-        if (empty($newBlocks)) {
-            $newBlocks = [$allBlocks[$blockIndex]];
+        // Ensure the first block of the subbab is ALWAYS of type 'subbab'
+        if (empty($newBlocks) || ($newBlocks[0]['type'] ?? '') !== 'subbab') {
+            $existingSubbabHeader = $allBlocks[$blockIndex];
+            $subbabKey = null;
+            foreach ($newBlocks as $k => $b) {
+                if (($b['type'] ?? '') === 'subbab') {
+                    $subbabKey = $k;
+                    break;
+                }
+            }
+            if ($subbabKey !== null) {
+                $subbabHeader = array_splice($newBlocks, $subbabKey, 1)[0];
+                array_unshift($newBlocks, $subbabHeader);
+            } else {
+                array_unshift($newBlocks, $existingSubbabHeader);
+            }
+        }
+
+        // Ensure subbab title is preserved
+        if (empty($newBlocks[0]['judul'])) {
+            $newBlocks[0]['judul'] = $allBlocks[$blockIndex]['judul'] ?: ('Subbab '.($pos + 1));
         }
 
         // Splice: replace blocks [$blockIndex .. $end) with new blocks
@@ -182,9 +204,18 @@ class CourseController extends Controller
 
         $course->update(['konten' => $merged]);
 
-        $subbabTitle = $allBlocks[$blockIndex]['judul'] ?? 'Subbab';
+        // Find the new block index of this subbab after merge
+        $newSubbabIndices = [];
+        foreach ($merged as $i => $block) {
+            if (($block['type'] ?? '') === 'subbab') {
+                $newSubbabIndices[] = $i;
+            }
+        }
+        $newBlockIndex = $newSubbabIndices[$pos] ?? $blockIndex;
 
-        return redirect()->route('admin.courses.subbab.edit', [$course, $blockIndex])
+        $subbabTitle = $merged[$newBlockIndex]['judul'] ?? 'Subbab';
+
+        return redirect()->route('admin.courses.subbab.edit', [$course, $newBlockIndex])
             ->with('success', 'Subbab "'.$subbabTitle.'" berhasil diperbarui.');
     }
 
@@ -379,7 +410,7 @@ class CourseController extends Controller
             return null;
         }
 
-        $allowed = ['subbab', 'subheading', 'paragraf', 'gambar', 'kode', 'link', 'pembatas'];
+        $allowed = ['subbab', 'subheading', 'paragraf', 'gambar', 'kode', 'link', 'pembatas', 'tabel'];
 
         return collect($decoded)
             ->filter(fn ($block) => is_array($block) && isset($block['type']) && in_array($block['type'], $allowed, true))

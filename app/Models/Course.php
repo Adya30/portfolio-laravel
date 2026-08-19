@@ -29,9 +29,10 @@ class Course extends Model
         }
 
         foreach ($this->konten as $index => $block) {
-            if (isset($block['type']) && $block['type'] === 'subbab' && isset($block['judul'])) {
-                $blockSlug = Str::slug($block['judul']);
-                if ($blockSlug === $slug) {
+            if (isset($block['type']) && $block['type'] === 'subbab') {
+                $judul = $block['judul'] ?? '';
+                $blockSlug = Str::slug($judul) ?: ('subbab-'.($index + 1));
+                if ($blockSlug === $slug || Str::slug($judul) === $slug) {
                     return $index;
                 }
             }
@@ -50,9 +51,10 @@ class Course extends Model
         }
 
         $block = $this->konten[$index] ?? null;
-        
-        if ($block && isset($block['type'], $block['judul']) && $block['type'] === 'subbab') {
-            return Str::slug($block['judul']);
+
+        if ($block && isset($block['type']) && $block['type'] === 'subbab') {
+            $judul = $block['judul'] ?? '';
+            return Str::slug($judul) ?: ('subbab-'.($index + 1));
         }
 
         return null;

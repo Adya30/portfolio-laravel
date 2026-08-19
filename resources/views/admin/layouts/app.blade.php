@@ -1,14 +1,19 @@
 @php
     $adminNav = [
         ['route' => 'admin.dashboard', 'active' => 'admin.dashboard', 'label' => 'Dashboard', 'icon' => 'ri-dashboard-line'],
-        ['route' => 'admin.projects.index', 'active' => 'admin.projects', 'label' => 'Kelola Project', 'icon' => 'ri-folder-open-line'],
         ['route' => 'admin.courses.index', 'active' => 'admin.courses', 'label' => 'Materi', 'icon' => 'ri-book-open-line'],
+        ['route' => 'admin.projects.index', 'active' => 'admin.projects', 'label' => 'Kelola Project', 'icon' => 'ri-folder-open-line'],
         ['route' => 'admin.categories.index', 'active' => 'admin.categories', 'label' => 'Kategori', 'icon' => 'ri-price-tag-3-line'],
         ['route' => 'admin.tools.index', 'active' => 'admin.tools', 'label' => 'Tools', 'icon' => 'ri-tools-line'],
         ['route' => 'admin.certificates.index', 'active' => 'admin.certificates', 'label' => 'Sertifikat', 'icon' => 'ri-award-line'],
         ['route' => 'admin.experiences.index', 'active' => 'admin.experiences', 'label' => 'Pengalaman', 'icon' => 'ri-briefcase-line'],
+        ['route' => 'admin.users.index', 'active' => 'admin.users', 'label' => 'Kelola User', 'icon' => 'ri-user-settings-line'],
         ['route' => 'admin.profile.edit', 'active' => 'admin.profile', 'label' => 'Profil', 'icon' => 'ri-user-line'],
     ];
+
+    if (auth()->check() && auth()->user()->isMateriOnly()) {
+        $adminNav = array_filter($adminNav, fn($item) => $item['active'] === 'admin.courses');
+    }
 @endphp
 
 <!DOCTYPE html>

@@ -579,9 +579,103 @@ Alpine.data('app', () => ({
     },
 }));
 
+function convertHtmlToMarkdown(html) {
+    if (!html) return '';
+
+    try {
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+
+        function parseNode(node) {
+            if (!node) return '';
+            if (node.nodeType === Node.TEXT_NODE) {
+                return node.textContent;
+            }
+            if (node.nodeType !== Node.ELEMENT_NODE) {
+                return '';
+            }
+
+            const tag = node.tagName.toLowerCase();
+            const childrenText = Array.from(node.childNodes).map(parseNode).join('');
+
+            switch (tag) {
+                case 'h1':
+                case 'h2':
+                    return `\n\n## ${childrenText.trim()}\n\n`;
+                case 'h3':
+                case 'h4':
+                case 'h5':
+                case 'h6':
+                    return `\n\n### ${childrenText.trim()}\n\n`;
+                case 'strong':
+                case 'b':
+                    return childrenText.trim() ? `**${childrenText.trim()}**` : '';
+                case 'em':
+                case 'i':
+                    return childrenText.trim() ? `*${childrenText.trim()}*` : '';
+                case 'u':
+                    return childrenText.trim() ? `<u>${childrenText.trim()}</u>` : '';
+                case 'del':
+                case 's':
+                case 'strike':
+                    return childrenText.trim() ? `~~${childrenText.trim()}~~` : '';
+                case 'code':
+                    return node.parentNode && node.parentNode.tagName.toLowerCase() === 'pre'
+                        ? childrenText
+                        : `\`${childrenText.trim()}\``;
+                case 'pre':
+                    return `\n\`\`\`\n${childrenText.trim()}\n\`\`\`\n`;
+                case 'blockquote':
+                    return `\n> ${childrenText.trim().replace(/\n/g, '\n> ')}\n`;
+                case 'a':
+                    const href = node.getAttribute('href') || '#';
+                    return `[${childrenText.trim() || href}](${href})`;
+                case 'ul': {
+                    const items = Array.from(node.querySelectorAll(':scope > li')).map(li => `- ${parseNode(li).trim()}`);
+                    return `\n${items.join('\n')}\n`;
+                }
+                case 'ol': {
+                    const items = Array.from(node.querySelectorAll(':scope > li')).map((li, idx) => `${idx + 1}. ${parseNode(li).trim()}`);
+                    return `\n${items.join('\n')}\n`;
+                }
+                case 'li':
+                    return childrenText;
+                case 'table': {
+                    const rows = Array.from(node.querySelectorAll('tr'));
+                    if (rows.length === 0) return '';
+                    const tableMatrix = rows.map(r =>
+                        Array.from(r.querySelectorAll('th, td')).map(c => parseNode(c).trim().replace(/\|/g, '\\|'))
+                    );
+                    if (tableMatrix.length === 0) return '';
+
+                    const headerRow = tableMatrix[0];
+                    const headerLine = '| ' + headerRow.join(' | ') + ' |';
+                    const separatorLine = '| ' + headerRow.map(() => '---').join(' | ') + ' |';
+                    const dataLines = tableMatrix.slice(1).map(row => '| ' + row.join(' | ') + ' |');
+
+                    return `\n\n${headerLine}\n${separatorLine}\n${dataLines.join('\n')}\n\n`;
+                }
+                case 'p':
+                case 'div':
+                    return `\n${childrenText}\n`;
+                case 'br':
+                    return '\n';
+                case 'hr':
+                    return '\n---\n';
+                default:
+                    return childrenText;
+            }
+        }
+
+        let result = parseNode(doc.body);
+        return result.replace(/\n{3,}/g, '\n\n').trim();
+    } catch (e) {
+        return '';
+    }
+}
+
 /* ============================================================
    COURSE CONTENT EDITOR — admin block builder for course
-   materials (subbab, paragraf, gambar, kode). The block list is
+   materials (subbab, paragraf, gambar, kode, tabel). The block list is
    serialized to the hidden `konten` input as JSON on submit.
    ============================================================ */
 Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
@@ -612,6 +706,52 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
         textarea.value = value.substring(0, start) + "    " + value.substring(end);
         textarea.selectionStart = textarea.selectionEnd = start + 4;
         textarea.dispatchEvent(new Event('input'));
+    },
+
+    handleSmartPaste(index, e) {
+        if (!this.blocks[index] || this.blocks[index].type !== 'paragraf') return;
+
+        const clipboardData = e.clipboardData || window.clipboardData;
+        if (!clipboardData) return;
+
+        const html = clipboardData.getData('text/html');
+        const plainText = clipboardData.getData('text/plain');
+
+        let formattedText = '';
+
+        if (html && html.trim()) {
+            formattedText = convertHtmlToMarkdown(html);
+        }
+
+        if (!formattedText && plainText) {
+            let lines = plainText.split('\n');
+            let isList = lines.some(line => /^\s*([•*]|\d+[\.\)])\s+/.test(line));
+            if (isList) {
+                formattedText = lines.map(line => {
+                    let bulletMatch = line.match(/^\s*[•*]\s+(.*)/);
+                    if (bulletMatch) return '- ' + bulletMatch[1];
+                    let numMatch = line.match(/^\s*(\d+)[\.\)]\s+(.*)/);
+                    if (numMatch) return numMatch[1] + '. ' + numMatch[2];
+                    return line;
+                }).join('\n');
+            }
+        }
+
+        if (formattedText) {
+            e.preventDefault();
+            const textarea = e.target;
+            const start = textarea.selectionStart || 0;
+            const end = textarea.selectionEnd || 0;
+            const currentText = this.blocks[index].teks || '';
+
+            this.blocks[index].teks = currentText.substring(0, start) + formattedText + currentText.substring(end);
+
+            this.$nextTick(() => {
+                textarea.focus();
+                const newPos = start + formattedText.length;
+                textarea.setSelectionRange(newPos, newPos);
+            });
+        }
     },
 
     // Wrap the selected text of the paragraph with the clicked format. When
@@ -664,6 +804,7 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
             kode: 'Kode',
             link: 'Sisipan Link',
             pembatas: 'Pembatas',
+            tabel: 'Tabel Data',
         }[type] || 'Blok';
     },
 
@@ -689,6 +830,13 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
             base.desc = '';
         } else if (type === 'pembatas') {
             base.style = 'garis';
+        } else if (type === 'tabel') {
+            base.headers = ['Header 1', 'Header 2', 'Header 3'];
+            base.rows = [
+                ['Baris 1 Kolom 1', 'Baris 1 Kolom 2', 'Baris 1 Kolom 3'],
+                ['Baris 2 Kolom 1', 'Baris 2 Kolom 2', 'Baris 2 Kolom 3']
+            ];
+            base.caption = '';
         }
         this.blocks.push(base);
 
@@ -725,6 +873,13 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
             base.desc = '';
         } else if (type === 'pembatas') {
             base.style = 'garis';
+        } else if (type === 'tabel') {
+            base.headers = ['Header 1', 'Header 2', 'Header 3'];
+            base.rows = [
+                ['Baris 1 Kolom 1', 'Baris 1 Kolom 2', 'Baris 1 Kolom 3'],
+                ['Baris 2 Kolom 1', 'Baris 2 Kolom 2', 'Baris 2 Kolom 3']
+            ];
+            base.caption = '';
         }
         this.blocks.splice(index, 0, base);
 
@@ -735,6 +890,39 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
                 const input = el.querySelector('input[type="text"], textarea');
                 if (input) input.focus();
             }
+        });
+    },
+
+    addTableRow(blockIndex) {
+        if (!this.blocks[blockIndex] || this.blocks[blockIndex].type !== 'tabel') return;
+        const colCount = (this.blocks[blockIndex].headers || []).length || 1;
+        const newRow = Array(colCount).fill('');
+        if (!this.blocks[blockIndex].rows) this.blocks[blockIndex].rows = [];
+        this.blocks[blockIndex].rows.push(newRow);
+    },
+
+    removeTableRow(blockIndex, rowIndex) {
+        if (!this.blocks[blockIndex] || this.blocks[blockIndex].type !== 'tabel') return;
+        this.blocks[blockIndex].rows.splice(rowIndex, 1);
+    },
+
+    addTableCol(blockIndex) {
+        if (!this.blocks[blockIndex] || this.blocks[blockIndex].type !== 'tabel') return;
+        if (!this.blocks[blockIndex].headers) this.blocks[blockIndex].headers = [];
+        const nextColNum = this.blocks[blockIndex].headers.length + 1;
+        this.blocks[blockIndex].headers.push(`Header ${nextColNum}`);
+
+        (this.blocks[blockIndex].rows || []).forEach(row => {
+            row.push('');
+        });
+    },
+
+    removeTableCol(blockIndex, colIndex) {
+        if (!this.blocks[blockIndex] || this.blocks[blockIndex].type !== 'tabel') return;
+        if ((this.blocks[blockIndex].headers || []).length <= 1) return;
+        this.blocks[blockIndex].headers.splice(colIndex, 1);
+        (this.blocks[blockIndex].rows || []).forEach(row => {
+            row.splice(colIndex, 1);
         });
     },
 

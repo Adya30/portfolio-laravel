@@ -18,6 +18,16 @@ class AdminUserSeeder extends Seeder
             [
                 'name' => 'Adya Handika Putra AP',
                 'password' => Hash::make('admin123'),
+                'role' => 'admin',
+            ]
+        );
+
+        User::updateOrCreate(
+            ['email' => 'user@materi.com'],
+            [
+                'name' => 'User Materi',
+                'password' => Hash::make('user123'),
+                'role' => 'materi',
             ]
         );
     }

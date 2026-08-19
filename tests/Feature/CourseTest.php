@@ -161,3 +161,32 @@ test('admin course create form has sort_order field', function () {
         ->assertSee('sort_order', false)
         ->assertSee('Urutan Tampil');
 });
+
+test('admin can store and update subbab and it appears in course show', function () {
+    $user = User::factory()->create();
+    $course = Course::create(['nama' => 'Materi Pemrograman Web']);
+
+    $this->actingAs($user)
+        ->post(route('admin.courses.subbab.store', $course))
+        ->assertRedirect();
+
+    $course->refresh();
+    expect($course->konten)->toHaveCount(1);
+    expect($course->konten[0]['type'])->toBe('subbab');
+
+    $this->actingAs($user)
+        ->put(route('admin.courses.subbab.update', [$course, 0]), [
+            'konten' => json_encode([
+                ['type' => 'subbab', 'judul' => 'Pengenalan HTML'],
+                ['type' => 'paragraf', 'teks' => 'HTML adalah bahasa markah.'],
+            ]),
+        ])
+        ->assertRedirect(route('admin.courses.subbab.edit', [$course, 0]));
+
+    $course->refresh();
+    expect($course->konten[0]['judul'])->toBe('Pengenalan HTML');
+
+    $this->get(route('course.show', $course))
+        ->assertOk()
+        ->assertSee('Pengenalan HTML');
+});

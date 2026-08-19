@@ -8,12 +8,17 @@ use App\Models\Course;
 use App\Models\Experience;
 use App\Models\Project;
 use App\Models\Tool;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function index(): View
+    public function index(): View|RedirectResponse
     {
+        if (auth()->user()?->isMateriOnly()) {
+            return redirect()->route('admin.courses.index');
+        }
+
         return view('admin.dashboard', [
             'projectsCount' => Project::count(),
             'toolsCount' => Tool::count(),

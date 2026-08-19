@@ -300,6 +300,39 @@
                             @elseif ($style === 'spasi')
                                 <div class="my-8"></div>
                             @endif
+                        @elseif ($type === 'tabel')
+                            @php
+                                $headers = $block['headers'] ?? [];
+                                $rows = $block['rows'] ?? [];
+                                $caption = $block['caption'] ?? '';
+                            @endphp
+                            <div class="my-6 space-y-2">
+                                <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-white/10 shadow-sm bg-white dark:bg-[#0d1117]">
+                                    <table class="w-full text-left text-xs sm:text-sm text-slate-700 dark:text-slate-200 divide-y divide-slate-200 dark:divide-slate-800">
+                                        @if (! empty($headers))
+                                            <thead class="bg-slate-50 dark:bg-slate-800/60 font-semibold text-slate-900 dark:text-white">
+                                                <tr>
+                                                    @foreach ($headers as $head)
+                                                        <th class="px-4 py-3 border-b border-slate-200 dark:border-slate-800">{!! render_markdown($head) !!}</th>
+                                                    @endforeach
+                                                </tr>
+                                            </thead>
+                                        @endif
+                                        <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 font-normal">
+                                            @foreach ($rows as $row)
+                                                <tr class="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
+                                                    @foreach ($row as $cell)
+                                                        <td class="px-4 py-3 leading-relaxed">{!! render_markdown($cell) !!}</td>
+                                                    @endforeach
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                                @if ($caption)
+                                    <p class="text-center text-xs text-slate-500 dark:text-slate-400 italic">{{ $caption }}</p>
+                                @endif
+                            </div>
                         @endif
                     @endforeach
                 </article>
