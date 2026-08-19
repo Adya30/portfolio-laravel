@@ -198,7 +198,7 @@
                                     default => 'text-left',
                                 };
                             @endphp
-                            <div class="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed markdown-content {{ $alignClass }}">
+                            <div class="text-sm sm:text-base text-slate-700 dark:text-white leading-relaxed markdown-content {{ $alignClass }}">
                                 {!! render_markdown($block['teks'] ?? '') !!}
                             </div>
                         @elseif ($type === 'gambar')
