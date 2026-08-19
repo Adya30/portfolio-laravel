@@ -35,7 +35,18 @@ if (! function_exists('render_markdown')) {
         // Strip any remaining tags that aren't in our whitelist.
         $allowed = '<p><br><strong><em><u><s><del><ul><ol><li><blockquote><code><pre><a><hr><h1><h2><h3><h4><h5><h6><table><thead><tbody><tr><th><td>';
 
-        return strip_tags($html, $allowed);
+        $html = strip_tags($html, $allowed);
+
+        // Add slugified IDs to heading tags so in-page anchor links and
+        // the table-of-contents sidebar can target them.
+        $html = preg_replace_callback('/<h([1-6])>(.*?)<\/h\1>/', function ($m) {
+            $level = $m[1];
+            $inner = $m[2];
+            $slug = Str::slug(strip_tags($inner));
+            return '<h'.$level.' id="'.$slug.'">'.$inner.'</h'.$level.'>';
+        }, $html);
+
+        return $html;
     }
 }
 

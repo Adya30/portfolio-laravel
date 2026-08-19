@@ -40,7 +40,7 @@ test('course index page shows material panels', function () {
         ->assertSee('Struktur halaman web dengan semantic HTML dan CSS.');
 });
 
-test('course detail page renders subbab, paragraph, and code blocks', function () {
+test('course show page lists subbab overview with links to detail', function () {
     $course = Course::create([
         'nama' => 'JavaScript Dasar',
         'desk' => 'Variabel, fungsi, dan manipulasi DOM.',
@@ -55,31 +55,45 @@ test('course detail page renders subbab, paragraph, and code blocks', function (
         ->assertOk()
         ->assertSee('JavaScript Dasar')
         ->assertSee('Variabel')
-        ->assertSee('JavaScript membuat halaman web interaktif.')
-        ->assertSee("const nama = 'Adya';")
-        ->assertSee('language-javascript', false)
-        ->assertSee('Sub Heading')
-        ->assertSee('#subbab-0', false)
-        ->assertSee('tocSpy', false);
+        ->assertSee('Daftar Subbab')
+        ->assertSee(route('course.subbab', [$course, 0]), false);
 });
 
-test('course detail page renders a collapsible sidebar toggle', function () {
+test('course subbab detail page renders content blocks', function () {
     $course = Course::create([
         'nama' => 'JavaScript Dasar',
         'desk' => 'Variabel, fungsi, dan manipulasi DOM.',
+        'konten' => [
+            ['type' => 'subbab', 'judul' => 'Variabel', 'judul_idn' => 'Variabel'],
+            ['type' => 'paragraf', 'teks' => 'JavaScript membuat halaman web interaktif.', 'teks_idn' => 'JavaScript membuat halaman web interaktif.'],
+            ['type' => 'kode', 'bahasa' => 'javascript', 'kode' => "const nama = 'Adya';"],
+        ],
     ]);
 
-    $this->get(route('course.show', $course))
+    $this->get(route('course.subbab', [$course, 0]))
         ->assertOk()
-        ->assertSee('toggleSidebar', false)
-        ->assertSee('@click="toggleSidebar"', false)
-        ->assertSee('translate-x-0', false)
-        ->assertSee('lg:w-16', false)
-        ->assertSee('ri-menu-line text-lg hidden lg:block', false)
-        ->assertSee("sidebarOpen ? 'lg:pl-[22rem]' : 'lg:pl-[5.5rem]'", false)
-        ->assertSee('xl:pr-[19rem]', false)
-        ->assertSee('ri-menu-line', false)
-        ->assertSee('ri-menu-unfold-line', false);
+        ->assertSee('Variabel')
+        ->assertSee('JavaScript membuat halaman web interaktif.')
+        ->assertSee("const nama = 'Adya';")
+        ->assertSee('language-javascript', false);
+});
+
+test('course subbab detail page has sidebar navigation', function () {
+    $course = Course::create([
+        'nama' => 'JavaScript Dasar',
+        'desk' => 'Variabel, fungsi, dan manipulasi DOM.',
+        'konten' => [
+            ['type' => 'subbab', 'judul' => 'Variabel', 'judul_idn' => null],
+            ['type' => 'subbab', 'judul' => 'Fungsi', 'judul_idn' => null],
+        ],
+    ]);
+
+    $this->get(route('course.subbab', [$course, 0]))
+        ->assertOk()
+        ->assertSee('Variabel')
+        ->assertSee('Fungsi')
+        ->assertSee(route('course.subbab', [$course, 0]), false)
+        ->assertSee(route('course.subbab', [$course, 1]), false);
 });
 
 test('admin show page lists the materi subbabs with editor links', function () {
@@ -99,8 +113,8 @@ test('admin show page lists the materi subbabs with editor links', function () {
         ->assertOk()
         ->assertSee('Apa itu Laravel?')
         ->assertSee('Routing')
-        ->assertSee('#blok-0', false)
-        ->assertSee('#blok-3', false);
+        ->assertSee(route('admin.courses.subbab.edit', [$course, 0]), false)
+        ->assertSee(route('admin.courses.subbab.edit', [$course, 3]), false);
 });
 
 test('admin course form renders the block editor', function () {
@@ -121,7 +135,7 @@ test('course pages do not include the portfolio navbar menu', function () {
 
     $this->get(route('course.index'))
         ->assertOk()
-        ->assertDontSee("scrollToSection(\$event, '#proyek')", false);
+        ->assertDontSee("scrollToSection", false);
 });
 
 test('admin can upload a webp image for a content block', function () {
@@ -136,4 +150,14 @@ test('admin can upload a webp image for a content block', function () {
         ], ['Accept' => 'application/json'])
         ->assertOk()
         ->assertJsonStructure(['url']);
+});
+
+test('admin course create form has sort_order field', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)
+        ->get(route('admin.courses.create'))
+        ->assertOk()
+        ->assertSee('sort_order', false)
+        ->assertSee('Urutan Tampil');
 });

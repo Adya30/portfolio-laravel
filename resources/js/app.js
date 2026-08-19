@@ -142,6 +142,11 @@ const i18n = {
         copied: 'Copied!',
         toggleSidebar: 'Toggle sidebar',
         onThisPage: 'Sub Heading',
+        subchapters: 'Subbab',
+        tableOfContents: 'Daftar Subbab',
+        subchapter: 'Subbab',
+        previousSubchapter: 'Previous Subchapter',
+        nextSubchapter: 'Next Subchapter',
     },
     id: {
         navHome: 'Beranda',
@@ -232,6 +237,11 @@ const i18n = {
         copied: 'Tersalin!',
         toggleSidebar: 'Buka/Tutup sidebar',
         onThisPage: 'Di Halaman Ini',
+        subchapters: 'Subbab',
+        tableOfContents: 'Daftar Subbab',
+        subchapter: 'Subbab',
+        previousSubchapter: 'Subbab Sebelumnya',
+        nextSubchapter: 'Subbab Berikutnya',
     },
 };
 
@@ -547,6 +557,7 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
     blockLabel(type) {
         return {
             subbab: 'Subbab',
+            subheading: 'Sub Heading',
             paragraf: 'Paragraf',
             gambar: 'Gambar',
             kode: 'Kode',
@@ -559,6 +570,8 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
         const base = { type };
         if (type === 'subbab') {
             base.judul = '';
+        } else if (type === 'subheading') {
+            base.teks = '';
         } else if (type === 'paragraf') {
             base.teks = '';
         } else if (type === 'gambar') {
@@ -582,6 +595,8 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
         const base = { type };
         if (type === 'subbab') {
             base.judul = '';
+        } else if (type === 'subheading') {
+            base.teks = '';
         } else if (type === 'paragraf') {
             base.teks = '';
         } else if (type === 'gambar') {
@@ -689,7 +704,7 @@ Alpine.data('tocSpy', () => ({
     active: '',
 
     init() {
-        const ids = Array.from(this.$el.querySelectorAll('a[href^="#subbab-"]'))
+        const ids = Array.from(this.$el.querySelectorAll('a[href^="#"]'))
             .map((a) => a.getAttribute('href').slice(1));
         const sections = ids.map((id) => document.getElementById(id)).filter(Boolean);
         if (!sections.length || typeof IntersectionObserver === 'undefined') return;

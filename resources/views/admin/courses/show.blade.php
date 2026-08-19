@@ -15,10 +15,13 @@
                 <p class="text-sm text-slate-500 mt-0.5 line-clamp-2">{{ $course->desk }}</p>
             @endif
         </div>
-        <a href="{{ route('admin.courses.edit', $course) }}"
-           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-accent text-white text-sm font-semibold hover:bg-blue-600 hover:-translate-y-0.5 transition-all shadow-sm">
-            <i class="ri-stack-line"></i>Kelola Semua Isi Materi
-        </a>
+        <form method="POST" action="{{ route('admin.courses.subbab.store', $course) }}">
+            @csrf
+            <button type="submit"
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-accent text-white text-sm font-semibold hover:bg-blue-600 hover:-translate-y-0.5 transition-all shadow-sm">
+                <i class="ri-add-line"></i>Tambah Subbab
+            </button>
+        </form>
     </div>
 
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-6">
@@ -28,24 +31,21 @@
                     <i class="ri-bookmark-line text-accent"></i>Daftar Subbab Materi
                     <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-accent/10 text-accent">{{ count($subbabs) }}</span>
                 </h3>
-                <p class="text-xs text-slate-400 mt-0.5">Pilih subbab di bawah untuk langsung mengedit isi atau mengelola blok materi</p>
             </div>
-            <a href="{{ route('admin.courses.edit', $course) }}"
-               class="text-xs font-semibold text-accent hover:underline flex items-center gap-1">
-                <span>Buka Editor Blok</span>
-                <i class="ri-edit-line"></i>
-            </a>
         </div>
 
         @if (empty($subbabs))
             <div class="py-14 text-center text-slate-400">
                 <i class="ri-bookmark-line text-4xl block mb-3 text-slate-300"></i>
                 <p class="text-sm font-semibold text-slate-600">Belum ada subbab pada materi ini.</p>
-                <p class="text-xs text-slate-400 mt-1">Buka <strong>"Kelola Semua Isi Materi"</strong> lalu tambahkan blok Subbab untuk memulai.</p>
-                <a href="{{ route('admin.courses.edit', $course) }}"
-                   class="inline-flex items-center gap-2 mt-4 px-4 py-2.5 rounded-xl bg-accent text-white text-sm font-semibold hover:bg-blue-600 transition-colors">
-                    <i class="ri-stack-line"></i>Kelola Semua Isi Materi
-                </a>
+                <p class="text-xs text-slate-400 mt-1">Klik tombol <strong>"Tambah Subbab"</strong> untuk membuat subbab baru.</p>
+                <form method="POST" action="{{ route('admin.courses.subbab.store', $course) }}">
+                    @csrf
+                    <button type="submit"
+                            class="inline-flex items-center gap-2 mt-4 px-4 py-2.5 rounded-xl bg-accent text-white text-sm font-semibold hover:bg-blue-600 transition-colors">
+                        <i class="ri-add-line"></i>Tambah Subbab
+                    </button>
+                </form>
             </div>
         @else
             <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -64,27 +64,21 @@
                                     {{ $subbab['judul'] ?: 'Subbab '.($i + 1) }}
                                 </h4>
                             </div>
-
-                            <div class="flex flex-wrap items-center gap-2 pt-1 text-[11px] text-slate-500">
-                                <span class="px-2 py-1 rounded-md bg-white border border-slate-200/60 inline-flex items-center gap-1">
-                                    <i class="ri-paragraph text-slate-400"></i>{{ $subbab['stats']['paragraf'] }} Paragraf
-                                </span>
-                                <span class="px-2 py-1 rounded-md bg-white border border-slate-200/60 inline-flex items-center gap-1">
-                                    <i class="ri-image-line text-slate-400"></i>{{ $subbab['stats']['gambar'] }} Gambar
-                                </span>
-                                <span class="px-2 py-1 rounded-md bg-white border border-slate-200/60 inline-flex items-center gap-1">
-                                    <i class="ri-code-box-line text-slate-400"></i>{{ $subbab['stats']['kode'] }} Kode
-                                </span>
-                            </div>
                         </div>
 
                         <div class="pt-4 mt-4 border-t border-slate-200/60 flex items-center justify-between">
-                            <span class="text-xs text-slate-400">Blok #{{ $subbab['block_index'] + 1 }}</span>
-                            <a href="{{ route('admin.courses.edit', $course).'#blok-'.$subbab['block_index'] }}"
-                               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-accent text-white text-xs font-semibold hover:bg-blue-600 transition-colors">
-                                <span>Edit Isi</span>
-                                <i class="ri-arrow-right-line text-xs"></i>
-                            </a>
+                            <span class="text-xs text-slate-400">{{ count($subbabs) > 1 ? ($i + 1).'/'.count($subbabs) : '' }}</span>
+                            <div class="flex items-center gap-1.5">
+                                <x-admin.delete-modal
+                                    :action="route('admin.courses.subbab.destroy', [$course, $subbab['block_index']])"
+                                    item-name="{{ $subbab['judul'] ?: 'Subbab '.($i + 1) }}"
+                                    item-type="subbab" />
+                                <a href="{{ route('admin.courses.subbab.edit', [$course, $subbab['block_index']]) }}"
+                                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-accent text-white text-xs font-semibold hover:bg-blue-600 transition-colors">
+                                    <i class="ri-edit-line"></i>
+                                    <span>Edit</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 @endforeach

@@ -36,7 +36,7 @@ class CourseController extends Controller
                     'block_index' => $i,
                     'judul' => $block['judul'] ?? '',
                     'judul_idn' => $block['judul_idn'] ?? null,
-                    'stats' => ['paragraf' => 0, 'gambar' => 0, 'kode' => 0],
+                    'stats' => ['paragraf' => 0, 'gambar' => 0, 'kode' => 0, 'subheading' => 0],
                 ];
                 $subbabs[] = $current;
             } elseif ($current !== null && array_key_exists($type, $subbabs[count($subbabs) - 1]['stats'])) {
@@ -87,12 +87,158 @@ class CourseController extends Controller
             'nama_idn' => $data['nama_idn'] ?? null,
             'desk' => $data['desk'] ?? null,
             'desk_idn' => $data['desk_idn'] ?? null,
-            'konten' => $this->decodeBlocks($request),
             'gambar' => $this->resolveImage($request, 'courses', $course->gambar),
             'sort_order' => $data['sort_order'] ?? $course->sort_order,
         ]);
 
-        return redirect()->route('admin.courses.index')->with('success', 'Materi berhasil diperbarui.');
+        return redirect()->route('admin.courses.show', $course)->with('success', 'Informasi materi berhasil diperbarui.');
+    }
+
+    /**
+     * Edit a single subbab's blocks. Extracts the blocks belonging to this
+     * subbab (from this subbab to the next one) and presents them in a
+     * focused block editor.
+     */
+    public function editSubbab(Course $course, int $blockIndex): View
+    {
+        $allBlocks = $course->konten ?? [];
+
+        if (! isset($allBlocks[$blockIndex]) || ($allBlocks[$blockIndex]['type'] ?? '') !== 'subbab') {
+            abort(404);
+        }
+
+        // Find all subbab indices
+        $subbabIndices = [];
+        foreach ($allBlocks as $i => $block) {
+            if (($block['type'] ?? '') === 'subbab') {
+                $subbabIndices[] = $i;
+            }
+        }
+
+        // Find this subbab's position in the subbab list
+        $pos = array_search($blockIndex, $subbabIndices, true);
+
+        // Extract blocks for this subbab (from this index to the next subbab or end)
+        $end = isset($subbabIndices[$pos + 1]) ? $subbabIndices[$pos + 1] : count($allBlocks);
+        $subbabBlocks = array_slice($allBlocks, $blockIndex, $end - $blockIndex);
+
+        // Build subbab navigation list
+        $subbabs = [];
+        foreach ($subbabIndices as $si) {
+            $subbabs[] = [
+                'block_index' => $si,
+                'judul' => $allBlocks[$si]['judul'] ?? '',
+            ];
+        }
+
+        return view('admin.courses.edit-subbab', [
+            'course' => $course,
+            'subbabBlocks' => $subbabBlocks,
+            'blockIndex' => $blockIndex,
+            'subbabs' => $subbabs,
+            'currentPos' => $pos,
+            'prevSubbab' => $pos > 0 ? $subbabs[$pos - 1] : null,
+            'nextSubbab' => $pos < count($subbabs) - 1 ? $subbabs[$pos + 1] : null,
+            'subbabTitle' => $allBlocks[$blockIndex]['judul'] ?? 'Subbab '.($pos + 1),
+        ]);
+    }
+
+    /**
+     * Update a single subbab's blocks. Splices the new blocks back into the
+     * full konten array at the correct position.
+     */
+    public function updateSubbab(Request $request, Course $course, int $blockIndex): RedirectResponse
+    {
+        $allBlocks = $course->konten ?? [];
+
+        if (! isset($allBlocks[$blockIndex]) || ($allBlocks[$blockIndex]['type'] ?? '') !== 'subbab') {
+            abort(404);
+        }
+
+        // Find all subbab indices
+        $subbabIndices = [];
+        foreach ($allBlocks as $i => $block) {
+            if (($block['type'] ?? '') === 'subbab') {
+                $subbabIndices[] = $i;
+            }
+        }
+
+        $pos = array_search($blockIndex, $subbabIndices, true);
+        $end = isset($subbabIndices[$pos + 1]) ? $subbabIndices[$pos + 1] : count($allBlocks);
+
+        // Decode new blocks from editor
+        $newBlocks = $this->decodeBlocks($request);
+
+        // If empty, preserve at least the subbab heading block
+        if (empty($newBlocks)) {
+            $newBlocks = [$allBlocks[$blockIndex]];
+        }
+
+        // Splice: replace blocks [$blockIndex .. $end) with new blocks
+        $before = array_slice($allBlocks, 0, $blockIndex);
+        $after = array_slice($allBlocks, $end);
+        $merged = array_merge($before, $newBlocks, $after);
+
+        $course->update(['konten' => $merged]);
+
+        $subbabTitle = $allBlocks[$blockIndex]['judul'] ?? 'Subbab';
+
+        return redirect()->route('admin.courses.subbab.edit', [$course, $blockIndex])
+            ->with('success', 'Subbab "'.$subbabTitle.'" berhasil diperbarui.');
+    }
+
+    /**
+     * Add a new empty subbab block at the end of the course content
+     * and redirect to its editor.
+     */
+    public function storeSubbab(Course $course): RedirectResponse
+    {
+        $blocks = $course->konten ?? [];
+
+        // Append a new empty subbab block
+        $blocks[] = ['type' => 'subbab', 'judul' => '', 'judul_idn' => null];
+        $newIndex = count($blocks) - 1;
+
+        $course->update(['konten' => $blocks]);
+
+        return redirect()->route('admin.courses.subbab.edit', [$course, $newIndex])
+            ->with('success', 'Subbab baru berhasil ditambahkan. Silakan isi judul dan kontennya.');
+    }
+
+    /**
+     * Delete a single subbab and all its child blocks from the course content.
+     */
+    public function destroySubbab(Course $course, int $blockIndex): RedirectResponse
+    {
+        $allBlocks = $course->konten ?? [];
+
+        if (! isset($allBlocks[$blockIndex]) || ($allBlocks[$blockIndex]['type'] ?? '') !== 'subbab') {
+            abort(404);
+        }
+
+        // Find all subbab indices
+        $subbabIndices = [];
+        foreach ($allBlocks as $i => $block) {
+            if (($block['type'] ?? '') === 'subbab') {
+                $subbabIndices[] = $i;
+            }
+        }
+
+        $pos = array_search($blockIndex, $subbabIndices, true);
+        $end = isset($subbabIndices[$pos + 1]) ? $subbabIndices[$pos + 1] : count($allBlocks);
+
+        // Remove blocks from $blockIndex to $end (exclusive)
+        $before = array_slice($allBlocks, 0, $blockIndex);
+        $after = array_slice($allBlocks, $end);
+        $merged = array_merge($before, $after);
+
+        // If all blocks removed, set to null
+        $course->update(['konten' => $merged === [] ? null : $merged]);
+
+        $subbabTitle = $allBlocks[$blockIndex]['judul'] ?? 'Subbab';
+
+        return redirect()->route('admin.courses.show', $course)
+            ->with('success', 'Subbab "'.$subbabTitle.'" berhasil dihapus.');
     }
 
     public function destroy(Course $course): RedirectResponse
@@ -179,7 +325,7 @@ class CourseController extends Controller
             return null;
         }
 
-        $allowed = ['subbab', 'paragraf', 'gambar', 'kode'];
+        $allowed = ['subbab', 'subheading', 'paragraf', 'gambar', 'kode', 'link', 'pembatas'];
 
         return collect($decoded)
             ->filter(fn ($block) => is_array($block) && isset($block['type']) && in_array($block['type'], $allowed, true))

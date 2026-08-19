@@ -1,5 +1,7 @@
 @php
-    $blocksValue = old('konten', ($course ?? null)?->konten ?? []);
+    if (! isset($blocksValue)) {
+        $blocksValue = old('konten', ($course ?? null)?->konten ?? []);
+    }
     if (is_string($blocksValue)) {
         $blocksValue = json_decode($blocksValue, true) ?: [];
     }
@@ -14,11 +16,9 @@
     <div class="bg-white border border-slate-300 rounded-2xl shadow-xl p-6 sm:p-10 max-w-4xl mx-auto space-y-5 min-h-[550px] relative">
         {{-- Paper Top Ruler Line --}}
         <div class="border-b-2 border-dashed border-slate-200 pb-3 flex items-center justify-between text-xs text-slate-400 font-mono select-none">
-            <span>[ Halaman Dokumen Materi ]</span>
-            <span>Word & Blogger Worksheet Canvas</span>
+            <span>Halaman Materi</span>
         </div>
 
-        {{-- Insert Block Toolbar --}}
         <div class="flex flex-wrap items-center gap-2 -mt-2">
             <div class="relative" x-data="{ blockMenuOpen: false }">
                 <button type="button" @click="blockMenuOpen = !blockMenuOpen"
@@ -28,9 +28,15 @@
                 </button>
                 <div x-show="blockMenuOpen" x-cloak @click.outside="blockMenuOpen = false"
                      class="absolute left-0 top-full mt-1.5 z-20 w-48 bg-white border border-slate-200 rounded-xl shadow-lg p-1.5 space-y-0.5">
+                    @if (! ($hideSubbab ?? false))
                     <button type="button" @click="addBlock('subbab'); blockMenuOpen = false"
                             class="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-left text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-accent transition-colors">
                         <i class="ri-heading text-accent text-sm"></i> Subbab
+                    </button>
+                    @endif
+                    <button type="button" @click="addBlock('subheading'); blockMenuOpen = false"
+                            class="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-left text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-accent transition-colors">
+                        <i class="ri-h-2 text-accent text-sm"></i> Sub Heading
                     </button>
                     <button type="button" @click="addBlock('paragraf'); blockMenuOpen = false"
                             class="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-left text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-accent transition-colors">
@@ -54,13 +60,11 @@
                     </button>
                 </div>
             </div>
-            <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400">Sisipkan blok baru ke lembar kerja dokumen</span>
         </div>
 
         <template x-for="(block, i) in blocks" :key="i">
             <div class="group relative">
 
-                {{-- Document Block Element --}}
                 <div :id="'blok-' + i"
                      draggable="true"
                      @dragstart="dragStart(i, $event)"
@@ -82,7 +86,6 @@
                             <span class="text-xs text-slate-400 font-semibold">#<span x-text="i + 1"></span></span>
                         </div>
 
-                        {{-- Action Buttons --}}
                         <div class="flex items-center gap-1">
                             <button type="button" @click="moveBlock(i, -1)"
                                     class="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer" title="Naik">
@@ -105,6 +108,16 @@
                             <label class="block text-xs font-bold text-slate-500 mb-1.5">Judul Subbab (Subjudul Utama)</label>
                             <input type="text" x-model="block.judul" placeholder="Tulis judul subbab di sini..."
                                    class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-base font-poppins font-bold text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/15 transition-all">
+                        </div>
+                    </template>
+
+                    {{-- 1b. Sub Heading --}}
+                    <template x-if="block.type === 'subheading'">
+                        <div class="pt-1">
+                            <label class="block text-xs font-bold text-slate-500 mb-1.5">Sub Heading (Judul Bagian)</label>
+                            <input type="text" x-model="block.teks" placeholder="Tulis sub heading di sini..."
+                                   class="w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm font-poppins font-semibold text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent focus:bg-white focus:ring-4 focus:ring-accent/15 transition-all">
+                            <p class="text-[11px] text-slate-400 mt-1">Judul bagian di dalam subbab. Tampil sebagai heading kecil di antara paragraf.</p>
                         </div>
                     </template>
 
@@ -300,7 +313,10 @@
                 <div class="py-2 flex items-center justify-center opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
                     <div class="inline-flex items-center gap-1 bg-white border border-slate-300 rounded-full px-3 py-1 shadow-md text-xs font-bold text-slate-700">
                         <span class="text-[10px] text-slate-400 mr-1 uppercase">Sisipkan di sini:</span>
+                        @if (! ($hideSubbab ?? false))
                         <button type="button" @click="addBlockAt('subbab', i + 1)" class="px-2 py-0.5 rounded-md hover:bg-slate-100 hover:text-accent transition-colors">+ Subbab</button>
+                        @endif
+                        <button type="button" @click="addBlockAt('subheading', i + 1)" class="px-2 py-0.5 rounded-md hover:bg-slate-100 hover:text-accent transition-colors">+ Sub Heading</button>
                         <button type="button" @click="addBlockAt('paragraf', i + 1)" class="px-2 py-0.5 rounded-md hover:bg-slate-100 hover:text-accent transition-colors">+ Paragraf</button>
                         <button type="button" @click="addBlockAt('gambar', i + 1)" class="px-2 py-0.5 rounded-md hover:bg-slate-100 hover:text-accent transition-colors">+ Gambar</button>
                         <button type="button" @click="addBlockAt('kode', i + 1)" class="px-2 py-0.5 rounded-md hover:bg-slate-100 hover:text-accent transition-colors">+ Kode</button>
@@ -322,7 +338,10 @@
                 Gunakan toolbar di atas untuk menyisipkan subbab, teks penjelasan, gambar ilustrasi, atau contoh kode berwarna ke dalam lembar kerja.
             </p>
             <div class="pt-2 flex flex-wrap items-center justify-center gap-2">
+                @if (! ($hideSubbab ?? false))
                 <button type="button" @click="addBlock('subbab')" class="px-3 py-1.5 rounded-xl bg-accent text-white text-xs font-bold hover:bg-blue-600 transition-colors">+ Subbab</button>
+                @endif
+                <button type="button" @click="addBlock('subheading')" class="px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-colors">+ Sub Heading</button>
                 <button type="button" @click="addBlock('paragraf')" class="px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-colors">+ Paragraf</button>
                 <button type="button" @click="addBlock('gambar')" class="px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-colors">+ Gambar</button>
                 <button type="button" @click="addBlock('kode')" class="px-3 py-1.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-colors">+ Kode</button>

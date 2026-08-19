@@ -28,6 +28,7 @@ Route::get('/robots.txt', function () {
 
 Route::get('/course', [LandingController::class, 'courseIndex'])->name('course.index');
 Route::get('/course/{course}', [LandingController::class, 'showCourse'])->name('course.show');
+Route::get('/course/{course}/subbab/{index}', [LandingController::class, 'showSubbab'])->name('course.subbab');
 
 Route::get('/project/{project}', [LandingController::class, 'showProject'])->name('project.show');
 Route::get('/experience/{experience}', [LandingController::class, 'showExperience'])->name('experience.show');
@@ -50,6 +51,10 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::post('experiences/reorder', [ExperienceController::class, 'reorder'])->name('experiences.reorder');
     Route::post('courses/reorder', [CourseController::class, 'reorder'])->name('courses.reorder');
     Route::post('courses/upload-image', [CourseController::class, 'uploadBlockImage'])->name('courses.upload-image');
+    Route::get('courses/{course}/subbab/{blockIndex}/edit', [CourseController::class, 'editSubbab'])->name('courses.subbab.edit');
+    Route::put('courses/{course}/subbab/{blockIndex}', [CourseController::class, 'updateSubbab'])->name('courses.subbab.update');
+    Route::post('courses/{course}/subbab', [CourseController::class, 'storeSubbab'])->name('courses.subbab.store');
+    Route::delete('courses/{course}/subbab/{blockIndex}', [CourseController::class, 'destroySubbab'])->name('courses.subbab.destroy');
 
     Route::resource('categories', CategoryController::class);
     Route::resource('courses', CourseController::class);

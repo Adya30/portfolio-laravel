@@ -8,12 +8,12 @@
 
         <header class="text-center mb-10 sm:mb-12" data-aos="fade-up" data-aos-duration="600">
             <h1 class="font-poppins text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white tracking-tight mb-3 leading-tight">
-                <span x-text="t('courseTitle')">Course Programming</span>
+                <span x-text="t('courseTitle')">Materi Pembelajaran</span>
             </h1>
 
             <p class="max-w-2xl mx-auto text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed"
                x-text="t('courseSubtitle')">
-                Collection of structured Course Programming to sharpen your skills in web development, programming, and UI design.
+                Kumpulan materi belajar untuk mengasah keahlianmu di bidang pengembangan web, pemrograman, dan desain UI.
             </p>
         </header>
 
@@ -22,8 +22,8 @@
                 <div class="w-14 h-14 mx-auto mb-4 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 flex items-center justify-center text-3xl">
                     <i class="ri-book-open-line"></i>
                 </div>
-                <h3 class="font-poppins text-lg font-semibold text-slate-900 dark:text-white mb-2" x-text="t('noCoursesYet')">No materials have been added yet.</h3>
-                <p class="text-sm text-slate-600 dark:text-slate-400">Check back later for new programming tutorials and guides.</p>
+                <h3 class="font-poppins text-lg font-semibold text-slate-900 dark:text-white mb-2" x-text="t('noCoursesYet')">Belum ada materi yang ditambahkan.</h3>
+                <p class="text-sm text-slate-600 dark:text-slate-400">Nantikan tutorial dan panduan programming terbaru.</p>
             </div>
         @else
             <div x-data="courseSearch" class="space-y-8">
@@ -34,7 +34,7 @@
                         <input type="text"
                                x-model="query"
                                @input="filter()"
-                               placeholder="Cari course..."
+                               placeholder="Cari materi..."
                                maxlength="100"
                                autocomplete="off"
                                autocorrect="off"
@@ -47,7 +47,7 @@
                     </div>
                     <p x-show="query.length > 0 && visibleCount === 0" x-cloak
                        class="mt-3 text-center text-sm text-slate-500 dark:text-slate-400">
-                        Tidak ditemukan course yang cocok dengan "<span x-text="query"></span>".
+                        Tidak ditemukan materi yang cocok dengan "<span x-text="query"></span>".
                     </p>
                 </div>
 
@@ -94,7 +94,7 @@
 
                                 <div class="mt-4 pt-4 border-t border-slate-100 dark:border-white/10 flex items-center justify-between">
                                     <span class="text-sm font-medium text-blue-600 dark:text-blue-400 group-hover:underline">
-                                        <span x-text="t('viewDetails')">View Details</span>
+                                        <span x-text="t('viewDetails')">Lihat Detail</span>
                                     </span>
                                     <i class="ri-arrow-right-line text-blue-600 dark:text-blue-400 text-base transition-transform duration-300 group-hover:translate-x-1"></i>
                                 </div>

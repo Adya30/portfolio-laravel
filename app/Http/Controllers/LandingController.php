@@ -134,6 +134,60 @@ class LandingController extends Controller
         ]);
     }
 
+    public function showSubbab(Course $course, int $index): View
+    {
+        $blocks = $course->konten ?? [];
+
+        // Find all subbab indices
+        $subbabIndices = [];
+        foreach ($blocks as $i => $block) {
+            if (($block['type'] ?? '') === 'subbab') {
+                $subbabIndices[] = $i;
+            }
+        }
+
+        if (empty($subbabIndices) || ! in_array($index, $subbabIndices, true)) {
+            abort(404);
+        }
+
+        // Extract blocks for this subbab (from this subbab to the next subbab or end)
+        $pos = array_search($index, $subbabIndices, true);
+        $start = $index;
+        $end = isset($subbabIndices[$pos + 1]) ? $subbabIndices[$pos + 1] : count($blocks);
+        $subbabBlocks = array_slice($blocks, $start, $end - $start);
+
+        // Build subbab list for navigation
+        $subbabs = [];
+        foreach ($subbabIndices as $si) {
+            $subbabs[] = [
+                'index' => $si,
+                'judul' => $blocks[$si]['judul'] ?? '',
+            ];
+        }
+
+        $subbabPos = $pos;
+
+        $codeLangs = ['php', 'javascript', 'typescript', 'html', 'css', 'sql', 'python', 'bash', 'json', 'csharp', 'java'];
+
+        return view('course.subbab', [
+            'course' => $course,
+            'subbabBlocks' => $subbabBlocks,
+            'subbabs' => $subbabs,
+            'currentSubbabIndex' => $index,
+            'currentSubbabPos' => $subbabPos,
+            'allCourses' => Course::orderBy('sort_order')->get(),
+            'codeLangs' => $codeLangs,
+            'prevSubbab' => $subbabPos > 0 ? $subbabs[$subbabPos - 1] : null,
+            'nextSubbab' => $subbabPos < count($subbabs) - 1 ? $subbabs[$subbabPos + 1] : null,
+            'activeNav' => 'course',
+            'seo' => [
+                'title' => ($blocks[$index]['judul'] ?? '').' | '.$course->nama,
+                'description' => $course->desk ?? $course->nama,
+                'url' => route('course.subbab', [$course, $index]),
+            ],
+        ]);
+    }
+
     public function showProject(Project $project): View
     {
         $allTools = Tool::orderBy('sort_order')->get();
