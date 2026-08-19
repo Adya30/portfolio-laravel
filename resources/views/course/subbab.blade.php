@@ -194,7 +194,16 @@
                                 {{ $block['teks'] ?? '' }}
                             </h2>
                         @elseif ($type === 'paragraf')
-                            <div class="text-base sm:text-lg text-slate-700 dark:text-slate-300 leading-relaxed markdown-content">
+                            @php
+                                $align = $block['align'] ?? 'kiri';
+                                $alignClass = match($align) {
+                                    'tengah' => 'text-center',
+                                    'kanan' => 'text-right',
+                                    'justify' => 'text-justify',
+                                    default => 'text-left',
+                                };
+                            @endphp
+                            <div class="text-base sm:text-lg text-slate-700 dark:text-slate-300 leading-relaxed markdown-content {{ $alignClass }}">
                                 {!! render_markdown($block['teks'] ?? '') !!}
                             </div>
                         @elseif ($type === 'gambar')

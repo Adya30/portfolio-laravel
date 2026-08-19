@@ -127,14 +127,40 @@
                             <div class="flex items-center justify-between">
                                 <label class="block text-xs font-bold text-slate-500">Isi Paragraf / Penjelasan Dokumen</label>
 
-                                {{-- Mini Text Formatting Toolbar --}}
-                                <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs">
-                                    <button type="button" @click="applyFormat(i, 'bold', $event.currentTarget)" class="px-2 py-0.5 font-bold hover:bg-white rounded" title="Tebal (Bold)">B</button>
-                                    <button type="button" @click="applyFormat(i, 'italic', $event.currentTarget)" class="px-2 py-0.5 italic hover:bg-white rounded" title="Miring (Italic)">I</button>
-                                    <button type="button" @click="applyFormat(i, 'underline', $event.currentTarget)" class="px-2 py-0.5 underline hover:bg-white rounded" title="Garis Bawah">U</button>
-                                    <button type="button" @click="applyFormat(i, 'bullet', $event.currentTarget)" class="px-2 py-0.5 hover:bg-white rounded" title="Daftar Bullet">• List</button>
-                                    <button type="button" @click="applyFormat(i, 'number', $event.currentTarget)" class="px-2 py-0.5 hover:bg-white rounded" title="Daftar Angka">1. List</button>
-                                    <button type="button" @click="applyFormat(i, 'quote', $event.currentTarget)" class="px-2 py-0.5 hover:bg-white rounded" title="Kutipan">” Quote</button>
+                                <div class="flex items-center gap-1">
+                                    {{-- Alignment Buttons --}}
+                                    <div class="flex items-center gap-0.5 bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs mr-1">
+                                        <button type="button" @click="block.align = 'kiri'"
+                                                :class="block.align === 'kiri' ? 'bg-white text-accent shadow-sm' : 'text-slate-500 hover:bg-white'"
+                                                class="px-2 py-0.5 rounded" title="Rata Kiri">
+                                            <i class="ri-align-left"></i>
+                                        </button>
+                                        <button type="button" @click="block.align = 'tengah'"
+                                                :class="block.align === 'tengah' ? 'bg-white text-accent shadow-sm' : 'text-slate-500 hover:bg-white'"
+                                                class="px-2 py-0.5 rounded" title="Rata Tengah">
+                                            <i class="ri-align-center"></i>
+                                        </button>
+                                        <button type="button" @click="block.align = 'kanan'"
+                                                :class="block.align === 'kanan' ? 'bg-white text-accent shadow-sm' : 'text-slate-500 hover:bg-white'"
+                                                class="px-2 py-0.5 rounded" title="Rata Kanan">
+                                            <i class="ri-align-right"></i>
+                                        </button>
+                                        <button type="button" @click="block.align = 'justify'"
+                                                :class="block.align === 'justify' ? 'bg-white text-accent shadow-sm' : 'text-slate-500 hover:bg-white'"
+                                                class="px-2 py-0.5 rounded" title="Rata Kiri Kanan (Justify)">
+                                            <i class="ri-align-justify"></i>
+                                        </button>
+                                    </div>
+
+                                    {{-- Mini Text Formatting Toolbar --}}
+                                    <div class="flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs">
+                                        <button type="button" @click="applyFormat(i, 'bold', $event.currentTarget)" class="px-2 py-0.5 font-bold hover:bg-white rounded" title="Tebal (Bold)">B</button>
+                                        <button type="button" @click="applyFormat(i, 'italic', $event.currentTarget)" class="px-2 py-0.5 italic hover:bg-white rounded" title="Miring (Italic)">I</button>
+                                        <button type="button" @click="applyFormat(i, 'underline', $event.currentTarget)" class="px-2 py-0.5 underline hover:bg-white rounded" title="Garis Bawah">U</button>
+                                        <button type="button" @click="applyFormat(i, 'bullet', $event.currentTarget)" class="px-2 py-0.5 hover:bg-white rounded" title="Daftar Bullet">• List</button>
+                                        <button type="button" @click="applyFormat(i, 'number', $event.currentTarget)" class="px-2 py-0.5 hover:bg-white rounded" title="Daftar Angka">1. List</button>
+                                        <button type="button" @click="applyFormat(i, 'quote', $event.currentTarget)" class="px-2 py-0.5 hover:bg-white rounded" title="Kutipan">” Quote</button>
+                                    </div>
                                 </div>
                             </div>
                             <textarea x-model="block.teks" rows="5" placeholder="Tulis isi paragraf / penjelasan di lembar kerja ini..."

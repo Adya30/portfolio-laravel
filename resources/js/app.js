@@ -574,6 +574,7 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
             base.teks = '';
         } else if (type === 'paragraf') {
             base.teks = '';
+            base.align = 'kiri';
         } else if (type === 'gambar') {
             base.url = '';
             base.caption = '';
@@ -599,6 +600,7 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
             base.teks = '';
         } else if (type === 'paragraf') {
             base.teks = '';
+            base.align = 'kiri';
         } else if (type === 'gambar') {
             base.url = '';
             base.caption = '';
