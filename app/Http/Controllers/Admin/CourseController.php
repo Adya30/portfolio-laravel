@@ -87,11 +87,12 @@ class CourseController extends Controller
             'nama_idn' => $data['nama_idn'] ?? null,
             'desk' => $data['desk'] ?? null,
             'desk_idn' => $data['desk_idn'] ?? null,
+            'konten' => $request->has('konten') ? $this->decodeBlocks($request) : $course->konten,
             'gambar' => $this->resolveImage($request, 'courses', $course->gambar),
             'sort_order' => $data['sort_order'] ?? $course->sort_order,
         ]);
 
-        return redirect()->route('admin.courses.show', $course)->with('success', 'Informasi materi berhasil diperbarui.');
+        return redirect()->route('admin.courses.show', $course)->with('success', 'Materi berhasil diperbarui.');
     }
 
     /**
@@ -282,6 +283,59 @@ class CourseController extends Controller
         foreach ($ids as $index => $id) {
             Course::whereKey($id)->update(['sort_order' => $index + 1]);
         }
+
+        return response()->json(['ok' => true]);
+    }
+
+    /**
+     * Reorder subbabs inside a course's content array.
+     */
+    public function reorderSubbab(Request $request, Course $course): JsonResponse
+    {
+        $ids = $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer'],
+        ])['ids'];
+
+        $allBlocks = $course->konten ?? [];
+
+        $subbabIndices = [];
+        foreach ($allBlocks as $i => $block) {
+            if (($block['type'] ?? '') === 'subbab') {
+                $subbabIndices[] = $i;
+            }
+        }
+
+        if (empty($subbabIndices)) {
+            return response()->json(['ok' => true]);
+        }
+
+        $firstSubbabIndex = $subbabIndices[0];
+        $prefixBlocks = array_slice($allBlocks, 0, $firstSubbabIndex);
+
+        $chunks = [];
+        foreach ($subbabIndices as $pos => $blockIndex) {
+            $end = isset($subbabIndices[$pos + 1]) ? $subbabIndices[$pos + 1] : count($allBlocks);
+            $chunks[$blockIndex] = array_slice($allBlocks, $blockIndex, $end - $blockIndex);
+        }
+
+        $newBlocks = $prefixBlocks;
+        foreach ($ids as $id) {
+            if (isset($chunks[$id])) {
+                foreach ($chunks[$id] as $b) {
+                    $newBlocks[] = $b;
+                }
+                unset($chunks[$id]);
+            }
+        }
+
+        foreach ($chunks as $remainingChunk) {
+            foreach ($remainingChunk as $b) {
+                $newBlocks[] = $b;
+            }
+        }
+
+        $course->update(['konten' => $newBlocks]);
 
         return response()->json(['ok' => true]);
     }

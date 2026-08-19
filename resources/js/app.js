@@ -506,14 +506,17 @@ Alpine.data('app', () => ({
     },
 
     scrollToSection(e, href) {
-        e.preventDefault();
-        const el = document.querySelector(href);
-        if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } else if (window.landingUrl) {
-            // Section is not Sub Heading (e.g. project/experience/certificate
-            // detail pages) — go to the landing page and scroll to the section.
-            window.location.href = window.landingUrl + href;
+        if (e && e.preventDefault) e.preventDefault();
+        if (!href || href === '#') return;
+        try {
+            const el = document.querySelector(href);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else if (window.landingUrl) {
+                window.location.href = window.landingUrl + href;
+            }
+        } catch (err) {
+            // Fallback for non-standard selector or missing element
         }
     },
 
@@ -588,8 +591,10 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
         this.$nextTick(() => {
             const hash = window.location.hash;
             if (!hash) return;
-            const el = this.$el.querySelector(hash);
-            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            try {
+                const el = this.$el.querySelector(hash);
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (_) {}
         });
     },
 
@@ -680,6 +685,16 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
             base.style = 'garis';
         }
         this.blocks.push(base);
+
+        const newIndex = this.blocks.length - 1;
+        this.$nextTick(() => {
+            const el = this.$el.querySelector('#blok-' + newIndex);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const input = el.querySelector('input[type="text"], textarea');
+                if (input) input.focus();
+            }
+        });
     },
 
     addBlockAt(type, index) {
@@ -706,6 +721,15 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
             base.style = 'garis';
         }
         this.blocks.splice(index, 0, base);
+
+        this.$nextTick(() => {
+            const el = this.$el.querySelector('#blok-' + index);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const input = el.querySelector('input[type="text"], textarea');
+                if (input) input.focus();
+            }
+        });
     },
 
     removeBlock(index) {
@@ -1101,6 +1125,16 @@ Alpine.data('reorderTable', (url) => ({
     url,
     dragging: null,
 
+    updateOrders() {
+        const items = Array.from(this.$el.querySelectorAll('[data-id]'));
+        items.forEach((item, i) => {
+            const nums = item.querySelectorAll('[data-order]');
+            nums.forEach((num) => {
+                num.textContent = i + 1;
+            });
+        });
+    },
+
     init() {
         const container = this.$el;
         if (!container) return;
@@ -1124,17 +1158,20 @@ Alpine.data('reorderTable', (url) => ({
             const afterX = e.clientX > rect.left + rect.width / 2;
             const after = afterY || afterX;
             container.insertBefore(this.dragging, after ? target.nextSibling : target);
+            this.updateOrders();
         });
 
         container.addEventListener('drop', (e) => {
             if (!this.dragging) return;
             e.preventDefault();
+            this.updateOrders();
             this.save();
         });
 
         container.addEventListener('dragend', () => {
             if (this.dragging) this.dragging.classList.remove('opacity-40');
             this.dragging = null;
+            this.updateOrders();
         });
     },
 
@@ -1142,11 +1179,7 @@ Alpine.data('reorderTable', (url) => ({
         const items = Array.from(this.$el.querySelectorAll('[data-id]'));
         const ids = items.map((item) => item.dataset.id);
 
-        // Keep the visible row/card numbers in sync with the new order.
-        items.forEach((item, i) => {
-            const num = item.querySelector('[data-order]');
-            if (num) num.textContent = i + 1;
-        });
+        this.updateOrders();
 
         try {
             const res = await fetch(this.url, {
