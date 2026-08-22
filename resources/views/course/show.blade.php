@@ -87,9 +87,6 @@
                                 <h3 class="font-poppins font-semibold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug">
                                     {{ $sub['judul'] ?: 'Subbab '.($i + 1) }}
                                 </h3>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                                    {{ $sub['block_count'] }} blok konten
-                                </p>
                             </div>
 
                             <div class="shrink-0 text-slate-400 dark:text-slate-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-all duration-300 group-hover:translate-x-1">
