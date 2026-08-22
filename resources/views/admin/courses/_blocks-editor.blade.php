@@ -19,7 +19,6 @@
             <div class="flex items-center gap-3">
                 <span class="font-semibold text-slate-600">Halaman Materi</span>
                 <span class="text-slate-300">|</span>
-                <!-- Tombol Undo & Redo -->
                 <div class="flex items-center gap-1 font-sans">
                     <button type="button" @click="undo()" :disabled="!canUndo()"
                             :class="canUndo() ? 'text-slate-600 hover:text-accent hover:bg-slate-100 cursor-pointer shadow-2xs bg-white border border-slate-200' : 'text-slate-300 cursor-not-allowed opacity-40 bg-slate-50 border border-slate-100'"
@@ -124,12 +123,7 @@
                                         <i class="ri-lock-2-line text-sm text-slate-400"></i>
                                     </span>
                                 </template>
-                                <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200"
-                                      x-text="blockLabel(block.type)"></span>
-                                <span class="text-[10px] text-slate-400 font-semibold">#<span x-text="i + 1"></span></span>
-                                <template x-if="i === 0 && block.type === 'subbab'">
-                                    <span class="text-[10px] font-semibold text-accent/80 bg-accent/10 px-2 py-0.5 rounded">Terkunci di atas</span>
-                                </template>
+                                <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200" x-text="blockLabel(block.type)"></span>
                             </div>
 
                             <div class="flex items-center gap-0.5" x-show="!(i === 0 && block.type === 'subbab')">
@@ -155,14 +149,16 @@
 
                         <template x-if="block.type === 'subbab'">
                             <div>
-                                <input type="text" x-model="block.judul" placeholder="Tulis judul subbab di sini..."
+                                <label :for="'subbab_judul_' + i" class="sr-only">Judul Subbab</label>
+                                <input :id="'subbab_judul_' + i" type="text" x-model="block.judul" placeholder="Tulis judul subbab di sini..."
                                        class="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-3 py-2 text-base font-poppins font-bold text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/15 transition-all">
                             </div>
                         </template>
 
                         <template x-if="block.type === 'subheading'">
                             <div>
-                                <input type="text" x-model="block.teks" placeholder="Tulis sub heading di sini..."
+                                <label :for="'subheading_teks_' + i" class="sr-only">Sub Heading</label>
+                                <input :id="'subheading_teks_' + i" type="text" x-model="block.teks" placeholder="Tulis sub heading di sini..."
                                        class="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-3 py-1.5 text-sm font-poppins font-semibold text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/15 transition-all">
                             </div>
                         </template>
@@ -176,7 +172,8 @@
                         <template x-if="block.type === 'gambar'">
                             <div class="space-y-2">
                                 <div class="flex flex-wrap items-center gap-2">
-                                    <select x-model="block.ukuran"
+                                    <label :for="'gambar_ukuran_' + i" class="sr-only">Ukuran Gambar</label>
+                                    <select :id="'gambar_ukuran_' + i" x-model="block.ukuran"
                                             class="rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs font-semibold text-slate-800 outline-none focus:border-accent">
                                         <option value="penuh">Penuh</option>
                                         <option value="besar">Besar</option>
@@ -194,17 +191,20 @@
                                         </template>
                                     </div>
                                     <div class="flex-1 min-w-0 space-y-1.5">
-                                        <input type="file" accept=".svg,.png,.jpg,.jpeg,.webp,image/svg+xml,image/png,image/jpeg,image/webp"
+                                        <label :for="'gambar_file_' + i" class="sr-only">File Gambar</label>
+                                        <input :id="'gambar_file_' + i" type="file" accept=".svg,.png,.jpg,.jpeg,.webp,image/svg+xml,image/png,image/jpeg,image/webp"
                                                @change="uploadImage(i, $event.target.files[0])"
                                                class="block w-full text-xs text-slate-600 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-accent/10 file:text-xs file:font-bold file:text-accent hover:file:bg-accent/20 cursor-pointer">
                                         <p x-show="uploadingIndex === i" x-cloak class="text-xs text-accent font-semibold">
                                             <i class="ri-loader-4-line animate-spin"></i> Mengunggah...
                                         </p>
-                                        <input type="text" x-model="block.url" placeholder="Atau tempel URL gambar"
+                                        <label :for="'gambar_url_' + i" class="sr-only">URL Gambar</label>
+                                        <input :id="'gambar_url_' + i" type="text" x-model="block.url" placeholder="Atau tempel URL gambar"
                                                class="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-3 py-1.5 text-xs text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent focus:bg-white transition-all">
                                     </div>
                                 </div>
-                                <input type="text" x-model="block.caption" placeholder="Caption gambar (opsional)"
+                                <label :for="'gambar_caption_' + i" class="sr-only">Caption Gambar</label>
+                                <input :id="'gambar_caption_' + i" type="text" x-model="block.caption" placeholder="Caption gambar (opsional)"
                                        class="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-3 py-1.5 text-xs text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent focus:bg-white transition-all">
                             </div>
                         </template>
@@ -218,7 +218,8 @@
                                             <span class="w-2 h-2 rounded-full bg-[#ffbd2e]"></span>
                                             <span class="w-2 h-2 rounded-full bg-[#27c93f]"></span>
                                         </div>
-                                        <select x-model="block.bahasa"
+                                        <label :for="'kode_bahasa_' + i" class="sr-only">Bahasa Pemrograman</label>
+                                        <select :id="'kode_bahasa_' + i" x-model="block.bahasa"
                                                 class="rounded border border-slate-700 bg-slate-800 text-slate-200 px-2 py-0.5 text-xs font-mono outline-none focus:border-accent">
                                             <option value="php">PHP</option>
                                             <option value="javascript">JavaScript</option>
@@ -232,7 +233,8 @@
                                             <option value="plaintext">Plain Text</option>
                                         </select>
                                     </div>
-                                    <textarea x-model="block.kode" @keydown.tab.prevent="insertTab($event)"
+                                    <label :for="'kode_area_' + i" class="sr-only">Tulis Kode</label>
+                                    <textarea :id="'kode_area_' + i" x-model="block.kode" @keydown.tab.prevent="insertTab($event)"
                                               rows="6" placeholder="// Tulis atau tempel kode di sini..."
                                               class="w-full bg-[#0d1117] p-3 text-xs font-mono text-slate-100 placeholder:text-slate-600 outline-none focus:ring-1 focus:ring-accent/40 resize-y border-0"></textarea>
                                 </div>
@@ -241,18 +243,22 @@
 
                         <template x-if="block.type === 'link'">
                             <div class="space-y-2">
-                                <input type="url" x-model="block.href" placeholder="URL / Tautan"
+                                <label :for="'link_href_' + i" class="sr-only">URL Link</label>
+                                <input :id="'link_href_' + i" type="url" x-model="block.href" placeholder="URL / Tautan"
                                        class="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-3 py-1.5 text-sm text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/15 transition-all">
-                                <input type="text" x-model="block.label" placeholder="Label tombol"
+                                <label :for="'link_label_' + i" class="sr-only">Label Link</label>
+                                <input :id="'link_label_' + i" type="text" x-model="block.label" placeholder="Label tombol"
                                        class="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-3 py-1.5 text-sm text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/15 transition-all">
-                                <input type="text" x-model="block.desc" placeholder="Deskripsi singkat (opsional)"
+                                <label :for="'link_desc_' + i" class="sr-only">Deskripsi Link</label>
+                                <input :id="'link_desc_' + i" type="text" x-model="block.desc" placeholder="Deskripsi singkat (opsional)"
                                        class="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-3 py-1.5 text-sm text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/15 transition-all">
                             </div>
                         </template>
 
                         <template x-if="block.type === 'pembatas'">
                             <div class="space-y-2">
-                                <select x-model="block.style"
+                                <label :for="'pembatas_style_' + i" class="sr-only">Gaya Pembatas</label>
+                                <select :id="'pembatas_style_' + i" x-model="block.style"
                                         class="rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs font-semibold text-slate-800 outline-none focus:border-accent">
                                     <option value="garis">Garis Tipis</option>
                                     <option value="garis-tebal">Garis Tebal</option>
@@ -296,7 +302,8 @@
                                                 <template x-for="(head, cIdx) in (block.headers || [])" :key="cIdx">
                                                     <th class="p-1 min-w-[100px]">
                                                         <div class="flex items-center justify-between gap-1">
-                                                            <input type="text" x-model="block.headers[cIdx]" placeholder="Judul"
+                                                            <label :for="'tabel_header_' + i + '_' + cIdx" class="sr-only">Judul Kolom</label>
+                                                            <input :id="'tabel_header_' + i + '_' + cIdx" type="text" x-model="block.headers[cIdx]" placeholder="Judul"
                                                                    class="w-full rounded border border-slate-300 px-1.5 py-0.5 text-xs font-bold text-slate-800 bg-white outline-none focus:border-accent">
                                                             <button type="button" @click="removeTableCol(i, cIdx)"
                                                                     x-show="(block.headers || []).length > 1"
@@ -322,7 +329,8 @@
                                                     </td>
                                                     <template x-for="(cell, cIdx) in row" :key="cIdx">
                                                         <td class="p-1">
-                                                            <input type="text" x-model="block.rows[rIdx][cIdx]" placeholder="Isi sel..."
+                                                            <label :for="'tabel_cell_' + i + '_' + rIdx + '_' + cIdx" class="sr-only">Isi Sel</label>
+                                                            <input :id="'tabel_cell_' + i + '_' + rIdx + '_' + cIdx" type="text" x-model="block.rows[rIdx][cIdx]" placeholder="Isi sel..."
                                                                    class="w-full rounded border border-slate-200 px-1.5 py-0.5 text-xs text-slate-700 bg-slate-50/50 outline-none focus:bg-white focus:border-accent transition-all">
                                                         </td>
                                                     </template>
@@ -331,7 +339,8 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <input type="text" x-model="block.caption" placeholder="Caption tabel (opsional)"
+                                <label :for="'tabel_caption_' + i" class="sr-only">Caption Tabel</label>
+                                <input :id="'tabel_caption_' + i" type="text" x-model="block.caption" placeholder="Caption tabel (opsional)"
                                        class="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-3 py-1.5 text-xs text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent focus:bg-white transition-all">
                             </div>
                         </template>
@@ -388,8 +397,7 @@
                 </div>
             </template>
 
-            <div x-show="blocks.length === 0" x-cloak
-                 class="border-2 border-dashed border-slate-200 rounded-xl p-8 text-center text-slate-400 space-y-2 mt-3">
+            <div x-show="blocks.length === 0" x-cloak class="border-2 border-dashed border-slate-200 rounded-xl p-8 text-center text-slate-400 space-y-2 mt-3">
                 <div class="w-12 h-12 mx-auto rounded-xl bg-accent/10 text-accent flex items-center justify-center text-xl">
                     <i class="ri-file-text-line"></i>
                 </div>

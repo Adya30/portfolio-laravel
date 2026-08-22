@@ -12,6 +12,8 @@ use Illuminate\View\View;
 
 class CourseController extends Controller
 {
+    private const DEFAULT_SUBBAB_PREFIX = 'Subbab ';
+
     public function index(): View
     {
         return view('admin.courses.index', [
@@ -77,36 +79,20 @@ class CourseController extends Controller
     public function update(Request $request, Course $course): RedirectResponse
     {
         $data = $this->validateData($request);
-
-        
         $oldUpdatedAt = $request->input('updated_at');
-        if ($oldUpdatedAt) {
-            $updated = Course::where('id', $course->id)
-                ->where('updated_at', $oldUpdatedAt)
-                ->update([
-                    'nama' => $data['nama'],
-                    'nama_idn' => $data['nama_idn'] ?? null,
-                    'desk' => $data['desk'] ?? null,
-                    'desk_idn' => $data['desk_idn'] ?? null,
-                    'konten' => $request->has('konten') ? $this->decodeBlocks($request) : $course->konten,
-                    'gambar' => $this->resolveImage($request, 'courses', $course->gambar),
-                    'sort_order' => $data['sort_order'] ?? $course->sort_order,
-                ]);
 
-            if ($updated === 0) {
-                return redirect()->route('admin.courses.edit', $course)
-                    ->with('error', 'Konflik penyimpanan terdeteksi! Materi ini sedang diubah oleh pengguna lain. Silakan muat ulang halaman dan coba lagi.');
-            }
-        } else {
-            $course->update([
-                'nama' => $data['nama'],
-                'nama_idn' => $data['nama_idn'] ?? null,
-                'desk' => $data['desk'] ?? null,
-                'desk_idn' => $data['desk_idn'] ?? null,
-                'konten' => $request->has('konten') ? $this->decodeBlocks($request) : $course->konten,
-                'gambar' => $this->resolveImage($request, 'courses', $course->gambar),
-                'sort_order' => $data['sort_order'] ?? $course->sort_order,
-            ]);
+        if (! $oldUpdatedAt) {
+            $course->update($this->mapCourseData($data, $request, $course));
+            return redirect()->route('admin.courses.show', $course)->with('success', 'Materi berhasil diperbarui.');
+        }
+
+        $updated = Course::where('id', $course->id)
+            ->where('updated_at', $oldUpdatedAt)
+            ->update($this->mapCourseData($data, $request, $course));
+
+        if ($updated === 0) {
+            return redirect()->route('admin.courses.edit', $course)
+                ->with('error', 'Konflik penyimpanan terdeteksi! Materi ini sedang diubah oleh pengguna lain. Silakan muat ulang halaman dan coba lagi.');
         }
 
         return redirect()->route('admin.courses.show', $course)->with('success', 'Materi berhasil diperbarui.');
@@ -128,7 +114,6 @@ class CourseController extends Controller
         }
 
         $pos = array_search($blockIndex, $subbabIndices, true);
-
         $end = isset($subbabIndices[$pos + 1]) ? $subbabIndices[$pos + 1] : count($allBlocks);
         $subbabBlocks = array_slice($allBlocks, $blockIndex, $end - $blockIndex);
 
@@ -148,13 +133,12 @@ class CourseController extends Controller
             'currentPos' => $pos,
             'prevSubbab' => $pos > 0 ? $subbabs[$pos - 1] : null,
             'nextSubbab' => $pos < count($subbabs) - 1 ? $subbabs[$pos + 1] : null,
-            'subbabTitle' => $allBlocks[$blockIndex]['judul'] ?? 'Subbab '.($pos + 1),
+            'subbabTitle' => $allBlocks[$blockIndex]['judul'] ?? self::DEFAULT_SUBBAB_PREFIX . ($pos + 1),
             'originalSubbabTitle' => $allBlocks[$blockIndex]['judul'] ?? '',
             'originalSubbabPosition' => $pos,
         ]);
     }
 
-    
     public function updateSubbab(Request $request, Course $course, int $blockIndex): RedirectResponse
     {
         $newBlocks = $this->decodeBlocks($request) ?? [];
@@ -176,30 +160,19 @@ class CourseController extends Controller
             }
         }
 
-        
         $originalTitle = (string) ($request->input('original_subbab_title') ?? '');
         $originalPosition = (int) $request->input('original_subbab_position', 0);
 
-        // Re-read latest konten dari DB (bisa sudah diubah user lain)
         $course->refresh();
         $allBlocks = $course->konten ?? [];
 
-        // Cari subbab berdasarkan posisi + judul asli
-        $targetIndex = $this->findSubbabByOriginalInfo($allBlocks, $originalTitle, $originalPosition);
-
-        // Fallback: coba cari berdasarkan blockIndex lama jika masih valid
-        if ($targetIndex === null) {
-            if (isset($allBlocks[$blockIndex]) && ($allBlocks[$blockIndex]['type'] ?? '') === 'subbab') {
-                $targetIndex = $blockIndex;
-            }
-        }
+        $targetIndex = $this->resolveTargetIndex($allBlocks, $originalTitle, $originalPosition, $blockIndex);
 
         if ($targetIndex === null) {
             return redirect()->route('admin.courses.show', $course)
                 ->with('error', 'Subbab yang diedit tidak ditemukan. Kemungkinan telah dihapus oleh pengguna lain. Silakan muat ulang halaman.');
         }
 
-        // Cari posisi subbab di array terbaru
         $subbabIndices = [];
         foreach ($allBlocks as $i => $block) {
             if (($block['type'] ?? '') === 'subbab') {
@@ -215,16 +188,14 @@ class CourseController extends Controller
 
         $end = isset($subbabIndices[$pos + 1]) ? $subbabIndices[$pos + 1] : count($allBlocks);
 
-        // Pastikan judul subbab tidak kosong
         if (empty($newBlocks[0]['judul'])) {
-            $newBlocks[0]['judul'] = $allBlocks[$targetIndex]['judul'] ?: ('Subbab '.($pos + 1));
+            $newBlocks[0]['judul'] = $allBlocks[$targetIndex]['judul'] ?: (self::DEFAULT_SUBBAB_PREFIX . ($pos + 1));
         }
 
         $before = array_slice($allBlocks, 0, $targetIndex);
         $after = array_slice($allBlocks, $end);
         $merged = array_merge($before, $newBlocks, $after);
 
-        // Optimistic locking: pastikan konten tidak berubah saat save
         $oldUpdatedAt = $request->input('updated_at');
         if ($oldUpdatedAt) {
             $updated = Course::where('id', $course->id)
@@ -232,7 +203,6 @@ class CourseController extends Controller
                 ->update(['konten' => $merged]);
 
             if ($updated === 0) {
-                // Retry sekali dengan data terbaru
                 $course->refresh();
                 return $this->retryUpdateSubbab($course, $newBlocks, $originalTitle, $originalPosition);
             }
@@ -247,20 +217,15 @@ class CourseController extends Controller
             }
         }
         $newBlockIndex = $newSubbabIndices[$pos] ?? $targetIndex;
-
         $subbabTitle = $merged[$newBlockIndex]['judul'] ?? 'Subbab';
 
         return redirect()->route('admin.courses.subbab.edit', [$course, $newBlockIndex])
-            ->with('success', 'Subbab "'.$subbabTitle.'" berhasil diperbarui.');
+            ->with('success', 'Subbab "' . $subbabTitle . '" berhasil diperbarui.');
     }
 
-    /**
-     * Retry update subbab dengan data terbaru dari DB.
-     */
     private function retryUpdateSubbab(Course $course, array $newBlocks, ?string $originalTitle, int $originalPosition): RedirectResponse
     {
         $allBlocks = $course->konten ?? [];
-
         $targetIndex = $this->findSubbabByOriginalInfo($allBlocks, $originalTitle, $originalPosition);
 
         if ($targetIndex === null) {
@@ -279,7 +244,7 @@ class CourseController extends Controller
         $end = isset($subbabIndices[$pos + 1]) ? $subbabIndices[$pos + 1] : count($allBlocks);
 
         if (empty($newBlocks[0]['judul'])) {
-            $newBlocks[0]['judul'] = $allBlocks[$targetIndex]['judul'] ?: ('Subbab '.($pos + 1));
+            $newBlocks[0]['judul'] = $allBlocks[$targetIndex]['judul'] ?: (self::DEFAULT_SUBBAB_PREFIX . ($pos + 1));
         }
 
         $before = array_slice($allBlocks, 0, $targetIndex);
@@ -295,18 +260,23 @@ class CourseController extends Controller
             }
         }
         $newBlockIndex = $newSubbabIndices[$pos] ?? $targetIndex;
-
         $subbabTitle = $merged[$newBlockIndex]['judul'] ?? 'Subbab';
 
         return redirect()->route('admin.courses.subbab.edit', [$course, $newBlockIndex])
-            ->with('success', 'Subbab "'.$subbabTitle.'" berhasil diperbarui.');
+            ->with('success', 'Subbab "' . $subbabTitle . '" berhasil diperbarui.');
     }
 
-    /**
-     * Cari index subbab berdasarkan judul asli dan posisi di antara subbab lainnya.
-     * Cocokkan dengan urutan subbab (position) sebagai prioritas utama,
-     * lalu verifikasi judul sebagai secondary check.
-     */
+    private function resolveTargetIndex(array $allBlocks, string $originalTitle, int $originalPosition, int $blockIndex): ?int
+    {
+        $targetIndex = $this->findSubbabByOriginalInfo($allBlocks, $originalTitle, $originalPosition);
+
+        if ($targetIndex === null && isset($allBlocks[$blockIndex]) && ($allBlocks[$blockIndex]['type'] ?? '') === 'subbab') {
+            return $blockIndex;
+        }
+
+        return $targetIndex;
+    }
+
     private function findSubbabByOriginalInfo(array $allBlocks, ?string $originalTitle, int $originalPosition): ?int
     {
         $originalTitle = (string) ($originalTitle ?? '');
@@ -328,7 +298,6 @@ class CourseController extends Controller
             }
         }
 
-        // Prioritas 1: posisi + judul cocok
         if ($candidateByPosition !== null) {
             $posTitle = $allBlocks[$candidateByPosition]['judul'] ?? '';
             if ($originalTitle === '' || Str::slug($posTitle) === Str::slug($originalTitle)) {
@@ -336,12 +305,10 @@ class CourseController extends Controller
             }
         }
 
-        // Prioritas 2: hanya judul cocok
         if ($candidateByTitle !== null) {
             return $candidateByTitle;
         }
 
-        // Prioritas 3: hanya posisi cocok
         if ($candidateByPosition !== null && $originalPosition < $subbabCount) {
             return $candidateByPosition;
         }
@@ -351,7 +318,6 @@ class CourseController extends Controller
 
     public function storeSubbab(Course $course): RedirectResponse
     {
-        
         $course->refresh();
         $blocks = $course->konten ?? [];
 
@@ -366,7 +332,6 @@ class CourseController extends Controller
 
     public function destroySubbab(Course $course, int $blockIndex): RedirectResponse
     {
-        
         $course->refresh();
         $allBlocks = $course->konten ?? [];
 
@@ -393,7 +358,7 @@ class CourseController extends Controller
         $subbabTitle = $allBlocks[$blockIndex]['judul'] ?? 'Subbab';
 
         return redirect()->route('admin.courses.show', $course)
-            ->with('success', 'Subbab "'.$subbabTitle.'" berhasil dihapus.');
+            ->with('success', 'Subbab "' . $subbabTitle . '" berhasil dihapus.');
     }
 
     public function destroy(Course $course): RedirectResponse
@@ -405,7 +370,7 @@ class CourseController extends Controller
 
     public function uploadBlockImage(Request $request): JsonResponse
     {
-        $data = $request->validate([
+        $request->validate([
             'gambar' => ['required', 'image:allow_svg', 'mimes:svg,png,jpg,jpeg,webp', 'max:2048'],
         ], $this->validationMessages(), [
             'gambar' => 'Gambar blok',
@@ -415,7 +380,6 @@ class CourseController extends Controller
             $url = $this->uploadImage($request->file('gambar'), 'courses');
         } catch (\Throwable $e) {
             report($e);
-
             return response()->json(['error' => 'Upload gambar gagal.'], 422);
         }
 
@@ -438,12 +402,11 @@ class CourseController extends Controller
 
     public function reorderSubbab(Request $request, Course $course): JsonResponse
     {
-        $ids = $request->validate([
+        $request->validate([
             'ids' => ['required', 'array'],
             'ids.*' => ['integer'],
-        ])['ids'];
+        ]);
 
-        
         $course->refresh();
         $allBlocks = $course->konten ?? [];
 
@@ -468,7 +431,7 @@ class CourseController extends Controller
         }
 
         $newBlocks = $prefixBlocks;
-        foreach ($ids as $id) {
+        foreach ($request->input('ids') as $id) {
             if (isset($chunks[$id])) {
                 foreach ($chunks[$id] as $b) {
                     $newBlocks[] = $b;
@@ -511,6 +474,19 @@ class CourseController extends Controller
         ]);
     }
 
+    private function mapCourseData(array $data, Request $request, Course $course): array
+    {
+        return [
+            'nama' => $data['nama'],
+            'nama_idn' => $data['nama_idn'] ?? null,
+            'desk' => $data['desk'] ?? null,
+            'desk_idn' => $data['desk_idn'] ?? null,
+            'konten' => $request->has('konten') ? $this->decodeBlocks($request) : $course->konten,
+            'gambar' => $this->resolveImage($request, 'courses', $course->gambar),
+            'sort_order' => $data['sort_order'] ?? $course->sort_order,
+        ];
+    }
+
     private function decodeBlocks(Request $request): ?array
     {
         if (! $request->filled('konten')) {
@@ -526,10 +502,10 @@ class CourseController extends Controller
         $allowed = ['subbab', 'subheading', 'paragraf', 'gambar', 'kode', 'link', 'pembatas', 'tabel'];
 
         return collect($decoded)
-            ->filter(fn ($block) => is_array($block) && isset($block['type']) && in_array($block['type'], $allowed, true))
+            ->filter(fn($block) => is_array($block) && isset($block['type']) && in_array($block['type'], $allowed, true))
             ->map(function ($block) {
                 if (($block['type'] ?? '') === 'link' && !empty($block['href'])) {
-                    $block['href'] =filter_var($block['href'], FILTER_VALIDATE_URL)
+                    $block['href'] = filter_var($block['href'], FILTER_VALIDATE_URL)
                         && preg_match('#^https?://#i', $block['href'])
                         ? $block['href'] : '#';
                 }
