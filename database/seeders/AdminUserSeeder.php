@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class AdminUserSeeder extends Seeder
 {
@@ -13,11 +12,13 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
+        // Plain-text passwords: the User model casts 'password' => 'hashed'
+        // so Eloquent will hash them automatically on save.
         User::updateOrCreate(
             ['email' => 'handikaadya@gmail.com'],
             [
                 'name' => 'Adya Handika Putra AP',
-                'password' => Hash::make('admin123'),
+                'password' => 'admin123',
                 'role' => 'admin',
             ]
         );
@@ -26,7 +27,7 @@ class AdminUserSeeder extends Seeder
             ['email' => 'user@materi.com'],
             [
                 'name' => 'User Materi',
-                'password' => Hash::make('user123'),
+                'password' => 'user123',
                 'role' => 'materi',
             ]
         );

@@ -9,6 +9,7 @@ use App\Models\Profile;
 use App\Models\Project;
 use App\Models\Tool;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class PortfolioDataSeeder extends Seeder
 {
@@ -253,6 +254,7 @@ class PortfolioDataSeeder extends Seeder
             Project::updateOrCreate(
                 ['nama' => $project['nama']],
                 $project + [
+                    'slug' => Str::slug($project['nama']),
                     'sort_order' => $i + 1,
                     'category_id' => $this->categoryByProject[$project['nama']] ?? null,
                 ]
@@ -338,7 +340,10 @@ class PortfolioDataSeeder extends Seeder
         foreach ($experiences as $i => $experience) {
             Experience::updateOrCreate(
                 ['role' => $experience['role']],
-                $experience + ['sort_order' => $i + 1]
+                $experience + [
+                    'slug' => Str::slug($experience['role'] . ' ' . $experience['company']),
+                    'sort_order' => $i + 1,
+                ]
             );
         }
     }
@@ -363,6 +368,7 @@ class PortfolioDataSeeder extends Seeder
             Certificate::updateOrCreate(
                 ['nama' => $nama],
                 [
+                    'slug' => Str::slug($nama),
                     'nama_idn' => $nama_idn,
                     'penerbit' => $penerbit,
                     'tanggal' => $tanggal,

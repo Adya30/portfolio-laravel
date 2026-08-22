@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Course;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class CourseSeeder extends Seeder
 {
@@ -73,9 +74,15 @@ class CourseSeeder extends Seeder
         ];
 
         foreach ($courses as $i => $course) {
+            $slug = Str::slug($course['nama']);
+            $courseData = $course + [
+                'slug' => $slug,
+                'sort_order' => $i + 1,
+            ];
+
             Course::updateOrCreate(
                 ['nama' => $course['nama']],
-                $course + ['sort_order' => $i + 1]
+                $courseData
             );
         }
     }
