@@ -23,6 +23,10 @@ class EnsureMateriRoleAccess
                 ->with('error', 'Akun Anda hanya memiliki akses untuk mengelola menu Materi.');
         }
 
+        if ($user && !$user->isAdmin()) {
+            abort(403, 'Akses ditolak.');
+        }
+
         return $next($request);
     }
 }

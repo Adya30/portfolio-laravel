@@ -43,7 +43,7 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
 
-Route::middleware(['auth', EnsureMateriRoleAccess::class])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', EnsureMateriRoleAccess::class, 'throttle:120,1'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     // Drag & drop row ordering (kept before the resource routes).

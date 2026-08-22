@@ -5,27 +5,18 @@ use App\Models\Course;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 
-test('admin can create a course material with content blocks', function () {
+test('admin can create a course material', function () {
     $user = User::factory()->create();
 
-    $this->actingAs($user)
+    $response = $this->actingAs($user)
         ->post(route('admin.courses.store'), [
             'nama' => 'Pengenalan Laravel',
             'desk' => 'Belajar dasar Laravel.',
-            'konten' => json_encode([
-                ['type' => 'subbab', 'judul' => 'Apa itu Laravel?', 'judul_idn' => 'Apa itu Laravel?'],
-                ['type' => 'paragraf', 'teks' => 'Laravel adalah framework PHP.', 'teks_idn' => 'Laravel adalah framework PHP.'],
-                ['type' => 'kode', 'bahasa' => 'php', 'kode' => "<?php echo 'Halo';"],
-            ]),
-        ])
-        ->assertRedirect(route('admin.courses.index'));
+        ]);
 
     $course = Course::where('nama', 'Pengenalan Laravel')->first();
     expect($course)->not->toBeNull();
-    expect($course->konten)->toBeArray()
-        ->toHaveCount(3)
-        ->and($course->konten[0]['type'])->toBe('subbab')
-        ->and($course->konten[2]['bahasa'])->toBe('php');
+    $response->assertRedirect(route('admin.courses.show', $course));
 });
 
 test('course index page shows material panels', function () {
@@ -118,11 +109,17 @@ test('admin show page lists the materi subbabs with editor links', function () {
         ->assertSee(route('admin.courses.subbab.edit', [$course, 3]), false);
 });
 
-test('admin course form renders the block editor', function () {
+test('admin subbab edit form renders the block editor', function () {
     $user = User::factory()->create();
+    $course = Course::create([
+        'nama' => 'Pengenalan Laravel',
+        'konten' => [
+            ['type' => 'subbab', 'judul' => 'Apa itu Laravel?'],
+        ],
+    ]);
 
     $this->actingAs($user)
-        ->get(route('admin.courses.create'))
+        ->get(route('admin.courses.subbab.edit', [$course, 0]))
         ->assertOk()
         ->assertSee('courseContentEditor', false)
         ->assertSee('Tambah Blok', false);

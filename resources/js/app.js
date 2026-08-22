@@ -1,8 +1,7 @@
 import 'remixicon/fonts/remixicon.css';
 import 'animate.css/animate.min.css';
 import 'aos/dist/aos.css';
-// highlight.js — only the languages used by the course code blocks, to keep
-// the bundle small (registering the full package would add ~900 kB).
+
 import hljs from 'highlight.js/lib/core';
 import 'highlight.js/styles/atom-one-dark.min.css';
 import php from 'highlight.js/lib/languages/php';
@@ -32,14 +31,11 @@ hljs.registerLanguage('java', java);
 hljs.registerLanguage('plaintext', plaintext);
 import AOS from 'aos';
 import Alpine from 'alpinejs';
+import Quill from 'quill';
 import './image-uploader';
 
 window.Alpine = Alpine;
-
-/* ============================================================
-   CONTENT DATA — loaded from the server (window.portfolioData,
-   rendered by the landing route from the database).
-   ============================================================ */
+window.Quill = Quill;
 
 const serverData = window.portfolioData || {};
 
@@ -48,10 +44,6 @@ const projects = serverData.projects || [];
 const experiences = serverData.experiences || [];
 const certificates = serverData.certificates || [];
 
-/* ============================================================
-   I18N — UI string dictionary for the language toggle (EN/ID).
-   The active language is stored in localStorage under 'lang'.
-   ============================================================ */
 const i18n = {
     en: {
         navHome: 'Home',
@@ -245,12 +237,6 @@ const i18n = {
     },
 };
 
-/* ============================================================
-   LANGUAGE STORE — the current language lives in a reactive
-   Alpine store so that t()/L() reads (which go through the
-   store proxy) are tracked by Alpine effects and re-run when
-   the language changes.
-   ============================================================ */
 Alpine.store('lang', {
     current: (() => {
         try {
@@ -269,15 +255,12 @@ Alpine.store('lang', {
     },
 });
 
-/* ============================================================
-   ROOT APP COMPONENT
-   ============================================================ */
 Alpine.data('app', () => ({
     dark: false,
     scrolled: false,
 
-    // Course detail sidebar: hidden by default on mobile (slide-in drawer),
-    // open by default on desktop, where the collapsed state is persisted.
+    
+    
     sidebarOpen: (() => {
         try {
             return window.matchMedia('(min-width: 1024px)').matches
@@ -298,11 +281,11 @@ Alpine.data('app', () => ({
         this.dark = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
         document.documentElement.classList.toggle('dark', this.dark);
 
-        // Landing page: when the page is refreshed, always go back to the
-        // top (beranda) — never restore the previous scroll position, and
-        // clear any URL hash (e.g. /#proyek) so the active nav resets too.
-        // Arriving from a detail-page navbar click (a fresh navigation with
-        // a hash) still scrolls to the target section below.
+        
+        
+        
+        
+        
         if (window.portfolioData) {
             if ('scrollRestoration' in history) {
                 history.scrollRestoration = 'manual';
@@ -316,22 +299,22 @@ Alpine.data('app', () => ({
             }
         }
 
-        // Initial active nav item: on detail pages the server provides the
-        // matching section via data-active-nav (e.g. 'proyek' on /project/1);
-        // on the landing page a URL hash (e.g. /#proyek) wins.
+        
+        
+        
         this.active = document.body.dataset.activeNav || 'beranda';
         if (window.location.hash && document.querySelector(window.location.hash)) {
             this.active = window.location.hash.slice(1);
         }
 
-        // Navbar shrink on scroll (set once on init so a page reload while
-        // scrolled down renders the correct state immediately)
+        
+        
         this.scrolled = window.scrollY > 40;
         window.addEventListener('scroll', () => {
             this.scrolled = window.scrollY > 40;
         }, { passive: true });
 
-        // Scroll-spy for the active section
+        
         const sections = document.querySelectorAll('section[id]');
         const observer = new IntersectionObserver(
             (entries) => {
@@ -343,10 +326,10 @@ Alpine.data('app', () => ({
         );
         sections.forEach((section) => observer.observe(section));
 
-        // AOS animations
+        
         AOS.init({ once: true, duration: 800, offset: 40 });
 
-        // Browser back/forward support for SPA subbab navigation
+        
         window.addEventListener('popstate', () => {
             if (window.location.pathname.includes('/course/') && window.location.pathname.includes('/subbab/')) {
                 this.navigateSubbab(window.location.href);
@@ -355,7 +338,7 @@ Alpine.data('app', () => ({
             }
         });
 
-        // Code block syntax highlighting via highlight.js
+        
         this.$nextTick(() => {
             document.querySelectorAll('pre code').forEach((el) => {
                 try {
@@ -364,8 +347,8 @@ Alpine.data('app', () => ({
             });
         });
 
-        // When arriving with a URL hash (e.g. /#proyek from a detail page
-        // navbar click), scroll to that section once the page is ready.
+        
+        
         if (window.location.hash) {
             setTimeout(() => {
                 const target = document.querySelector(window.location.hash);
@@ -379,7 +362,7 @@ Alpine.data('app', () => ({
             const entry = performance.getEntriesByType?.('navigation')?.[0];
             if (entry) return entry.type === 'reload';
 
-            // Fallback for older browsers (legacy Navigation Timing API).
+            
             return typeof performance.navigation !== 'undefined' && performance.navigation.type === 1;
         } catch (e) {
             return false;
@@ -392,8 +375,8 @@ Alpine.data('app', () => ({
         localStorage.setItem('theme', this.dark ? 'dark' : 'light');
     },
 
-    // Open/close the course detail sidebar. On mobile it's a slide-in drawer;
-    // on desktop the sidebar collapses to give the content full width.
+    
+    
     toggleSidebar() {
         this.sidebarOpen = !this.sidebarOpen;
         try {
@@ -403,9 +386,9 @@ Alpine.data('app', () => ({
         } catch (e) {}
     },
 
-    // AJAX navigation for subbab links — replaces only the main content
-    // area and updates sidebar active states without a full page reload.
-    // The sidebar DOM stays untouched so it never re-renders or animates.
+    
+    
+    
     navigateSubbab(url, event) {
         if (event) event.preventDefault();
         if (this._navigating) return;
@@ -416,20 +399,20 @@ Alpine.data('app', () => ({
             .then(html => {
                 const doc = new DOMParser().parseFromString(html, 'text/html');
 
-                // 1. Replace main content only
+                
                 const newMain = doc.querySelector('main');
                 const oldMain = document.querySelector('main');
                 if (newMain && oldMain) {
                     oldMain.innerHTML = newMain.innerHTML;
                 }
 
-                // 2. Update sidebar active states by tweaking classes,
-                //    NOT by replacing the sidebar innerHTML (keeps shape).
+                
+                
                 const oldSidebar = document.querySelector('aside[x-cloak]');
                 if (oldSidebar) {
                     const newSidebar = doc.querySelector('aside[x-cloak]');
                     if (newSidebar) {
-                        // Update collapsed sidebar links
+                        
                         const oldCollapsedLinks = oldSidebar.querySelectorAll('.flex-col.items-center a[href*="/subbab/"]');
                         const newCollapsedLinks = newSidebar.querySelectorAll('.flex-col.items-center a[href*="/subbab/"]');
                         oldCollapsedLinks.forEach((link, i) => {
@@ -438,13 +421,13 @@ Alpine.data('app', () => ({
                             }
                         });
 
-                        // Update expanded sidebar links
+                        
                         const oldExpandedLinks = oldSidebar.querySelectorAll('.overflow-y-auto a[href*="/subbab/"]');
                         const newExpandedLinks = newSidebar.querySelectorAll('.overflow-y-auto a[href*="/subbab/"]');
                         oldExpandedLinks.forEach((link, i) => {
                             if (newExpandedLinks[i]) {
                                 link.className = newExpandedLinks[i].className;
-                                // Also update inner span classes (number badge)
+                                
                                 const oldSpan = link.querySelector('span');
                                 const newSpan = newExpandedLinks[i].querySelector('span');
                                 if (oldSpan && newSpan) oldSpan.className = newSpan.className;
@@ -453,14 +436,14 @@ Alpine.data('app', () => ({
                     }
                 }
 
-                // 3. Update TOC sidebar
+                
                 const newToc = doc.querySelector('aside[x-data="tocSpy"]');
                 const oldToc = document.querySelector('aside[x-data="tocSpy"]');
                 if (newToc && oldToc) {
                     oldToc.innerHTML = newToc.innerHTML;
                     oldToc.style.display = '';
-                    // Re-observe headings so the active state tracks correctly
-                    // after the innerHTML replacement.
+                    
+                    
                     const tocData = Alpine.$data(oldToc);
                     if (tocData && typeof tocData._observe === 'function') {
                         tocData._observe();
@@ -469,14 +452,14 @@ Alpine.data('app', () => ({
                     oldToc.style.display = 'none';
                 }
 
-                // 4. Update URL without reload
+                
                 history.pushState({}, '', url);
                 window.scrollTo(0, 0);
 
-                // 5. Re-run AOS for new elements
+                
                 if (window.AOS) AOS.refresh();
 
-                // 6. Re-highlight code blocks
+                
                 this.$nextTick(() => {
                     document.querySelectorAll('pre code').forEach(el => {
                         try { hljs.highlightElement(el); } catch (e) {}
@@ -490,15 +473,15 @@ Alpine.data('app', () => ({
             });
     },
 
-    /* --- Language helpers --- */
+    
     t(key) {
         const lang = Alpine.store('lang').current;
         return (i18n[lang] && i18n[lang][key]) || i18n.en[key] || key;
     },
 
-    // Pick the right content language for a record: pass the English value and
-    // the optional Indonesian value. Falls back to English when Indonesian is
-    // missing (or when the two arrays differ in length).
+    
+    
+    
     L(en, idn) {
         const lang = Alpine.store('lang').current;
         if (lang === 'id') {
@@ -522,17 +505,17 @@ Alpine.data('app', () => ({
                 window.location.href = window.landingUrl + href;
             }
         } catch (err) {
-            // Fallback for non-standard selector or missing element
+            
         }
     },
 
-    // Copy a code block's content to the clipboard (used by the course
-    // detail page code blocks).
-    // The button lives in the header bar, so we walk up to the outer
-    // code-block wrapper (closest div with overflow-hidden) and then
-    // find the <code> element inside it.
+    
+    
+    
+    
+    
     async copyCode(button) {
-        // Walk up to the outermost code-block container div, then find code inside.
+        
         const wrapper = button.closest('div[class*="rounded-xl"]');
         const codeEl  = wrapper ? wrapper.querySelector('pre code') : null;
         const text    = codeEl ? (codeEl.innerText || codeEl.textContent || '') : '';
@@ -673,21 +656,82 @@ function convertHtmlToMarkdown(html) {
     }
 }
 
-/* ============================================================
-   COURSE CONTENT EDITOR — admin block builder for course
-   materials (subbab, paragraf, gambar, kode, tabel). The block list is
-   serialized to the hidden `konten` input as JSON on submit.
-   ============================================================ */
-Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
+Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '', autosaveKey = '') => ({
     blocks: Array.isArray(initialBlocks) ? initialBlocks : [],
     uploadUrl,
     uploadingIndex: null,
     uploadError: '',
     draggedIndex: null,
+    autosaveKey,
+    autosaveStatus: '', // '', 'saving', 'saved', 'recovered'
+    _autosaveTimer: null,
+    _csrfTimer: null,
+    _keydownHandler: null,
+
+    // ── History (Undo / Redo) ──────────────────────────────────
+    undoStack: [],
+    redoStack: [],
+    _isHistoryOp: false,
+    _historyDebounce: null,
+
+    snapshot() {
+        return JSON.stringify(this.blocks);
+    },
+
+    pushHistory() {
+        if (this._isHistoryOp) return;
+        try {
+            const snap = this.snapshot();
+            if (this.undoStack.length > 0 && this.undoStack[this.undoStack.length - 1] === snap) {
+                return;
+            }
+            this.undoStack.push(snap);
+            if (this.undoStack.length > 50) this.undoStack.shift();
+            this.redoStack = [];
+        } catch (_) {}
+    },
+
+    pushHistoryDebounced() {
+        clearTimeout(this._historyDebounce);
+        this._historyDebounce = setTimeout(() => {
+            this.pushHistory();
+        }, 600);
+    },
+
+    canUndo() {
+        return this.undoStack.length > 0;
+    },
+
+    canRedo() {
+        return this.redoStack.length > 0;
+    },
+
+    undo() {
+        if (!this.canUndo()) return;
+        this._isHistoryOp = true;
+        try {
+            const current = this.snapshot();
+            this.redoStack.push(current);
+            const prev = this.undoStack.pop();
+            this.blocks = JSON.parse(prev);
+        } catch (_) {}
+        setTimeout(() => { this._isHistoryOp = false; }, 50);
+    },
+
+    redo() {
+        if (!this.canRedo()) return;
+        this._isHistoryOp = true;
+        try {
+            const current = this.snapshot();
+            this.undoStack.push(current);
+            const next = this.redoStack.pop();
+            this.blocks = JSON.parse(next);
+        } catch (_) {}
+        setTimeout(() => { this._isHistoryOp = false; }, 50);
+    },
 
     init() {
-        // When arriving from the admin subbab list (edit#blok-{index}), scroll
-        // to that block once the x-for items have been rendered.
+        // ── Scroll to hash block ────────────────────────────────────────
         this.$nextTick(() => {
             const hash = window.location.hash;
             if (!hash) return;
@@ -696,6 +740,63 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
                 if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
             } catch (_) {}
         });
+
+        // ── Global Keyboard Shortcuts (Ctrl+Z & Ctrl+Y / Ctrl+Shift+Z) ──
+        this._keydownHandler = (e) => {
+            if (!(e.ctrlKey || e.metaKey)) return;
+            const key = e.key.toLowerCase();
+            if (key === 'z' && !e.shiftKey) {
+                if (!e.target.closest('.ql-editor')) {
+                    e.preventDefault();
+                    this.undo();
+                }
+            } else if (key === 'y' || (key === 'z' && e.shiftKey)) {
+                if (!e.target.closest('.ql-editor')) {
+                    e.preventDefault();
+                    this.redo();
+                }
+            }
+        };
+        window.addEventListener('keydown', this._keydownHandler);
+
+        // ── Autosave ke localStorage setiap 30 detik ───────────────────
+        if (this.autosaveKey) {
+            this._autosaveTimer = setInterval(() => {
+                try {
+                    const payload = {
+                        blocks: this.blocks,
+                        savedAt: Date.now(),
+                    };
+                    localStorage.setItem(this.autosaveKey, JSON.stringify(payload));
+                    this.autosaveStatus = 'saved';
+                    setTimeout(() => { if (this.autosaveStatus === 'saved') this.autosaveStatus = ''; }, 3000);
+                } catch (e) {}
+            }, 30_000);
+        }
+
+        // ── Refresh CSRF token setiap 60 menit ─────────────────────────
+        this._csrfTimer = setInterval(async () => {
+            try {
+                await fetch('/sanctum/csrf-cookie', {
+                    method: 'GET',
+                    credentials: 'same-origin',
+                });
+            } catch (_) {}
+        }, 60 * 60 * 1000);
+
+        // ── Bersihkan timer & event listener ───────────────────────────
+        this.$cleanup = () => {
+            if (this._autosaveTimer) clearInterval(this._autosaveTimer);
+            if (this._csrfTimer) clearInterval(this._csrfTimer);
+            if (this._keydownHandler) window.removeEventListener('keydown', this._keydownHandler);
+        };
+    },
+
+    /** Hapus draft dari localStorage setelah form berhasil disubmit */
+    clearDraft() {
+        if (this.autosaveKey) {
+            try { localStorage.removeItem(this.autosaveKey); } catch (_) {}
+        }
     },
 
     insertTab(e) {
@@ -703,96 +804,10 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
         const start = textarea.selectionStart;
         const end = textarea.selectionEnd;
         const value = textarea.value;
+        this.pushHistory();
         textarea.value = value.substring(0, start) + "    " + value.substring(end);
         textarea.selectionStart = textarea.selectionEnd = start + 4;
         textarea.dispatchEvent(new Event('input'));
-    },
-
-    handleSmartPaste(index, e) {
-        if (!this.blocks[index] || this.blocks[index].type !== 'paragraf') return;
-
-        const clipboardData = e.clipboardData || window.clipboardData;
-        if (!clipboardData) return;
-
-        const html = clipboardData.getData('text/html');
-        const plainText = clipboardData.getData('text/plain');
-
-        let formattedText = '';
-
-        if (html && html.trim()) {
-            formattedText = convertHtmlToMarkdown(html);
-        }
-
-        if (!formattedText && plainText) {
-            let lines = plainText.split('\n');
-            let isList = lines.some(line => /^\s*([•*]|\d+[\.\)])\s+/.test(line));
-            if (isList) {
-                formattedText = lines.map(line => {
-                    let bulletMatch = line.match(/^\s*[•*]\s+(.*)/);
-                    if (bulletMatch) return '- ' + bulletMatch[1];
-                    let numMatch = line.match(/^\s*(\d+)[\.\)]\s+(.*)/);
-                    if (numMatch) return numMatch[1] + '. ' + numMatch[2];
-                    return line;
-                }).join('\n');
-            }
-        }
-
-        if (formattedText) {
-            e.preventDefault();
-            const textarea = e.target;
-            const start = textarea.selectionStart || 0;
-            const end = textarea.selectionEnd || 0;
-            const currentText = this.blocks[index].teks || '';
-
-            this.blocks[index].teks = currentText.substring(0, start) + formattedText + currentText.substring(end);
-
-            this.$nextTick(() => {
-                textarea.focus();
-                const newPos = start + formattedText.length;
-                textarea.setSelectionRange(newPos, newPos);
-            });
-        }
-    },
-
-    // Wrap the selected text of the paragraph with the clicked format. When
-    // nothing is selected, append a placeholder marker (old behaviour).
-    applyFormat(index, fmt, btnEl = null) {
-        if (!this.blocks[index] || this.blocks[index].type !== 'paragraf') return;
-
-        const textarea = btnEl ? btnEl.closest('.paragraf-block')?.querySelector('textarea') : null;
-        let text = this.blocks[index].teks || '';
-        const start = textarea ? textarea.selectionStart : null;
-        const end = textarea ? textarea.selectionEnd : null;
-        const hasSelection = start !== null && end !== null && end > start;
-
-        if (hasSelection) {
-            const selected = text.substring(start, end);
-            let formatted = selected;
-
-            if (fmt === 'bold') formatted = '**' + selected + '**';
-            else if (fmt === 'italic') formatted = '*' + selected + '*';
-            else if (fmt === 'underline') formatted = '<u>' + selected + '</u>';
-            else if (fmt === 'quote') formatted = selected.split('\n').map((line) => '> ' + line).join('\n');
-            else if (fmt === 'bullet') formatted = selected.split('\n').map((line) => '- ' + line).join('\n');
-            else if (fmt === 'number') formatted = selected.split('\n').map((line, i) => (i + 1) + '. ' + line).join('\n');
-
-            this.blocks[index].teks = text.substring(0, start) + formatted + text.substring(end);
-
-            // Keep the formatted text highlighted so more formats can be stacked.
-            this.$nextTick(() => {
-                textarea.focus();
-                textarea.setSelectionRange(start, start + formatted.length);
-            });
-            return;
-        }
-
-        if (fmt === 'bold') text += ' **teks tebal**';
-        else if (fmt === 'italic') text += ' *teks miring*';
-        else if (fmt === 'underline') text += ' <u>teks garis bawah</u>';
-        else if (fmt === 'quote') text += '\n> Tulis kutipan di sini...';
-        else if (fmt === 'bullet') text += '\n- Poin 1\n- Poin 2';
-        else if (fmt === 'number') text += '\n1. Poin 1\n2. Poin 2';
-        this.blocks[index].teks = text;
     },
 
     blockLabel(type) {
@@ -809,6 +824,7 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
     },
 
     addBlock(type) {
+        this.pushHistory();
         const base = { type };
         if (type === 'subbab') {
             base.judul = '';
@@ -845,13 +861,14 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
             const el = this.$el.querySelector('#blok-' + newIndex);
             if (el) {
                 el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                const input = el.querySelector('input[type="text"], textarea');
+                const input = el.querySelector('input[type="text"], textarea, .ql-editor');
                 if (input) input.focus();
             }
         });
     },
 
     addBlockAt(type, index) {
+        this.pushHistory();
         const base = { type };
         if (type === 'subbab') {
             base.judul = '';
@@ -887,7 +904,7 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
             const el = this.$el.querySelector('#blok-' + index);
             if (el) {
                 el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                const input = el.querySelector('input[type="text"], textarea');
+                const input = el.querySelector('input[type="text"], textarea, .ql-editor');
                 if (input) input.focus();
             }
         });
@@ -895,6 +912,7 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
 
     addTableRow(blockIndex) {
         if (!this.blocks[blockIndex] || this.blocks[blockIndex].type !== 'tabel') return;
+        this.pushHistory();
         const colCount = (this.blocks[blockIndex].headers || []).length || 1;
         const newRow = Array(colCount).fill('');
         if (!this.blocks[blockIndex].rows) this.blocks[blockIndex].rows = [];
@@ -903,11 +921,13 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
 
     removeTableRow(blockIndex, rowIndex) {
         if (!this.blocks[blockIndex] || this.blocks[blockIndex].type !== 'tabel') return;
+        this.pushHistory();
         this.blocks[blockIndex].rows.splice(rowIndex, 1);
     },
 
     addTableCol(blockIndex) {
         if (!this.blocks[blockIndex] || this.blocks[blockIndex].type !== 'tabel') return;
+        this.pushHistory();
         if (!this.blocks[blockIndex].headers) this.blocks[blockIndex].headers = [];
         const nextColNum = this.blocks[blockIndex].headers.length + 1;
         this.blocks[blockIndex].headers.push(`Header ${nextColNum}`);
@@ -920,6 +940,7 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
     removeTableCol(blockIndex, colIndex) {
         if (!this.blocks[blockIndex] || this.blocks[blockIndex].type !== 'tabel') return;
         if ((this.blocks[blockIndex].headers || []).length <= 1) return;
+        this.pushHistory();
         this.blocks[blockIndex].headers.splice(colIndex, 1);
         (this.blocks[blockIndex].rows || []).forEach(row => {
             row.splice(colIndex, 1);
@@ -927,18 +948,25 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
     },
 
     removeBlock(index) {
+        if (index === 0 && this.blocks[0]?.type === 'subbab') return;
+        this.pushHistory();
         this.blocks.splice(index, 1);
     },
 
     moveBlock(index, direction) {
+        if (index === 0 && this.blocks[0]?.type === 'subbab') return;
         const target = index + direction;
-        if (target < 0 || target >= this.blocks.length) return;
+        if (target < (this.blocks[0]?.type === 'subbab' ? 1 : 0) || target >= this.blocks.length) return;
+        this.pushHistory();
         const [block] = this.blocks.splice(index, 1);
         this.blocks.splice(target, 0, block);
     },
 
-    // HTML5 Drag & Drop reordering for blocks
     dragStart(index, e) {
+        if (index === 0 && this.blocks[0]?.type === 'subbab') {
+            e.preventDefault();
+            return;
+        }
         this.draggedIndex = index;
         if (e.dataTransfer) {
             e.dataTransfer.effectAllowed = 'move';
@@ -953,7 +981,10 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
 
     dropBlock(targetIndex, e) {
         if (this.draggedIndex === null || this.draggedIndex === targetIndex) return;
+        if (this.draggedIndex === 0 && this.blocks[0]?.type === 'subbab') return;
+        if (targetIndex === 0 && this.blocks[0]?.type === 'subbab') targetIndex = 1;
         e.preventDefault();
+        this.pushHistory();
         const [moved] = this.blocks.splice(this.draggedIndex, 1);
         this.blocks.splice(targetIndex, 0, moved);
         this.draggedIndex = null;
@@ -996,6 +1027,7 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
                 throw new Error(data.error || 'Upload gagal');
             }
 
+            this.pushHistory();
             this.blocks[index].url = data.url;
         } catch (err) {
             this.uploadError = err.message || 'Upload gambar gagal.';
@@ -1006,18 +1038,86 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '') => ({
 }));
 
 /* ============================================================
-   TOC SPY — highlights the current subbab in the right-side
-   "Sub Heading" navigation as the reader scrolls (course
-   detail page). Used by the right aside via x-data="tocSpy".
+   Quill Rich Text Paragraph Editor Component
    ============================================================ */
+Alpine.data('quillParagraphEditor', (block, index) => ({
+    quill: null,
+    _internalChange: false,
+
+    init() {
+        this.$nextTick(() => {
+            const box = this.$refs.quillBox;
+            if (!box) return;
+
+            const toolbarOptions = [
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'align': '' }, { 'align': 'center' }, { 'align': 'right' }, { 'align': 'justify' }],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                ['blockquote', 'code-block', 'link'],
+                ['clean']
+            ];
+
+            this.quill = new Quill(box, {
+                theme: 'snow',
+                placeholder: 'Tulis isi paragraf di sini...',
+                modules: {
+                    toolbar: toolbarOptions,
+                }
+            });
+
+            // Set initial content
+            if (block.teks) {
+                if (!block.teks.includes('<') && block.teks.includes('\n')) {
+                    this.quill.root.innerHTML = block.teks.split('\n').map(p => p.trim() ? `<p>${p}</p>` : '<p><br></p>').join('');
+                } else {
+                    this.quill.root.innerHTML = block.teks;
+                }
+            }
+
+            // Sync to block.teks on user edit
+            this.quill.on('text-change', (delta, oldDelta, source) => {
+                if (this._internalChange) return;
+
+                const html = this.quill.root.innerHTML;
+                const isBlank = html === '<p><br></p>' || this.quill.getText().trim() === '';
+                block.teks = isBlank ? '' : html;
+
+                if (source === 'user') {
+                    const editorComponent = this.$root.closest('[x-data^="courseContentEditor"]');
+                    if (editorComponent && editorComponent._x_dataStack && editorComponent._x_dataStack[0]?.pushHistoryDebounced) {
+                        editorComponent._x_dataStack[0].pushHistoryDebounced();
+                    }
+                }
+            });
+
+            // Watch for undo/redo or external block.teks updates
+            this.$watch(() => block.teks, (newVal) => {
+                if (!this.quill) return;
+                const currentHtml = this.quill.root.innerHTML;
+                const isBlank = currentHtml === '<p><br></p>' || this.quill.getText().trim() === '';
+                const actualCurrent = isBlank ? '' : currentHtml;
+
+                if (newVal !== actualCurrent) {
+                    this._internalChange = true;
+                    this.quill.root.innerHTML = newVal || '';
+                    this.$nextTick(() => {
+                        this._internalChange = false;
+                    });
+                }
+            });
+        });
+    }
+}));
+
+
 Alpine.data('tocSpy', () => ({
     active: '',
     _observer: null,
 
     init() {
-        // Handle TOC link clicks with explicit scroll — native anchor
-        // links don't reliably scroll the main document when the link
-        // lives inside a fixed, scrollable container.
+        
+        
+        
         this.$el.addEventListener('click', (e) => {
             const link = e.target.closest('a[href^="#"]');
             if (!link) return;
@@ -1033,7 +1133,7 @@ Alpine.data('tocSpy', () => ({
         this._observe();
     },
 
-    /** (Re-)build the IntersectionObserver for the current TOC links. */
+    
     _observe() {
         if (this._observer) { this._observer.disconnect(); this._observer = null; }
 
@@ -1048,9 +1148,9 @@ Alpine.data('tocSpy', () => ({
                     if (entry.isIntersecting) this.active = entry.target.id;
                 });
             },
-            // A heading counts as active when it enters the top band of the
-            // viewport (below the floating top bar), not when it's merely
-            // visible at the bottom of the screen.
+            
+            
+            
             { rootMargin: '-80px 0px -75% 0px', threshold: 0 }
         );
         sections.forEach((s) => this._observer.observe(s));
@@ -1061,11 +1161,6 @@ Alpine.data('tocSpy', () => ({
     },
 }));
 
-/* ============================================================
-   COURSE INDEX SEARCH — real-time client-side filtering for the
-   course listing page. Input is sanitised to prevent XSS; we only
-   compare plain-text strings, never inject user input into the DOM.
-   ============================================================ */
 Alpine.data('courseSearch', () => ({
     query: '',
     visibleCount: 0,
@@ -1080,17 +1175,17 @@ Alpine.data('courseSearch', () => ({
     },
 
     filter() {
-        // Sanitise: strip anything that isn't alphanumeric / whitespace /
-        // common accented characters, then collapse whitespace. This
-        // prevents injection of HTML entities, script payloads, or
-        // regex metacharacters through the search box.
+        
+        
+        
+        
         const raw = this.query || '';
         const safe = raw
-            .replace(/<[^>]*>/g, '')        // strip any HTML tags
-            .replace(/[&<>"]/g, '')        // strip dangerous chars
-            .replace(/\/\/|javascript:/gi, '') // strip protocol/script schemes
+            .replace(/<[^>]*>/g, '')        
+            .replace(/[&<>"]/g, '')        
+            .replace(/\/\/|javascript:/gi, '') 
             .trim()
-            .substring(0, 100);             // hard limit
+            .substring(0, 100);             
 
         const terms = safe.toLowerCase().split(/\s+/).filter(Boolean);
 
@@ -1105,16 +1200,11 @@ Alpine.data('courseSearch', () => ({
     },
 }));
 
-/* ============================================================
-   CAROUSEL COMPONENT (snap-scroll grid + pagination dots)
-   ============================================================ */
-/* Shared snap-carousel logic (dots + pages) used by the plain `carousel`
-   component and the filterable `projectGallery` (projects section). */
 function carouselCore(totalItems) {
     return {
         totalItems,
         pages: 1,
-        current: 1, // 1-based, matching the dots rendered via `x-for="i in pages"`
+        current: 1, 
         gap: 24,
 
         init() {
@@ -1132,9 +1222,9 @@ function carouselCore(totalItems) {
     metrics() {
         const track = this.$refs.track;
         if (!track) return null;
-        // Alpine leaves the x-for <template> in the DOM as the first child, so
-        // skip it when measuring the first real item (otherwise its zero width
-        // breaks the pagination and only one dot ever appears).
+        
+        
+        
         const first = Array.from(track.children).find((el) => el.tagName !== 'TEMPLATE');
         if (!first) return null;
         const gap = parseFloat(getComputedStyle(track).columnGap) || 24;
@@ -1151,9 +1241,9 @@ function carouselCore(totalItems) {
         const m = this.metrics();
         if (!m) return;
         this.gap = m.gap;
-        // Use the real number of rendered items (excluding the x-for template
-        // node Alpine keeps in the DOM) so the pagination always matches the
-        // actual content, even if the passed total is stale.
+        
+        
+        
         const itemCount = Array.from(track.children).filter((el) => el.tagName !== 'TEMPLATE').length;
         if (itemCount > 0) this.totalItems = itemCount;
         const rows = 2;
@@ -1169,16 +1259,16 @@ function carouselCore(totalItems) {
         const maxScroll = track.scrollWidth - track.clientWidth;
         const pos = Math.min(track.scrollLeft, maxScroll);
 
-        // When the end of the track is reached, the last page is fully shown
-        // even if it holds fewer columns than a full page — activate its dot.
+        
+        
         if (maxScroll > 0 && pos >= maxScroll - 1) {
             this.current = this.pages;
             return;
         }
 
-        // A dot only becomes active when its panel is actually reached
-        // (scrollLeft 0 = page 1), never while the previous panel is still
-        // mostly on screen.
+        
+        
+        
         const pageWidth = m.perPage * m.step;
         const page = Math.floor(pos / pageWidth) + 1;
         this.current = Math.max(1, Math.min(page, this.pages));
@@ -1195,9 +1285,6 @@ function carouselCore(totalItems) {
 
 Alpine.data('carousel', (totalItems) => carouselCore(totalItems));
 
-/* Filterable project gallery: carousel behavior + category filter buttons.
-   Reads the projects from window.portfolioData (same source as the root
-   `app` component) and re-renders the track when a category is selected. */
 Alpine.data('projectGallery', (categories) => ({
     ...carouselCore(0),
     categories: categories || [],
@@ -1219,17 +1306,8 @@ Alpine.data('projectGallery', (categories) => ({
     },
 }));
 
-/* ============================================================
-   STICKY PANEL — keeps the right-hand detail-page panel pinned
-   at its position for the whole scroll (lg+), so it never scrolls
-   away with the page (like the fixed left sidebar on the admin
-   pages). The CSS `lg:sticky` fallback can't hold the panel
-   beyond its grid cell, so this component takes over with
-   `position: fixed` once the panel scrolls past its offset and
-   keeps it exactly there until the very bottom.
-   ============================================================ */
 Alpine.data('stickyPanel', () => ({
-    // Matches the `lg:top-28` offset used by the CSS fallback.
+    
     offset: 112,
     enabled: false,
     naturalTop: null,
@@ -1247,8 +1325,8 @@ Alpine.data('stickyPanel', () => ({
         mq.addEventListener('change', apply);
         window.addEventListener('scroll', () => this.pin(), { passive: true });
         window.addEventListener('resize', () => {
-            // Re-measure from scratch after a layout change: drop the inline
-            // styles first so the element is back in normal flow.
+            
+            
             this.naturalTop = null;
             this.width = null;
             this.height = null;
@@ -1258,14 +1336,14 @@ Alpine.data('stickyPanel', () => ({
 
         apply();
 
-        // Re-check after the browser restores the scroll position on reload
-        // (restoration happens after Alpine initializes).
+        
+        
         setTimeout(() => this.pin(), 300);
     },
 
-    // Document top of the panel in normal flow, computed from the layout so
-    // it is immune to both the `position: sticky` fallback and the AOS
-    // entrance transform (which would otherwise corrupt getBoundingClientRect).
+    
+    
+    
     measureNaturalTop() {
         let top = 0;
         let node = this.$el;
@@ -1285,9 +1363,9 @@ Alpine.data('stickyPanel', () => ({
         const scrollY = window.pageYOffset || document.documentElement.scrollTop;
         const rect = el.getBoundingClientRect();
 
-        // First measurement happens while the element is still in normal flow
-        // — capture its natural position and true size here, because once it
-        // becomes `position: fixed` it would shrink-wrap to its content.
+        
+        
+        
         if (this.naturalTop === null) {
             this.naturalTop = this.measureNaturalTop();
             this.width = el.offsetWidth;
@@ -1299,17 +1377,17 @@ Alpine.data('stickyPanel', () => ({
             return;
         }
 
-        // Stay put exactly at the offset for the whole scroll — never ride
-        // up past it (that's what pushed the panel off-screen before).
+        
+        
         el.style.position = 'fixed';
         el.style.top = this.offset + 'px';
-        // Horizontal position is constant on lg (centered container).
+        
         el.style.left = rect.left + 'px';
         el.style.width = this.width + 'px';
 
-        // If the panel is taller than the space below the navbar, keep the
-        // whole panel reachable by scrolling inside it (same pattern as the
-        // fixed admin sidebar, which uses overflow-y-auto).
+        
+        
+        
         const maxHeight = window.innerHeight - this.offset - 24;
         if (this.height > maxHeight) {
             el.style.maxHeight = maxHeight + 'px';
@@ -1332,12 +1410,6 @@ Alpine.data('stickyPanel', () => ({
     },
 }));
 
-/* ============================================================
-   REORDER TABLE — drag & drop row ordering for admin index tables.
-   The tbody is `x-data="reorderTable(url)"`; each row has a
-   draggable grip cell and a `data-id`; order is persisted via a
-   POST with the new id sequence (1-based sort_order server-side).
-   ============================================================ */
 Alpine.data('reorderTable', (url) => ({
     url,
     dragging: null,
@@ -1410,15 +1482,12 @@ Alpine.data('reorderTable', (url) => ({
             });
             if (!res.ok) throw new Error('reorder failed');
         } catch (err) {
-            // Restore the server-side order if saving failed.
+            
             window.location.reload();
         }
     },
 }));
 
-/* ============================================================
-   COUNTER COMPONENT (counts up when scrolled into view)
-   ============================================================ */
 Alpine.data('counter', (target, suffix = '') => ({
     value: 0,
     target,
@@ -1445,16 +1514,11 @@ Alpine.data('counter', (target, suffix = '') => ({
     },
 }));
 
-/* ============================================================
-   SUBMIT GUARD — prevent duplicate form submissions (especially
-   Cloudinary uploads): disable the submit button as soon as the
-   form is submitted and show a loading state.
-   ============================================================ */
 document.addEventListener('submit', (event) => {
     const form = event.target;
 
-    // Skip non-form submits and submissions cancelled by inline
-    // handlers (e.g. the delete confirmation `onsubmit`).
+    
+    
     if (!(form instanceof HTMLFormElement) || event.defaultPrevented) {
         return;
     }
@@ -1468,14 +1532,13 @@ document.addEventListener('submit', (event) => {
     button.disabled = true;
     button.classList.add('cursor-wait', 'opacity-70');
 
-    // Swap the leading icon for a spinner, keeping the button label.
+    
     const icon = button.querySelector('i');
     if (icon) {
         icon.className = 'ri-loader-4-line animate-spin';
     }
 });
 
-// Syntax-highlight server-rendered code blocks (course detail page).
 document.querySelectorAll('pre > code[class*="language-"]').forEach((el) => hljs.highlightElement(el));
 
 Alpine.start();

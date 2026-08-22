@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Edit Subbab: '.$subbabTitle)
+@section('title', 'Edit Subbab')
 @section('page_title', 'Edit Subbab')
 
 @section('content')

@@ -15,7 +15,7 @@ if (! function_exists('render_markdown')) {
 
         $converter = once(function () {
             $env = new Environment([
-                'html_input'         => 'strip',
+                'html_input'         => 'allow',
                 'allow_unsafe_links' => false,
                 'max_nesting_level'  => 10,
             ]);
@@ -27,7 +27,7 @@ if (! function_exists('render_markdown')) {
 
         $html = $converter->convert($text)->getContent();
 
-        $allowed = '<p><br><strong><em><u><s><del><ul><ol><li><blockquote><code><pre><a><hr><h1><h2><h3><h4><h5><h6><table><thead><tbody><tr><th><td>';
+        $allowed = '<p><br><strong><em><u><s><del><ul><ol><li><blockquote><code><pre><a><hr><h1><h2><h3><h4><h5><h6><table><thead><tbody><tr><th><td><span><mark><div>';
 
         $html = strip_tags($html, $allowed);
 

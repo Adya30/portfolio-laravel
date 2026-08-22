@@ -1,6 +1,5 @@
 @import 'tailwindcss';
 
-/* Self-hosted fonts (no external CDN) */
 @import '@fontsource/inter/latin-300.css';
 @import '@fontsource/inter/latin-400.css';
 @import '@fontsource/inter/latin-500.css';
@@ -12,8 +11,8 @@
 @import '@fontsource/poppins/latin-600.css';
 @import '@fontsource/poppins/latin-700.css';
 @import '@fontsource/poppins/latin-800.css';
+@import 'quill/dist/quill.snow.css';
 
-/* Class-based dark mode (original site toggles .dark on <html>) */
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
@@ -60,19 +59,16 @@ body {
     padding-top: calc(1rem + env(safe-area-inset-top, 0px));
 }
 
-/* Admin & auth pages have their own fixed layouts (no floating navbar) */
 .admin-body {
     padding-top: 0;
 }
 
-/* All buttons (and elements acting as buttons) show a pointer cursor */
 button:not(:disabled),
 [role="button"]:not(:disabled),
 input[type="file"]::file-selector-button {
     cursor: pointer;
 }
 
-/* Hide scrollbars on horizontal carousels (no Tailwind utility) */
 .scrollbar-none {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -82,7 +78,6 @@ input[type="file"]::file-selector-button {
     display: none;
 }
 
-/* Twinkling sparkles background decor */
 @keyframes sparkle-twinkle {
     0%,
     100% {
@@ -95,7 +90,6 @@ input[type="file"]::file-selector-button {
     }
 }
 
-/* Custom Modern Scrollbars */
 ::-webkit-scrollbar {
     width: 9px;
     height: 9px;
@@ -143,20 +137,17 @@ input[type="file"]::file-selector-button {
     scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
 }
 
-/* Code block tab size & indentation */
 .tab-size-4 {
     -moz-tab-size: 4;
     -o-tab-size: 4;
     tab-size: 4;
 }
 
-/* Fix highlight.js background color mismatch in code blocks */
 .hljs {
     background: transparent !important;
     padding: 0 !important;
 }
 
-/* ── Markdown rendered content in course detail ──────────────────────────── */
 .markdown-content p {
     margin-top: 0;
     margin-bottom: 0.75em;
@@ -318,4 +309,68 @@ input[type="file"]::file-selector-button {
     text-decoration: line-through;
     opacity: 0.6;
 }
+
+/* ── Quill Alignment & Formatting ──────────────────────────────────────── */
+.ql-align-center {
+    text-align: center;
+}
+.ql-align-right {
+    text-align: right;
+}
+.ql-align-justify {
+    text-align: justify;
+}
+
+/* ── Quill Custom Theme for Admin Panel ────────────────────────────────── */
+.ql-toolbar.ql-snow {
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+    border-color: #e2e8f0 !important;
+    background-color: #f8fafc;
+    padding: 6px 8px !important;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px;
+}
+.ql-container.ql-snow {
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+    border-color: #e2e8f0 !important;
+    font-family: inherit;
+    font-size: 0.875rem;
+    background-color: #ffffff;
+    min-height: 120px;
+}
+.ql-editor {
+    min-height: 100px;
+    line-height: 1.6;
+    color: #1e293b;
+    padding: 10px 12px !important;
+}
+.ql-editor.ql-blank::before {
+    color: #94a3b8 !important;
+    font-style: normal !important;
+    left: 12px !important;
+}
+.ql-snow .ql-stroke {
+    stroke: #64748b !important;
+}
+.ql-snow .ql-fill {
+    fill: #64748b !important;
+}
+.ql-snow .ql-picker {
+    color: #64748b !important;
+}
+.ql-snow .ql-active .ql-stroke,
+.ql-snow .ql-picker-label.ql-active .ql-stroke,
+.ql-snow button:hover .ql-stroke,
+.ql-snow .ql-picker-label:hover .ql-stroke {
+    stroke: #3b82f6 !important;
+}
+.ql-snow .ql-active .ql-fill,
+.ql-snow button:hover .ql-fill {
+    fill: #3b82f6 !important;
+}
+
 

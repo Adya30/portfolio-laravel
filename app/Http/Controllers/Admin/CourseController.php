@@ -56,17 +56,17 @@ class CourseController extends Controller
     {
         $data = $this->validateData($request);
 
-        Course::create([
+        $course = Course::create([
             'nama' => $data['nama'],
             'nama_idn' => $data['nama_idn'] ?? null,
             'desk' => $data['desk'] ?? null,
             'desk_idn' => $data['desk_idn'] ?? null,
-            'konten' => $this->decodeBlocks($request),
+            'konten' => $this->decodeBlocks($request) ?? [],
             'gambar' => $this->resolveImage($request, 'courses'),
             'sort_order' => $data['sort_order'] ?? 0,
         ]);
 
-        return redirect()->route('admin.courses.index')->with('success', 'Materi berhasil ditambahkan.');
+        return redirect()->route('admin.courses.show', $course)->with('success', 'Materi berhasil ditambahkan. Silakan tambahkan subbab.');
     }
 
     public function edit(Course $course): View
@@ -78,7 +78,7 @@ class CourseController extends Controller
     {
         $data = $this->validateData($request);
 
-        // Optimistic locking: cek updated_at sebelum update
+        
         $oldUpdatedAt = $request->input('updated_at');
         if ($oldUpdatedAt) {
             $updated = Course::where('id', $course->id)
@@ -154,11 +154,7 @@ class CourseController extends Controller
         ]);
     }
 
-    /**
-     * Update subbab dengan concurrent editing support.
-     * Re-reads the latest konten from DB, finds the subbab by original title+position,
-     * merges new blocks, and saves with optimistic locking.
-     */
+    
     public function updateSubbab(Request $request, Course $course, int $blockIndex): RedirectResponse
     {
         $newBlocks = $this->decodeBlocks($request) ?? [];
@@ -180,8 +176,8 @@ class CourseController extends Controller
             }
         }
 
-        // Ambil info subbab asli dari form untuk identifikasi
-        $originalTitle = $request->input('original_subbab_title', '');
+        
+        $originalTitle = (string) ($request->input('original_subbab_title') ?? '');
         $originalPosition = (int) $request->input('original_subbab_position', 0);
 
         // Re-read latest konten dari DB (bisa sudah diubah user lain)
@@ -261,7 +257,7 @@ class CourseController extends Controller
     /**
      * Retry update subbab dengan data terbaru dari DB.
      */
-    private function retryUpdateSubbab(Course $course, array $newBlocks, string $originalTitle, int $originalPosition): RedirectResponse
+    private function retryUpdateSubbab(Course $course, array $newBlocks, ?string $originalTitle, int $originalPosition): RedirectResponse
     {
         $allBlocks = $course->konten ?? [];
 
@@ -311,8 +307,9 @@ class CourseController extends Controller
      * Cocokkan dengan urutan subbab (position) sebagai prioritas utama,
      * lalu verifikasi judul sebagai secondary check.
      */
-    private function findSubbabByOriginalInfo(array $allBlocks, string $originalTitle, int $originalPosition): ?int
+    private function findSubbabByOriginalInfo(array $allBlocks, ?string $originalTitle, int $originalPosition): ?int
     {
+        $originalTitle = (string) ($originalTitle ?? '');
         $subbabCount = 0;
         $candidateByPosition = null;
         $candidateByTitle = null;
@@ -323,7 +320,7 @@ class CourseController extends Controller
                     $candidateByPosition = $i;
                 }
 
-                if (Str::slug($block['judul'] ?? '') === Str::slug($originalTitle)) {
+                if ($originalTitle !== '' && Str::slug($block['judul'] ?? '') === Str::slug($originalTitle)) {
                     $candidateByTitle = $i;
                 }
 
@@ -331,20 +328,20 @@ class CourseController extends Controller
             }
         }
 
-        // Prioritas: posisi + judul cocok
+        // Prioritas 1: posisi + judul cocok
         if ($candidateByPosition !== null) {
             $posTitle = $allBlocks[$candidateByPosition]['judul'] ?? '';
-            if (Str::slug($posTitle) === Str::slug($originalTitle)) {
+            if ($originalTitle === '' || Str::slug($posTitle) === Str::slug($originalTitle)) {
                 return $candidateByPosition;
             }
         }
 
-        // Fallback: hanya judul cocok
+        // Prioritas 2: hanya judul cocok
         if ($candidateByTitle !== null) {
             return $candidateByTitle;
         }
 
-        // Fallback: hanya posisi cocok (judul mungkin diubah user lain)
+        // Prioritas 3: hanya posisi cocok
         if ($candidateByPosition !== null && $originalPosition < $subbabCount) {
             return $candidateByPosition;
         }
@@ -354,7 +351,7 @@ class CourseController extends Controller
 
     public function storeSubbab(Course $course): RedirectResponse
     {
-        // Re-read dari DB untuk menghindari conflict
+        
         $course->refresh();
         $blocks = $course->konten ?? [];
 
@@ -369,7 +366,7 @@ class CourseController extends Controller
 
     public function destroySubbab(Course $course, int $blockIndex): RedirectResponse
     {
-        // Re-read dari DB untuk menghindari conflict
+        
         $course->refresh();
         $allBlocks = $course->konten ?? [];
 
@@ -446,7 +443,7 @@ class CourseController extends Controller
             'ids.*' => ['integer'],
         ])['ids'];
 
-        // Re-read dari DB untuk data terbaru
+        
         $course->refresh();
         $allBlocks = $course->konten ?? [];
 
@@ -498,7 +495,7 @@ class CourseController extends Controller
             'nama_idn' => ['nullable', 'string', 'max:255'],
             'desk' => ['nullable', 'string'],
             'desk_idn' => ['nullable', 'string'],
-            'konten' => ['nullable', 'string'],
+            'konten' => ['nullable', 'string', 'max:1048576'],
             'gambar' => ['nullable', 'image:allow_svg', 'mimes:svg,png,jpg,jpeg,webp', 'max:2048'],
             'gambar_url' => ['nullable', 'url'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
@@ -530,6 +527,15 @@ class CourseController extends Controller
 
         return collect($decoded)
             ->filter(fn ($block) => is_array($block) && isset($block['type']) && in_array($block['type'], $allowed, true))
+            ->map(function ($block) {
+                if (($block['type'] ?? '') === 'link' && !empty($block['href'])) {
+                    $block['href'] =filter_var($block['href'], FILTER_VALIDATE_URL)
+                        && preg_match('#^https?://#i', $block['href'])
+                        ? $block['href'] : '#';
+                }
+                return $block;
+            })
+            ->take(500)
             ->values()
             ->all();
     }

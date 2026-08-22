@@ -6,15 +6,48 @@
         $blocksValue = json_decode($blocksValue, true) ?: [];
     }
     $blocksValue = is_array($blocksValue) ? $blocksValue : [];
+    $autosaveKey = 'autosave_course_' . (($course ?? null)?->id ?? '0')
+                 . '_block_' . ($blockIndex ?? 'main');
 @endphp
 
-<div x-data="courseContentEditor(@js($blocksValue), @js(route('admin.courses.upload-image')))" class="space-y-4">
+<div x-data="courseContentEditor(@js($blocksValue), @js(route('admin.courses.upload-image')), @js($autosaveKey))" class="space-y-4">
     <input type="hidden" name="konten" x-ref="kontenInput" value="{{ json_encode($blocksValue) }}">
     <div x-effect="$refs.kontenInput.value = JSON.stringify(blocks)"></div>
 
     <div class="bg-white shadow-xl p-6 sm:p-8 max-w-4xl mx-auto relative">
         <div class="border-b border-slate-200 pb-3 flex items-center justify-between text-xs text-slate-400 font-mono select-none">
-            <span>Halaman Materi</span>
+            <div class="flex items-center gap-3">
+                <span class="font-semibold text-slate-600">Halaman Materi</span>
+                <span class="text-slate-300">|</span>
+                <!-- Tombol Undo & Redo -->
+                <div class="flex items-center gap-1 font-sans">
+                    <button type="button" @click="undo()" :disabled="!canUndo()"
+                            :class="canUndo() ? 'text-slate-600 hover:text-accent hover:bg-slate-100 cursor-pointer shadow-2xs bg-white border border-slate-200' : 'text-slate-300 cursor-not-allowed opacity-40 bg-slate-50 border border-slate-100'"
+                            class="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-semibold transition-all"
+                            title="Undo perubahan (Ctrl+Z)">
+                        <i class="ri-arrow-go-back-line text-sm"></i>
+                        <span class="hidden sm:inline">Undo</span>
+                    </button>
+                    <button type="button" @click="redo()" :disabled="!canRedo()"
+                            :class="canRedo() ? 'text-slate-600 hover:text-accent hover:bg-slate-100 cursor-pointer shadow-2xs bg-white border border-slate-200' : 'text-slate-300 cursor-not-allowed opacity-40 bg-slate-50 border border-slate-100'"
+                            class="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-semibold transition-all"
+                            title="Redo perubahan (Ctrl+Y / Ctrl+Shift+Z)">
+                        <i class="ri-arrow-go-forward-line text-sm"></i>
+                        <span class="hidden sm:inline">Redo</span>
+                    </button>
+                </div>
+            </div>
+            <span x-show="autosaveStatus === 'saved'"
+                  x-transition:enter="transition ease-out duration-300"
+                  x-transition:enter-start="opacity-0 translate-y-1"
+                  x-transition:enter-end="opacity-100 translate-y-0"
+                  x-transition:leave="transition ease-in duration-200"
+                  x-transition:leave-start="opacity-100"
+                  x-transition:leave-end="opacity-0"
+                  x-cloak
+                  class="flex items-center gap-1 text-emerald-500 font-semibold text-[10px]">
+                <i class="ri-checkbox-circle-fill"></i> Draft tersimpan otomatis
+            </span>
         </div>
 
         <div class="flex flex-wrap items-center gap-2 py-3 border-b border-slate-100">
@@ -70,7 +103,7 @@
                     <div class="border-t border-slate-200/70 my-0"></div>
 
                     <div :id="'blok-' + i"
-                         draggable="true"
+                         :draggable="!(i === 0 && block.type === 'subbab')"
                          @dragstart="dragStart(i, $event)"
                          @dragover="dragOver(i, $event)"
                          @drop="dropBlock(i, $event)"
@@ -80,27 +113,41 @@
 
                         <div class="flex items-center justify-between gap-3 mb-2">
                             <div class="flex items-center gap-2">
-                                <span class="cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-500 transition-colors p-0.5"
-                                      title="Tahan & geser untuk memindahkan">
-                                    <i class="ri-drag-move-2-line text-sm"></i>
-                                </span>
+                                <template x-if="!(i === 0 && block.type === 'subbab')">
+                                    <span class="cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-500 transition-colors p-0.5"
+                                          title="Tahan & geser untuk memindahkan">
+                                        <i class="ri-drag-move-2-line text-sm"></i>
+                                    </span>
+                                </template>
+                                <template x-if="i === 0 && block.type === 'subbab'">
+                                    <span class="text-slate-400 p-0.5" title="Subbab utama terkunci di atas">
+                                        <i class="ri-lock-2-line text-sm text-slate-400"></i>
+                                    </span>
+                                </template>
                                 <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200"
                                       x-text="blockLabel(block.type)"></span>
                                 <span class="text-[10px] text-slate-400 font-semibold">#<span x-text="i + 1"></span></span>
+                                <template x-if="i === 0 && block.type === 'subbab'">
+                                    <span class="text-[10px] font-semibold text-accent/80 bg-accent/10 px-2 py-0.5 rounded">Terkunci di atas</span>
+                                </template>
                             </div>
 
-                            <div class="flex items-center gap-0.5">
-                                <button type="button" @click="moveBlock(i, -1)"
-                                        class="w-6 h-6 flex items-center justify-center rounded text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors">
+                            <div class="flex items-center gap-0.5" x-show="!(i === 0 && block.type === 'subbab')">
+                                <button type="button" @click="moveBlock(i, -1)" :disabled="i <= 1 && blocks[0]?.type === 'subbab'"
+                                        :class="(i <= 1 && blocks[0]?.type === 'subbab') || i === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:text-slate-700 hover:bg-slate-100'"
+                                        class="w-6 h-6 flex items-center justify-center rounded text-slate-400 transition-colors"
+                                        title="Pindah ke atas">
                                     <i class="ri-arrow-up-line text-xs"></i>
                                 </button>
-                                <button type="button" @click="moveBlock(i, 1)"
-                                        class="w-6 h-6 flex items-center justify-center rounded text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors">
+                                <button type="button" @click="moveBlock(i, 1)" :disabled="i >= blocks.length - 1"
+                                        :class="i >= blocks.length - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:text-slate-700 hover:bg-slate-100'"
+                                        class="w-6 h-6 flex items-center justify-center rounded text-slate-400 transition-colors"
+                                        title="Pindah ke bawah">
                                     <i class="ri-arrow-down-line text-xs"></i>
                                 </button>
                                 <button type="button" @click="removeBlock(i)"
-                                        @if ($hideSubbab ?? false) x-show="!(i === 0 && block.type === 'subbab')" @endif
-                                        class="w-6 h-6 flex items-center justify-center rounded text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors">
+                                        class="w-6 h-6 flex items-center justify-center rounded text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                                        title="Hapus blok">
                                     <i class="ri-delete-bin-line text-xs"></i>
                                 </button>
                             </div>
@@ -121,34 +168,8 @@
                         </template>
 
                         <template x-if="block.type === 'paragraf'">
-                            <div class="space-y-1">
-                                <div class="flex flex-wrap items-center gap-1">
-                                    <div class="flex items-center gap-0.5 bg-slate-100 p-0.5 rounded border border-slate-200 text-xs">
-                                        <button type="button" @click="block.align = 'kiri'"
-                                                :class="block.align === 'kiri' ? 'bg-white text-accent shadow-sm' : 'text-slate-500 hover:bg-white'"
-                                                class="px-1.5 py-0.5 rounded" title="Rata Kiri"><i class="ri-align-left text-xs"></i></button>
-                                        <button type="button" @click="block.align = 'tengah'"
-                                                :class="block.align === 'tengah' ? 'bg-white text-accent shadow-sm' : 'text-slate-500 hover:bg-white'"
-                                                class="px-1.5 py-0.5 rounded" title="Rata Tengah"><i class="ri-align-center text-xs"></i></button>
-                                        <button type="button" @click="block.align = 'kanan'"
-                                                :class="block.align === 'kanan' ? 'bg-white text-accent shadow-sm' : 'text-slate-500 hover:bg-white'"
-                                                class="px-1.5 py-0.5 rounded" title="Rata Kanan"><i class="ri-align-right text-xs"></i></button>
-                                        <button type="button" @click="block.align = 'justify'"
-                                                :class="block.align === 'justify' ? 'bg-white text-accent shadow-sm' : 'text-slate-500 hover:bg-white'"
-                                                class="px-1.5 py-0.5 rounded" title="Justify"><i class="ri-align-justify text-xs"></i></button>
-                                    </div>
-                                    <div class="flex items-center gap-0.5 bg-slate-100 p-0.5 rounded border border-slate-200 text-xs">
-                                        <button type="button" @click="applyFormat(i, 'bold', $event.currentTarget)" class="px-1.5 py-0.5 font-bold hover:bg-white rounded">B</button>
-                                        <button type="button" @click="applyFormat(i, 'italic', $event.currentTarget)" class="px-1.5 py-0.5 italic hover:bg-white rounded">I</button>
-                                        <button type="button" @click="applyFormat(i, 'underline', $event.currentTarget)" class="px-1.5 py-0.5 underline hover:bg-white rounded">U</button>
-                                        <button type="button" @click="applyFormat(i, 'bullet', $event.currentTarget)" class="px-1.5 py-0.5 hover:bg-white rounded">• List</button>
-                                        <button type="button" @click="applyFormat(i, 'number', $event.currentTarget)" class="px-1.5 py-0.5 hover:bg-white rounded">1. List</button>
-                                        <button type="button" @click="applyFormat(i, 'quote', $event.currentTarget)" class="px-1.5 py-0.5 hover:bg-white rounded">" Quote</button>
-                                    </div>
-                                </div>
-                                <textarea x-model="block.teks" @paste="handleSmartPaste(i, $event)"
-                                          rows="4" placeholder="Tulis isi paragraf di sini..."
-                                          class="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-3 py-2 text-sm text-slate-800 leading-relaxed placeholder:text-slate-400 outline-none focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/15 transition-all"></textarea>
+                            <div x-data="quillParagraphEditor(block, i)" class="space-y-1">
+                                <div x-ref="quillBox" class="bg-white"></div>
                             </div>
                         </template>
 

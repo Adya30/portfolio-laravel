@@ -38,18 +38,7 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
-                    <h3 class="font-poppins font-bold text-slate-800 text-sm flex items-center gap-2">
-                        <i class="ri-stack-line text-accent"></i>Isi Materi (Blok Subbab)
-                    </h3>
-                    <p class="text-xs text-slate-400 mt-0.5">Susun materi menjadi subbab. Setiap blok mendukung teks, gambar (webp), dan kode.</p>
-                </div>
 
-                <div class="p-6">
-                    @include('admin.courses._blocks-editor')
-                </div>
-            </div>
 
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">

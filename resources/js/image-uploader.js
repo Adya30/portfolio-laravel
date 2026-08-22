@@ -1,20 +1,9 @@
-/* ============================================================
-   IMAGE UPLOADER — live preview + crop for admin forms.
-   - ONLY WebP and SVG files are accepted; anything else is
-     rejected immediately with an error message.
-   - Shows an instant preview of the selected file.
-   - Opens a Cropper.js modal for WebP; SVG is previewed as-is
-     (no crop possible).
-   - The cropped result (WebP) replaces the file in the original
-     input so the form submits the cropped image.
-   ============================================================ */
+
 
 const RATIOS = ['free', '1', '4/3', '3/2', '16/9', '21/9'];
 
 const ERROR_FORMAT = 'Format tidak didukung. Hanya file WebP atau SVG yang diperbolehkan.';
 
-// Cropper dimuat secara lazy (dynamic import) hanya saat user membuka modal
-// crop — jadi pengunjung halaman publik tidak perlu mengunduh Cropper + CSS-nya.
 let cropperModule = null;
 
 async function loadCropper() {
@@ -44,13 +33,13 @@ function ratioLabel(value) {
 
 document.addEventListener('alpine:init', () => {
     Alpine.data('imageUploader', (config = {}) => ({
-        // Props (from the Blade component)
+        
         currentSrc: config.current || '',
         defaultRatio: config.ratio || 'free',
         allowCrop: config.crop !== false,
         ratios: RATIOS,
 
-        // State
+        
         previewSrc: config.current || '',
         objectUrl: null,
         fileName: '',
@@ -70,8 +59,8 @@ document.addEventListener('alpine:init', () => {
             const file = input.files && input.files[0];
             if (!file) return;
 
-            // Only WebP and SVG are allowed — reject everything else right away
-            // and keep the previous selection intact.
+            
+            
             const name = (file.name || '').toLowerCase();
             const isWebp = file.type === 'image/webp' || name.endsWith('.webp');
             const isSvg = file.type === 'image/svg+xml' || name.endsWith('.svg');
@@ -97,7 +86,7 @@ document.addEventListener('alpine:init', () => {
             this.previewSrc = URL.createObjectURL(file);
             this.objectUrl = this.previewSrc;
 
-            // WebP opens the crop modal automatically; SVG just previews.
+            
             if (!isWebp && this.allowCrop) {
                 this.openCrop(this.previewSrc);
             }
@@ -124,8 +113,8 @@ document.addEventListener('alpine:init', () => {
                     });
                 };
                 image.onerror = () => {
-                    // Browser can't render this file — close the modal but keep
-                    // the file in the input. Only clear on explicit user action.
+                    
+                    
                     this.showCrop = false;
                     this.destroyCropper();
                 };
@@ -163,16 +152,16 @@ document.addEventListener('alpine:init', () => {
                 imageSmoothingQuality: 'high',
             });
 
-            // Cropped results are always WebP (keeps transparency and stays
-            // within the accepted WebP/SVG-only formats).
+            
+            
             canvas.toBlob((blob) => {
                 if (!blob) return;
 
                 const base = (this.originalFile?.name || 'gambar').replace(/\.[^.]+$/, '');
                 const croppedFile = new File([blob], `${base}-crop.webp`, { type: 'image/webp' });
 
-                // Replace the input's file with the cropped version so the
-                // form uploads exactly what the user cropped.
+                
+                
                 const dt = new DataTransfer();
                 dt.items.add(croppedFile);
                 this.$refs.fileInput.files = dt.files;

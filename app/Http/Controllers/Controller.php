@@ -58,6 +58,11 @@ abstract class Controller
         $minified = preg_replace('/<\?xml[^>]*\?>/i', '', $svg);
         $minified = preg_replace('/<!DOCTYPE[^>]*(?:\[[^\]]*\][^>]*)?>/i', '', $minified);
         $minified = preg_replace('/<!--.*?-->/s', '', $minified);
+        $minified = preg_replace('/<script[^>]*>.*?<\/script>/is', '', $minified);
+        $minified = preg_replace('/<foreignObject[^>]*>.*?<\/foreignObject>/is', '', $minified);
+        $minified = preg_replace('/\son\w+\s*=\s*"[^"]*"/i', '', $minified);
+        $minified = preg_replace('/\son\w+\s*=\s*\'[^\']*\'/i', '', $minified);
+        $minified = preg_replace('/\son\w+\s*=\s*[^\s>]*/i', '', $minified);
         $minified = preg_replace('/>\s+</', '><', $minified);
         $minified = preg_replace_callback('/<[^>]+>/', fn ($m) => preg_replace('/\s{2,}/', ' ', $m[0]), $minified);
         $minified = trim($minified);
@@ -72,7 +77,10 @@ abstract class Controller
         }
 
         if ($request->filled('gambar_url')) {
-            return $request->input('gambar_url');
+            $url = $request->input('gambar_url');
+            if (filter_var($url, FILTER_VALIDATE_URL) && preg_match('#^https?://#i', $url)) {
+                return $url;
+            }
         }
 
         return $current;
