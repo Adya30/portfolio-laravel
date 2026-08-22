@@ -11,7 +11,6 @@
         @method('PUT')
 
         <div class="max-w-4xl space-y-6">
-            {{-- Main Info Card --}}
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
                     <h3 class="font-poppins font-bold text-slate-800 text-sm flex items-center gap-2">
@@ -39,7 +38,6 @@
                 </div>
             </div>
 
-            {{-- Image Card --}}
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
                     <h3 class="font-poppins font-bold text-slate-800 text-sm flex items-center gap-2">
@@ -53,7 +51,6 @@
                 </div>
             </div>
 
-            {{-- Submit --}}
             <div class="flex items-center gap-3 pb-6">
                 <button type="submit"
                         class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-white text-sm font-semibold hover:bg-blue-600 transition-colors">

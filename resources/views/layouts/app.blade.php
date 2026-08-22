@@ -18,8 +18,6 @@
         $seoUrl = $seo['url'] ?? url()->current();
         $seoImage = null;
         if (! empty($seo['image'])) {
-            // Resolve via img_url() so stored paths (full URLs, root-relative
-            // paths, storage paths) all become proper absolute image URLs.
             $seoImage = img_url($seo['image']);
             if (str_starts_with($seoImage, '//')) {
                 $seoImage = 'https:'.$seoImage;

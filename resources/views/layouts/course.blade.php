@@ -75,7 +75,6 @@
 <body x-data="app" data-active-nav="course"
       class="bg-slate-50 dark:bg-[#0a0a0f] text-slate-800 dark:text-white transition-colors duration-300">
 
-    {{-- Floating action buttons (no container navbar bar background) --}}
     @hasSection('topbar')
         @yield('topbar')
     @else

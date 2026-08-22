@@ -28,7 +28,6 @@
     foreach ($blocks as $idx => $block) {
         if (($block['type'] ?? '') === 'subbab') {
             $slug = $course->getSubbabSlugByIndex($idx);
-            // Only add subbab if it has a valid slug (non-empty title)
             if ($slug) {
                 $subbabs[] = [
                     'index' => $idx,
@@ -48,7 +47,6 @@
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
 
-        {{-- Course Header --}}
         <header class="mb-10" data-aos="fade-up" data-aos-duration="600">
             <h1 class="font-poppins text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white leading-tight">
                 {{ $nama }}
@@ -68,7 +66,6 @@
             </div>
         </header>
 
-        {{-- Subbab List --}}
         @if (count($subbabs))
             <div data-aos="fade-up" data-aos-duration="600">
                 <h2 class="font-poppins text-lg font-bold text-slate-900 dark:text-white mb-5 flex items-center gap-2">

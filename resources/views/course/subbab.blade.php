@@ -338,7 +338,6 @@
                 </article>
             @endif
 
-            {{-- Navigation --}}
             <div class="mt-8 sm:mt-10 pt-5 sm:pt-6 border-t border-slate-200 dark:border-white/10 flex flex-col sm:flex-row justify-between gap-3 sm:gap-4">
                 @if ($prevSubbab)
                     <a href="{{ route('course.subbab', [$course, $prevSubbab['slug']]) }}"

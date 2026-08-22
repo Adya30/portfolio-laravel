@@ -1,5 +1,3 @@
-{{-- Decorative page background shared by the landing and detail pages:
-     subtle grid, two blurred gradient blobs, and twinkling sparkles. --}}
 <div class="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
     <div class="absolute inset-0
                 bg-[linear-gradient(rgba(59,130,246,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.04)_1px,transparent_1px)]

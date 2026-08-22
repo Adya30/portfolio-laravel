@@ -13,12 +13,10 @@
     <div x-effect="$refs.kontenInput.value = JSON.stringify(blocks)"></div>
 
     <div class="bg-white shadow-xl p-6 sm:p-8 max-w-4xl mx-auto relative">
-        {{-- Header --}}
         <div class="border-b border-slate-200 pb-3 flex items-center justify-between text-xs text-slate-400 font-mono select-none">
             <span>Halaman Materi</span>
         </div>
 
-        {{-- Toolbar --}}
         <div class="flex flex-wrap items-center gap-2 py-3 border-b border-slate-100">
             <div class="relative" x-data="{ blockMenuOpen: false }">
                 <button type="button" @click="blockMenuOpen = !blockMenuOpen"
@@ -66,14 +64,11 @@
             </div>
         </div>
 
-        {{-- Content Area --}}
         <div class="min-h-[400px]">
             <template x-for="(block, i) in blocks" :key="i">
                 <div>
-                    {{-- Separator Line --}}
                     <div class="border-t border-slate-200/70 my-0"></div>
 
-                    {{-- Block Content --}}
                     <div :id="'blok-' + i"
                          draggable="true"
                          @dragstart="dragStart(i, $event)"
@@ -83,7 +78,6 @@
                          :class="draggedIndex === i ? 'opacity-40' : ''"
                          class="py-3 hover:bg-slate-50/50 transition-colors">
 
-                        {{-- Block Header & Actions --}}
                         <div class="flex items-center justify-between gap-3 mb-2">
                             <div class="flex items-center gap-2">
                                 <span class="cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-500 transition-colors p-0.5"
@@ -112,7 +106,6 @@
                             </div>
                         </div>
 
-                        {{-- 1. Subbab --}}
                         <template x-if="block.type === 'subbab'">
                             <div>
                                 <input type="text" x-model="block.judul" placeholder="Tulis judul subbab di sini..."
@@ -120,7 +113,6 @@
                             </div>
                         </template>
 
-                        {{-- 2. Sub Heading --}}
                         <template x-if="block.type === 'subheading'">
                             <div>
                                 <input type="text" x-model="block.teks" placeholder="Tulis sub heading di sini..."
@@ -128,7 +120,6 @@
                             </div>
                         </template>
 
-                        {{-- 3. Paragraf --}}
                         <template x-if="block.type === 'paragraf'">
                             <div class="space-y-1">
                                 <div class="flex flex-wrap items-center gap-1">
@@ -161,7 +152,6 @@
                             </div>
                         </template>
 
-                        {{-- 4. Gambar --}}
                         <template x-if="block.type === 'gambar'">
                             <div class="space-y-2">
                                 <div class="flex flex-wrap items-center gap-2">
@@ -198,7 +188,6 @@
                             </div>
                         </template>
 
-                        {{-- 5. Kode --}}
                         <template x-if="block.type === 'kode'">
                             <div>
                                 <div class="rounded-lg border border-slate-700 overflow-hidden bg-[#0d1117]">
@@ -229,7 +218,6 @@
                             </div>
                         </template>
 
-                        {{-- 6. Link --}}
                         <template x-if="block.type === 'link'">
                             <div class="space-y-2">
                                 <input type="url" x-model="block.href" placeholder="URL / Tautan"
@@ -241,7 +229,6 @@
                             </div>
                         </template>
 
-                        {{-- 7. Pembatas --}}
                         <template x-if="block.type === 'pembatas'">
                             <div class="space-y-2">
                                 <select x-model="block.style"
@@ -268,7 +255,6 @@
                             </div>
                         </template>
 
-                        {{-- 8. Tabel --}}
                         <template x-if="block.type === 'tabel'">
                             <div class="space-y-2">
                                 <div class="flex flex-wrap items-center gap-2">
@@ -330,7 +316,6 @@
                         </template>
                     </div>
 
-                    {{-- Quick Add Block with Options Below Each Block --}}
                     <div class="relative py-2 flex items-center justify-center group">
                         <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 border-t border-slate-200/50"></div>
                         <div class="relative z-10 flex items-center gap-1 bg-white px-2 py-1 rounded-full border border-slate-200 shadow-sm hover:border-accent/50 transition-all">
@@ -382,7 +367,6 @@
                 </div>
             </template>
 
-            {{-- Empty State --}}
             <div x-show="blocks.length === 0" x-cloak
                  class="border-2 border-dashed border-slate-200 rounded-xl p-8 text-center text-slate-400 space-y-2 mt-3">
                 <div class="w-12 h-12 mx-auto rounded-xl bg-accent/10 text-accent flex items-center justify-center text-xl">

@@ -27,7 +27,6 @@
             </div>
         @else
             <div x-data="courseSearch" class="space-y-8">
-                {{-- Search bar --}}
                 <div class="max-w-xl mx-auto" data-aos="fade-up" data-aos-duration="600">
                     <div class="relative">
                         <i class="ri-search-line absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-lg pointer-events-none"></i>
@@ -51,7 +50,6 @@
                     </p>
                 </div>
 
-                {{-- Course grid --}}
                 <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8" x-ref="grid">
                     @foreach ($courses as $i => $course)
                         @php
