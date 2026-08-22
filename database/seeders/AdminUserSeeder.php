@@ -12,23 +12,23 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Plain-text passwords: the User model casts 'password' => 'hashed'
-        // so Eloquent will hash them automatically on save.
+        // Credentials are read from .env so each environment (local/production)
+        // can define its own values without causing git conflicts.
         User::updateOrCreate(
-            ['email' => 'handikaadya@gmail.com'],
+            ['email' => env('ADMIN_EMAIL', 'handikaadya@gmail.com')],
             [
-                'name' => 'Adya Handika Putra AP',
-                'password' => 'admin123',
-                'role' => 'admin',
+                'name'     => env('ADMIN_NAME', 'Adya Handika Putra AP'),
+                'password' => env('ADMIN_PASSWORD', 'admin123'),
+                'role'     => 'admin',
             ]
         );
 
         User::updateOrCreate(
-            ['email' => 'user@materi.com'],
+            ['email' => env('MATERI_EMAIL', 'user@materi.com')],
             [
-                'name' => 'User Materi',
-                'password' => 'user123',
-                'role' => 'materi',
+                'name'     => env('MATERI_NAME', 'User Materi'),
+                'password' => env('MATERI_PASSWORD', 'user123'),
+                'role'     => 'materi',
             ]
         );
     }
