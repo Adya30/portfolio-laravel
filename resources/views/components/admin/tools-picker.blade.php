@@ -30,7 +30,7 @@
                            class="peer sr-only">
                     <span class="w-8 h-8 shrink-0 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden">
                         @if ($tool->gambar)
-                            <img src="{{ img_url($tool->gambar) }}" alt="{{ $tool->nama }}" class="w-5 h-5 object-contain">
+                            <img src="{{ img_url($tool->gambar) }}" alt="{{ $tool->nama }}" class="w-5 h-5 object-contain" loading="lazy">
                         @else
                             <i class="ri-vip-diamond-line text-sm text-accent/60"></i>
                         @endif

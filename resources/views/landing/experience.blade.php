@@ -15,7 +15,7 @@
                             <div class="flex items-start gap-5">
                                 @if ($experience->gambar)
                                     <img src="{{ img_url($experience->gambar) }}" alt="{{ $experience->company }}"
-                                         class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-800 shadow-sm shrink-0">
+                                         class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl object-cover border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-800 shadow-sm shrink-0" loading="lazy">
                                 @else
                                     <span class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl shrink-0 flex items-center justify-center font-poppins font-bold text-2xl sm:text-3xl text-accent dark:text-[#60a5fa] bg-accent/10 dark:bg-accent/15 border border-slate-200 dark:border-white/5">
                                         {{ strtoupper(Str::substr(trim($experience->company), 0, 1)) }}

@@ -18,11 +18,6 @@ class CourseController extends Controller
         ]);
     }
 
-    /**
-     * Subbab list for one materi. Derives the subbabs from the konten blocks
-     * (type 'subbab') and remembers each subbab's block index so the editor
-     * can scroll straight to it (admin.courses.edit#blok-{index}).
-     */
     public function show(Course $course): View
     {
         $subbabs = [];
@@ -95,11 +90,6 @@ class CourseController extends Controller
         return redirect()->route('admin.courses.show', $course)->with('success', 'Materi berhasil diperbarui.');
     }
 
-    /**
-     * Edit a single subbab's blocks. Extracts the blocks belonging to this
-     * subbab (from this subbab to the next one) and presents them in a
-     * focused block editor.
-     */
     public function editSubbab(Course $course, int $blockIndex): View
     {
         $allBlocks = $course->konten ?? [];
@@ -108,7 +98,6 @@ class CourseController extends Controller
             abort(404);
         }
 
-        // Find all subbab indices
         $subbabIndices = [];
         foreach ($allBlocks as $i => $block) {
             if (($block['type'] ?? '') === 'subbab') {
@@ -116,14 +105,11 @@ class CourseController extends Controller
             }
         }
 
-        // Find this subbab's position in the subbab list
         $pos = array_search($blockIndex, $subbabIndices, true);
 
-        // Extract blocks for this subbab (from this index to the next subbab or end)
         $end = isset($subbabIndices[$pos + 1]) ? $subbabIndices[$pos + 1] : count($allBlocks);
         $subbabBlocks = array_slice($allBlocks, $blockIndex, $end - $blockIndex);
 
-        // Build subbab navigation list
         $subbabs = [];
         foreach ($subbabIndices as $si) {
             $subbabs[] = [
@@ -144,10 +130,6 @@ class CourseController extends Controller
         ]);
     }
 
-    /**
-     * Update a single subbab's blocks. Splices the new blocks back into the
-     * full konten array at the correct position.
-     */
     public function updateSubbab(Request $request, Course $course, int $blockIndex): RedirectResponse
     {
         $allBlocks = $course->konten ?? [];
@@ -156,7 +138,6 @@ class CourseController extends Controller
             abort(404);
         }
 
-        // Find all subbab indices
         $subbabIndices = [];
         foreach ($allBlocks as $i => $block) {
             if (($block['type'] ?? '') === 'subbab') {
@@ -171,10 +152,8 @@ class CourseController extends Controller
 
         $end = isset($subbabIndices[$pos + 1]) ? $subbabIndices[$pos + 1] : count($allBlocks);
 
-        // Decode new blocks from editor
         $newBlocks = $this->decodeBlocks($request) ?? [];
 
-        // Ensure the first block of the subbab is ALWAYS of type 'subbab'
         if (empty($newBlocks) || ($newBlocks[0]['type'] ?? '') !== 'subbab') {
             $existingSubbabHeader = $allBlocks[$blockIndex];
             $subbabKey = null;
@@ -192,19 +171,16 @@ class CourseController extends Controller
             }
         }
 
-        // Ensure subbab title is preserved
         if (empty($newBlocks[0]['judul'])) {
             $newBlocks[0]['judul'] = $allBlocks[$blockIndex]['judul'] ?: ('Subbab '.($pos + 1));
         }
 
-        // Splice: replace blocks [$blockIndex .. $end) with new blocks
         $before = array_slice($allBlocks, 0, $blockIndex);
         $after = array_slice($allBlocks, $end);
         $merged = array_merge($before, $newBlocks, $after);
 
         $course->update(['konten' => $merged]);
 
-        // Find the new block index of this subbab after merge
         $newSubbabIndices = [];
         foreach ($merged as $i => $block) {
             if (($block['type'] ?? '') === 'subbab') {
@@ -219,15 +195,10 @@ class CourseController extends Controller
             ->with('success', 'Subbab "'.$subbabTitle.'" berhasil diperbarui.');
     }
 
-    /**
-     * Add a new empty subbab block at the end of the course content
-     * and redirect to its editor.
-     */
     public function storeSubbab(Course $course): RedirectResponse
     {
         $blocks = $course->konten ?? [];
 
-        // Append a new empty subbab block
         $blocks[] = ['type' => 'subbab', 'judul' => '', 'judul_idn' => null];
         $newIndex = count($blocks) - 1;
 
@@ -237,9 +208,6 @@ class CourseController extends Controller
             ->with('success', 'Subbab baru berhasil ditambahkan. Silakan isi judul dan kontennya.');
     }
 
-    /**
-     * Delete a single subbab and all its child blocks from the course content.
-     */
     public function destroySubbab(Course $course, int $blockIndex): RedirectResponse
     {
         $allBlocks = $course->konten ?? [];
@@ -248,7 +216,6 @@ class CourseController extends Controller
             abort(404);
         }
 
-        // Find all subbab indices
         $subbabIndices = [];
         foreach ($allBlocks as $i => $block) {
             if (($block['type'] ?? '') === 'subbab') {
@@ -259,12 +226,10 @@ class CourseController extends Controller
         $pos = array_search($blockIndex, $subbabIndices, true);
         $end = isset($subbabIndices[$pos + 1]) ? $subbabIndices[$pos + 1] : count($allBlocks);
 
-        // Remove blocks from $blockIndex to $end (exclusive)
         $before = array_slice($allBlocks, 0, $blockIndex);
         $after = array_slice($allBlocks, $end);
         $merged = array_merge($before, $after);
 
-        // If all blocks removed, set to null
         $course->update(['konten' => $merged === [] ? null : $merged]);
 
         $subbabTitle = $allBlocks[$blockIndex]['judul'] ?? 'Subbab';
@@ -280,15 +245,10 @@ class CourseController extends Controller
         return redirect()->route('admin.courses.index')->with('success', 'Materi berhasil dihapus.');
     }
 
-    /**
-     * AJAX image upload for the block editor (subbab content). Returns the
-     * public URL so the editor can store it inside the konten JSON. The file
-     * is converted to webp server-side when possible.
-     */
     public function uploadBlockImage(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'gambar' => ['required', 'image:allow_svg', 'mimes:webp,svg', 'max:15360'],
+            'gambar' => ['required', 'image:allow_svg', 'mimes:svg,png,jpg,jpeg,webp', 'max:2048'],
         ], $this->validationMessages(), [
             'gambar' => 'Gambar blok',
         ]);
@@ -318,9 +278,6 @@ class CourseController extends Controller
         return response()->json(['ok' => true]);
     }
 
-    /**
-     * Reorder subbabs inside a course's content array.
-     */
     public function reorderSubbab(Request $request, Course $course): JsonResponse
     {
         $ids = $request->validate([
@@ -379,7 +336,7 @@ class CourseController extends Controller
             'desk' => ['nullable', 'string'],
             'desk_idn' => ['nullable', 'string'],
             'konten' => ['nullable', 'string'],
-            'gambar' => ['nullable', 'image:allow_svg', 'mimes:webp,svg', 'max:15360'],
+            'gambar' => ['nullable', 'image:allow_svg', 'mimes:svg,png,jpg,jpeg,webp', 'max:2048'],
             'gambar_url' => ['nullable', 'url'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
         ], $this->validationMessages(), [
@@ -394,10 +351,6 @@ class CourseController extends Controller
         ]);
     }
 
-    /**
-     * Decode the block editor JSON (submitted as a string in the hidden
-     * `konten` input) into an array of content blocks, or null when empty.
-     */
     private function decodeBlocks(Request $request): ?array
     {
         if (! $request->filled('konten')) {

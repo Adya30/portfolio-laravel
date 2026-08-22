@@ -44,7 +44,7 @@
                                         <div class="flex items-center gap-3">
                                             <div class="w-10 h-10 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
                                                 @if ($course->gambar)
-                                                    <img src="{{ img_url($course->gambar) }}" alt="{{ $course->nama }}" class="w-full h-full object-cover">
+                                                    <img src="{{ img_url($course->gambar) }}" alt="{{ $course->nama }}" class="w-full h-full object-cover" loading="lazy">
                                                 @else
                                                     <i class="ri-book-open-line text-accent text-lg"></i>
                                                 @endif

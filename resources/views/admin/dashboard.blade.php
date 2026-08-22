@@ -39,7 +39,7 @@
                 @forelse ($recentProjects as $project)
                     <li class="px-5 py-3.5 flex items-center gap-3">
                         <img src="{{ img_url($project->gambar) }}" alt="{{ $project->nama }}"
-                             class="w-11 h-8 rounded-lg object-cover bg-slate-50">
+                             class="w-11 h-8 rounded-lg object-cover bg-slate-50" loading="lazy">
                         <div class="min-w-0 flex-1">
                             <p class="text-sm font-semibold text-slate-800 truncate">{{ $project->nama }}</p>
                             <p class="text-xs text-slate-400 truncate">{{ $project->desk }}</p>

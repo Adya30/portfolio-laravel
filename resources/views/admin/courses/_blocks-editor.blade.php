@@ -173,7 +173,7 @@
                                         </template>
                                     </div>
                                     <div class="flex-1 min-w-0 space-y-1.5">
-                                        <input type="file" accept=".webp,.svg,image/webp,image/svg+xml"
+                                        <input type="file" accept=".svg,.png,.jpg,.jpeg,.webp,image/svg+xml,image/png,image/jpeg,image/webp"
                                                @change="uploadImage(i, $event.target.files[0])"
                                                class="block w-full text-xs text-slate-600 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-accent/10 file:text-xs file:font-bold file:text-accent hover:file:bg-accent/20 cursor-pointer">
                                         <p x-show="uploadingIndex === i" x-cloak class="text-xs text-accent font-semibold">

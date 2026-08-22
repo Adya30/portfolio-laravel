@@ -26,7 +26,7 @@
                             <td class="px-4 py-3">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden shrink-0">
-                                        <img src="{{ img_url($cert->gambar) }}" alt="{{ $cert->nama }}" class="w-full h-full object-cover">
+                                        <img src="{{ img_url($cert->gambar) }}" alt="{{ $cert->nama }}" class="w-full h-full object-cover" loading="lazy">
                                     </div>
                                     <span class="font-semibold text-slate-800">{{ $cert->nama }}</span>
                                 </div>

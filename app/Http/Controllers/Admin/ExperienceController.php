@@ -109,7 +109,7 @@ class ExperienceController extends Controller
             'desk_idn' => ['nullable', 'string'],
             'practicum_desc' => ['nullable', 'string'],
             'practicum_desc_idn' => ['nullable', 'string'],
-            'gambar' => ['nullable', 'image:allow_svg', 'mimes:webp,svg', 'max:15360'],
+            'gambar' => ['nullable', 'image:allow_svg', 'mimes:svg,png,jpg,jpeg,webp', 'max:2048'],
             'gambar_url' => ['nullable', 'url'],
             'responsibilities' => ['nullable', 'string'],
             'responsibilities_idn' => ['nullable', 'string'],

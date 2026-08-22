@@ -25,7 +25,7 @@
                             <td class="px-4 py-3">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0">
-                                        <img src="{{ img_url($tool->gambar) }}" alt="{{ $tool->nama }}" class="w-6 h-6 object-contain">
+                                        <img src="{{ img_url($tool->gambar) }}" alt="{{ $tool->nama }}" class="w-6 h-6 object-contain" loading="lazy">
                                     </div>
                                     <span class="font-semibold text-slate-800">{{ $tool->nama }}</span>
                                 </div>

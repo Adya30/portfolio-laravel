@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CourseController;
 use App\Models\Course;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
@@ -140,6 +141,12 @@ test('course pages do not include the portfolio navbar menu', function () {
 
 test('admin can upload a webp image for a content block', function () {
     $user = User::factory()->create();
+    $fakeUrl = 'https://res.cloudinary.com/test-cloud/image/upload/test.webp';
+
+    // Partial-mock CourseController so uploadImage() is intercepted.
+    $controller = Mockery::mock(CourseController::class)->makePartial()->shouldAllowMockingProtectedMethods();
+    $controller->shouldReceive('uploadImage')->once()->andReturn($fakeUrl);
+    $this->app->instance(CourseController::class, $controller);
 
     // 1x1 transparent WebP.
     $webp = base64_decode('UklGRiQAAABXRUJQVlA4IBgAAAAwAQCdASoBAAEAAwA0JaQAA3AA/vuUAAA=');
@@ -149,7 +156,7 @@ test('admin can upload a webp image for a content block', function () {
             'gambar' => UploadedFile::fake()->createWithContent('gambar.webp', $webp),
         ], ['Accept' => 'application/json'])
         ->assertOk()
-        ->assertJsonStructure(['url']);
+        ->assertJson(['url' => $fakeUrl]);
 });
 
 test('admin course create form has sort_order field', function () {

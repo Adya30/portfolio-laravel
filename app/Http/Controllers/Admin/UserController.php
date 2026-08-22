@@ -71,7 +71,6 @@ class UserController extends Controller
             'role.required' => 'Role pengguna wajib dipilih.',
         ]);
 
-        // Prevent self-demotion if currently logged in admin changes their own role
         if ($user->id === auth()->id() && $validated['role'] !== 'admin') {
             return back()->withInput()->withErrors(['role' => 'Anda tidak bisa mengubah role diri sendiri dari Admin menjadi Materi.']);
         }

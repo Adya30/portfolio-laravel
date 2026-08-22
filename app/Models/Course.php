@@ -19,9 +19,6 @@ class Course extends Model
         ];
     }
 
-    /**
-     * Get subbab index by slug
-     */
     public function getSubbabIndexBySlug(string $slug): ?int
     {
         if (!$this->konten || !is_array($this->konten)) {
@@ -41,9 +38,6 @@ class Course extends Model
         return null;
     }
 
-    /**
-     * Get subbab slug by index
-     */
     public function getSubbabSlugByIndex(int $index): ?string
     {
         if (!$this->konten || !is_array($this->konten)) {

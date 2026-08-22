@@ -13,12 +13,8 @@ use Illuminate\Support\Str;
 
 class PortfolioDataSeeder extends Seeder
 {
-    /** Maps project names to their category ids (filled by seedCategories). */
     private array $categoryByProject = [];
 
-    /**
-     * Seed the portfolio content (projects, tools, certificates, experiences, profile).
-     */
     public function run(): void
     {
         $this->seedProfile();
@@ -75,22 +71,22 @@ class PortfolioDataSeeder extends Seeder
     private function seedTools(): void
     {
         $tools = [
-            ['Visual Studio Code', 'Code Editor', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg'],
-            ['HTML 5', 'Structure', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg'],
-            ['CSS 3', 'Style', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg'],
-            ['Javascript', 'Language', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg'],
-            ['Tailwind CSS', 'Framework', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg'],
-            ['Bootstrap', 'Framework', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg'],
-            ['Postgre SQL', 'Database', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg'],
-            ['Python', 'Language', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg'],
-            ['React JS', 'Framework', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg'],
-            ['Github', 'Repository', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg'],
-            ['Canva', 'Design Tool', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/canva/canva-original.svg'],
-            ['Figma', 'Design Tool', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg'],
-            ['C#', 'Language', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg'],
-            ['Laravel', 'Framework', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/laravel/laravel-original.svg'],
-            ['MySQL', 'Database', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg'],
-            ['PHP', 'Language', 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg'],
+            ['Visual Studio Code', 'Code Editor', null],
+            ['HTML 5', 'Structure', null],
+            ['CSS 3', 'Style', null],
+            ['Javascript', 'Language', null],
+            ['Tailwind CSS', 'Framework', null],
+            ['Bootstrap', 'Framework', null],
+            ['Postgre SQL', 'Database', null],
+            ['Python', 'Language', null],
+            ['React JS', 'Framework', null],
+            ['Github', 'Repository', null],
+            ['Canva', 'Design Tool', null],
+            ['Figma', 'Design Tool', null],
+            ['C#', 'Language', null],
+            ['Laravel', 'Framework', null],
+            ['MySQL', 'Database', null],
+            ['PHP', 'Language', null],
         ];
 
         foreach ($tools as $i => [$nama, $ket, $gambar]) {

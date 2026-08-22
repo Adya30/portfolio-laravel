@@ -136,7 +136,6 @@ class LandingController extends Controller
 
     public function showSubbab(Course $course, string $subbabSlug): View
     {
-        // Get index from slug
         $index = $course->getSubbabIndexBySlug($subbabSlug);
         
         if ($index === null) {
@@ -145,7 +144,6 @@ class LandingController extends Controller
 
         $blocks = $course->konten ?? [];
 
-        // Find all subbab indices
         $subbabIndices = [];
         foreach ($blocks as $i => $block) {
             if (($block['type'] ?? '') === 'subbab') {
@@ -157,17 +155,14 @@ class LandingController extends Controller
             abort(404);
         }
 
-        // Extract blocks for this subbab (from this subbab to the next subbab or end)
         $pos = array_search($index, $subbabIndices, true);
         $start = $index;
         $end = isset($subbabIndices[$pos + 1]) ? $subbabIndices[$pos + 1] : count($blocks);
         $subbabBlocks = array_slice($blocks, $start, $end - $start);
 
-        // Build subbab list for navigation
         $subbabs = [];
         foreach ($subbabIndices as $si) {
             $slug = $course->getSubbabSlugByIndex($si);
-            // Only add subbab if it has a valid slug (non-empty title)
             if ($slug) {
                 $subbabs[] = [
                     'index' => $si,
@@ -204,8 +199,6 @@ class LandingController extends Controller
     {
         $allTools = Tool::orderBy('sort_order')->get();
 
-        // Resolve the project's tools (stored as tool ids, with a fallback for
-        // legacy free-text names) so the detail page can render their icons.
         $projectTools = collect($project->tools ?? [])->map(
             fn ($item) => $allTools->firstWhere('id', $item)
                 ?? $allTools->firstWhere('nama', $item)

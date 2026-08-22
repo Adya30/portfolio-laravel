@@ -26,7 +26,7 @@
                             <td class="px-4 py-3">
                                 <div class="flex items-center gap-3">
                                     <img src="{{ img_url($project->gambar) }}" alt="{{ $project->nama }}"
-                                         class="w-12 h-9 rounded-lg object-cover bg-slate-50 shrink-0">
+                                         class="w-12 h-9 rounded-lg object-cover bg-slate-50 shrink-0" loading="lazy">
                                     <span class="font-semibold text-slate-800">{{ $project->nama }}</span>
                                 </div>
                             </td>

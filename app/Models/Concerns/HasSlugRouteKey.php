@@ -34,7 +34,6 @@ trait HasSlugRouteKey
                 return $generatedSlug;
             }
         } catch (\Throwable $e) {
-            // Fallback if 'slug' column does not exist in DB table
         }
 
         return $this->id ?? '';
@@ -51,7 +50,6 @@ trait HasSlugRouteKey
                 return $found;
             }
         } catch (\Throwable $e) {
-            // Fallback if 'slug' column does not exist in DB table
         }
 
         return $this->where('id', $value)->first();
@@ -88,7 +86,6 @@ trait HasSlugRouteKey
                     $model->slug = $model->generateUniqueSlug($name, $model->id);
                 }
             } catch (\Throwable $e) {
-                // Ignore if column does not exist
             }
         });
     }

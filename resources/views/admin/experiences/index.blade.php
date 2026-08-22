@@ -32,7 +32,7 @@
                             <td class="px-4 py-3">
                                 @if ($exp->gambar)
                                     <img src="{{ img_url($exp->gambar) }}" alt="{{ $exp->company }}"
-                                         class="w-9 h-9 rounded-lg object-cover border border-slate-200 bg-slate-100">
+                                         class="w-9 h-9 rounded-lg object-cover border border-slate-200 bg-slate-100" loading="lazy">
                                 @else
                                     <span class="inline-flex w-9 h-9 rounded-lg bg-slate-100 items-center justify-center text-xs font-bold text-slate-400">-</span>
                                 @endif

@@ -164,7 +164,7 @@
             <div class="flex flex-col md:flex-row items-start gap-8">
                 <div class="shrink-0 mx-auto md:mx-0">
                     <div class="w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-accent/20 dark:border-accent/30 shadow-lg">
-                        <img src="{{ $heroImage }}" alt="{{ $profileName }}" class="w-full h-full object-cover">
+                        <img src="{{ $heroImage }}" alt="{{ $profileName }}" class="w-full h-full object-cover" loading="lazy">
                     </div>
                 </div>
                 <div class="flex-1 min-w-0">
@@ -342,7 +342,7 @@
 
                             <div class="flex items-start gap-4 mb-4">
                                 <span class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl shrink-0 overflow-hidden bg-accent/10 dark:bg-accent/15 flex items-center justify-center font-poppins font-bold text-lg text-accent dark:text-[#60a5fa] border border-slate-200 dark:border-white/5">
-                                    <img x-show="e.img" :src="e.img" :alt="e.company" class="w-full h-full object-cover">
+                                    <img x-show="e.img" :src="e.img" :alt="e.company" class="w-full h-full object-cover" loading="lazy">
                                     <template x-if="!e.img">
                                         <span x-text="(e.company || '?').charAt(0).toUpperCase()"></span>
                                     </template>

@@ -15,10 +15,8 @@ class LoginController extends Controller
 
     protected const MAX_ATTEMPTS = 5;
 
-    // Waktu tunggu dasar per percobaan gagal (detik).
     protected const BASE_DECAY_SECONDS = 60;
 
-    // Batas atas waktu tunggu (30 menit).
     protected const MAX_DECAY_SECONDS = 1800;
 
     public function showLoginForm(): View|RedirectResponse
@@ -58,8 +56,6 @@ class LoginController extends Controller
             return redirect()->route('admin.dashboard');
         }
 
-        // Backoff eksponensial: makin sering gagal, makin lama waktu tunggu
-        // (1, 2, 4, 8, 16 menit, dst. — dibatasi maksimal 30 menit).
         $attempts = RateLimiter::attempts($throttleKey);
         $decay = min(
             self::BASE_DECAY_SECONDS * (2 ** $attempts),

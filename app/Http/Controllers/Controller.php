@@ -5,111 +5,52 @@ namespace App\Http\Controllers;
 use Cloudinary\Cloudinary;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Str;
+use RuntimeException;
 
 abstract class Controller
 {
     protected function uploadImage(UploadedFile $file, string $dir): string
     {
-        $isSvg = strtolower($file->getClientOriginalExtension()) === 'svg';
-        $svgContent = $isSvg ? $this->compressSvg((string) file_get_contents($file->getRealPath())) : null;
-
         $cloudName = config('cloudinary.cloud_name');
         $apiKey = config('cloudinary.api_key');
         $apiSecret = config('cloudinary.api_secret');
 
-        if ($cloudName && $apiKey && $apiSecret) {
-            try {
-                $cloudinary = new Cloudinary([
-                    'cloud' => [
-                        'cloud_name' => $cloudName,
-                        'api_key' => $apiKey,
-                        'api_secret' => $apiSecret,
-                    ],
-                    'url' => [
-                        'secure' => config('cloudinary.secure', true),
-                    ],
-                ]);
-
-                $options = [
-                    'folder' => rtrim(config('cloudinary.folder', 'portfolio'), '/').'/'.$dir,
-                    'use_filename' => true,
-                    'unique_filename' => true,
-                    'overwrite' => false,
-                ];
-
-                if ($isSvg) {
-
-                    $result = $cloudinary->uploadApi()->upload(
-                        'data:image/svg+xml;base64,'.base64_encode($svgContent),
-                        $options
-                    );
-                } else {
-                    $options['format'] = 'webp';
-                    $result = $cloudinary->uploadApi()->upload($file->getRealPath(), $options);
-                }
-
-                return $result['secure_url'] ?? $result['url'];
-            } catch (\Throwable $e) {
-                report($e);
-            }
+        if (! $cloudName || ! $apiKey || ! $apiSecret) {
+            throw new RuntimeException('Cloudinary belum terkonfigurasi. Silakan isi CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, dan CLOUDINARY_API_SECRET di .env.');
         }
 
-        return $this->storeLocally($file, $dir, $svgContent);
-    }
+        $isSvg = strtolower($file->getClientOriginalExtension()) === 'svg';
+        $svgContent = $isSvg ? $this->compressSvg((string) file_get_contents($file->getRealPath())) : null;
 
-    private function storeLocally(UploadedFile $file, string $dir, ?string $svgContent = null): string
-    {
-        $name = time().'_'.Str::random(10);
-        $ext = strtolower($file->getClientOriginalExtension());
-        $targetDir = public_path('uploads/'.$dir);
+        $cloudinary = new Cloudinary([
+            'cloud' => [
+                'cloud_name' => $cloudName,
+                'api_key' => $apiKey,
+                'api_secret' => $apiSecret,
+            ],
+            'url' => [
+                'secure' => config('cloudinary.secure', true),
+            ],
+        ]);
 
-        if (! is_dir($targetDir)) {
-            mkdir($targetDir, 0777, true);
+        $options = [
+            'folder' => rtrim(config('cloudinary.folder', 'portfolio'), '/').'/'.$dir,
+            'use_filename' => true,
+            'unique_filename' => true,
+            'overwrite' => false,
+        ];
+
+        if ($isSvg) {
+            $result = $cloudinary->uploadApi()->upload(
+                'data:image/svg+xml;base64,'.base64_encode($svgContent),
+                $options
+            );
+        } else {
+            $options['format'] = 'webp';
+            $result = $cloudinary->uploadApi()->upload($file->getRealPath(), $options);
         }
 
-        if ($ext === 'svg' && $svgContent) {
-
-            file_put_contents($targetDir.'/'.$name.'.svg', $svgContent);
-
-            return 'uploads/'.$dir.'/'.$name.'.svg';
-        }
-
-        if ($ext !== 'svg' && function_exists('imagewebp')) {
-            $image = @imagecreatefromstring((string) file_get_contents($file->getRealPath()));
-
-            if ($image !== false) {
-                // imagewebp() rejects palette images (e.g. GIF) and would write
-                // a 0-byte file, so convert them to truecolor first.
-                if (! imageistruecolor($image)) {
-                    $truecolor = imagecreatetruecolor(imagesx($image), imagesy($image));
-
-                    if ($truecolor !== false) {
-                        imagealphablending($truecolor, false);
-                        imagesavealpha($truecolor, true);
-                        imagecopy($truecolor, $image, 0, 0, 0, 0, imagesx($image), imagesy($image));
-                        imagedestroy($image);
-                        $image = $truecolor;
-                    }
-                }
-
-                $dest = $targetDir.'/'.$name.'.webp';
-
-                imagealphablending($image, false);
-                imagesavealpha($image, true);
-
-                $converted = @imagewebp($image, $dest, 85);
-                imagedestroy($image);
-
-                if ($converted && file_exists($dest) && filesize($dest) > 0) {
-                    return 'uploads/'.$dir.'/'.$name.'.webp';
-                }
-            }
-        }
-
-        $file->move($targetDir, $name.'.'.$ext);
-
-        return 'uploads/'.$dir.'/'.$name.'.'.$ext;
+        return $result['secure_url'] ?? $result['url'];
     }
 
     private function compressSvg(string $svg): string
