@@ -9,6 +9,7 @@
     <form method="POST" action="{{ route('admin.courses.update', $course) }}" enctype="multipart/form-data">
         @csrf
         @method('PUT')
+        <input type="hidden" name="updated_at" value="{{ $course->updated_at->timestamp }}">
 
         <div class="max-w-4xl space-y-6">
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">

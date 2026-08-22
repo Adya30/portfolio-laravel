@@ -46,6 +46,9 @@
         <form method="POST" action="{{ route('admin.courses.subbab.update', [$course, $blockIndex]) }}">
             @csrf
             @method('PUT')
+            <input type="hidden" name="original_subbab_title" value="{{ $originalSubbabTitle }}">
+            <input type="hidden" name="original_subbab_position" value="{{ $originalSubbabPosition }}">
+            <input type="hidden" name="updated_at" value="{{ $course->updated_at->timestamp }}">
 
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">

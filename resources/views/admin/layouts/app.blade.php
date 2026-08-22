@@ -95,6 +95,12 @@
                     <span>{{ session('success') }}</span>
                 </div>
             @endif
+            @if (session('error'))
+                <div class="mb-5 flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 text-sm font-medium px-4 py-3 rounded-xl">
+                    <i class="ri-error-warning-line text-lg"></i>
+                    <span>{{ session('error') }}</span>
+                </div>
+            @endif
 
             @yield('content')
         </main>

@@ -14,6 +14,7 @@
         </div>
         <form method="POST" action="{{ route('admin.courses.subbab.store', $course) }}">
             @csrf
+            <input type="hidden" name="updated_at" value="{{ $course->updated_at->timestamp }}">
             <button type="submit"
                     class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-accent text-white text-sm font-semibold hover:bg-blue-600 hover:-translate-y-0.5 transition-all shadow-sm">
                 <i class="ri-add-line"></i>Tambah Subbab
@@ -41,6 +42,7 @@
                 <p class="text-xs text-slate-400 mt-1">Klik tombol <strong>"Tambah Subbab"</strong> untuk membuat subbab baru.</p>
                 <form method="POST" action="{{ route('admin.courses.subbab.store', $course) }}">
                     @csrf
+                    <input type="hidden" name="updated_at" value="{{ $course->updated_at->timestamp }}">
                     <button type="submit"
                             class="inline-flex items-center gap-2 mt-4 px-4 py-2.5 rounded-xl bg-accent text-white text-sm font-semibold hover:bg-blue-600 transition-colors">
                         <i class="ri-add-line"></i>Tambah Subbab
