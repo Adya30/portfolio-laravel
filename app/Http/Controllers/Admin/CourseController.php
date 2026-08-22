@@ -7,6 +7,7 @@ use App\Models\Course;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -79,7 +80,7 @@ class CourseController extends Controller
     public function update(Request $request, Course $course): RedirectResponse
     {
         $data = $this->validateData($request);
-        $oldUpdatedAt = $request->input('updated_at');
+        $oldUpdatedAt = $this->parseUpdatedAt($request->input('updated_at'));
 
         if (! $oldUpdatedAt) {
             $course->update($this->mapCourseData($data, $request, $course));
@@ -196,7 +197,7 @@ class CourseController extends Controller
         $after = array_slice($allBlocks, $end);
         $merged = array_merge($before, $newBlocks, $after);
 
-        $oldUpdatedAt = $request->input('updated_at');
+        $oldUpdatedAt = $this->parseUpdatedAt($request->input('updated_at'));
         if ($oldUpdatedAt) {
             $updated = Course::where('id', $course->id)
                 ->where('updated_at', $oldUpdatedAt)
@@ -472,6 +473,27 @@ class CourseController extends Controller
             'gambar_url' => 'URL gambar',
             'sort_order' => 'Urutan',
         ]);
+    }
+
+    /**
+     * Parse nilai updated_at dari form (bisa berupa Unix timestamp integer
+     * atau string datetime) menjadi Carbon instance yang kompatibel dengan MySQL.
+     */
+    private function parseUpdatedAt(mixed $value): ?Carbon
+    {
+        if (! $value) {
+            return null;
+        }
+
+        if (is_numeric($value)) {
+            return Carbon::createFromTimestamp((int) $value);
+        }
+
+        try {
+            return Carbon::parse($value);
+        } catch (\Throwable) {
+            return null;
+        }
     }
 
     private function mapCourseData(array $data, Request $request, Course $course): array
