@@ -75,7 +75,7 @@
                             @if ($certificate->link)
                                 <a href="{{ $certificate->link }}" target="_blank" rel="noopener noreferrer"
                                    class="w-full mt-6 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-white text-sm font-semibold transition-all duration-200 hover:bg-blue-600 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(59,130,246,0.25)]">
-                                    <i class="ri-external-link-line"></i> <span x-text="t('visitPlatform')">Visit</span> 
+                                    <i class="ri-external-link-line"></i> <span x-text="t('visitPlatform')">Visit</span>
                                 </a>
                             @endif
                         </div>
