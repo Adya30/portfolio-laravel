@@ -2,7 +2,7 @@
 
 const RATIOS = ['free', '1', '4/3', '3/2', '16/9', '21/9'];
 
-const ERROR_FORMAT = 'Format tidak didukung. Hanya file WebP atau SVG yang diperbolehkan.';
+const ERROR_FORMAT = 'Format tidak didukung. Hanya file PNG, JPG, JPEG, WebP, atau SVG yang diperbolehkan.';
 
 let cropperModule = null;
 
@@ -62,10 +62,12 @@ document.addEventListener('alpine:init', () => {
             
             
             const name = (file.name || '').toLowerCase();
+            const isPng = file.type === 'image/png' || name.endsWith('.png');
+            const isJpg = file.type === 'image/jpeg' || name.endsWith('.jpg') || name.endsWith('.jpeg');
             const isWebp = file.type === 'image/webp' || name.endsWith('.webp');
             const isSvg = file.type === 'image/svg+xml' || name.endsWith('.svg');
 
-            if (!isWebp && !isSvg) {
+            if (!isPng && !isJpg && !isWebp && !isSvg) {
                 input.value = '';
                 this.revokePreview();
                 this.previewSrc = this.currentSrc;
@@ -87,7 +89,7 @@ document.addEventListener('alpine:init', () => {
             this.objectUrl = this.previewSrc;
 
             
-            if (!isWebp && this.allowCrop) {
+            if (!isSvg && this.allowCrop) {
                 this.openCrop(this.previewSrc);
             }
         },
