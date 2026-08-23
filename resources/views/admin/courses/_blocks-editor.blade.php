@@ -283,62 +283,126 @@
                         </template>
 
                         <template x-if="block.type === 'tabel'">
-                            <div class="space-y-2">
-                                <div class="flex flex-wrap items-center gap-2">
-                                    <button type="button" @click="addTableCol(i)"
-                                            class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-200 transition-colors">
-                                        <i class="ri-add-line text-xs"></i> Kolom
-                                    </button>
-                                    <button type="button" @click="addTableRow(i)"
-                                            class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-accent/10 border border-accent/20 text-accent text-xs font-bold hover:bg-accent/20 transition-colors">
-                                        <i class="ri-add-line text-xs"></i> Baris
-                                    </button>
+                            <div class="space-y-3" x-data="{ tableMode: 'edit' }">
+                                <div class="flex flex-wrap items-center justify-between gap-2">
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <button type="button" @click="addTableCol(i)"
+                                                class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-200 transition-colors">
+                                            <i class="ri-add-line text-xs"></i> Tambah Kolom
+                                        </button>
+                                        <button type="button" @click="addTableRow(i)"
+                                                class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-accent/10 border border-accent/30 text-accent text-xs font-bold hover:bg-accent/20 transition-colors">
+                                            <i class="ri-add-line text-xs"></i> Tambah Baris
+                                        </button>
+                                    </div>
+
+                                    <div class="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200">
+                                        <button type="button" @click="tableMode = 'edit'"
+                                                :class="tableMode === 'edit' ? 'bg-white text-slate-800 shadow-xs font-bold' : 'text-slate-500 hover:text-slate-800 font-medium'"
+                                                class="px-2.5 py-1 rounded-md text-xs transition-all flex items-center gap-1">
+                                            <i class="ri-edit-line text-xs"></i> Mode Edit
+                                        </button>
+                                        <button type="button" @click="tableMode = 'preview'"
+                                                :class="tableMode === 'preview' ? 'bg-white text-accent shadow-xs font-bold' : 'text-slate-500 hover:text-slate-800 font-medium'"
+                                                class="px-2.5 py-1 rounded-md text-xs transition-all flex items-center gap-1">
+                                            <i class="ri-eye-line text-xs"></i> Pratinjau Tabel
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="overflow-x-auto border border-slate-200 rounded-lg bg-white">
-                                    <table class="w-full text-left text-xs">
-                                        <thead class="bg-slate-50 border-b border-slate-200">
+
+
+                                <!-- MODE EDIT -->
+                                <div x-show="tableMode === 'edit'" class="overflow-x-auto border border-slate-300 rounded-xl bg-white shadow-xs">
+                                    <table class="w-full text-left text-xs border-collapse">
+                                        <thead class="bg-slate-100 border-b-2 border-slate-300">
                                             <tr>
-                                                <th class="p-1 w-8 text-center text-slate-400">#</th>
+                                                <th class="p-2 w-10 text-center text-slate-500 font-bold border border-slate-300">#</th>
                                                 <template x-for="(head, cIdx) in (block.headers || [])" :key="cIdx">
-                                                    <th class="p-1 min-w-[100px]">
-                                                        <div class="flex items-center justify-between gap-1">
+                                                    <th class="p-2 min-w-[150px] border border-slate-300">
+                                                        <div class="flex items-center justify-between gap-1.5">
                                                             <label :for="'tabel_header_' + i + '_' + cIdx" class="sr-only">Judul Kolom</label>
-                                                            <input :id="'tabel_header_' + i + '_' + cIdx" type="text" x-model="block.headers[cIdx]" placeholder="Judul"
-                                                                   class="w-full rounded border border-slate-300 px-1.5 py-0.5 text-xs font-bold text-slate-800 bg-white outline-none focus:border-accent">
+                                                            <input :id="'tabel_header_' + i + '_' + cIdx" type="text" x-model="block.headers[cIdx]" placeholder="Judul kolom..."
+                                                                   class="w-full rounded border border-slate-300 px-2 py-1 text-xs font-bold text-slate-800 bg-white outline-none focus:border-accent focus:ring-1 focus:ring-accent/30">
                                                             <button type="button" @click="removeTableCol(i, cIdx)"
                                                                     x-show="(block.headers || []).length > 1"
-                                                                    class="text-slate-400 hover:text-red-500">
-                                                                <i class="ri-close-circle-line text-xs"></i>
+                                                                    title="Hapus kolom ini"
+                                                                    class="w-6 h-6 flex items-center justify-center rounded text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors shrink-0">
+                                                                <i class="ri-close-line text-sm"></i>
                                                             </button>
                                                         </div>
                                                     </th>
                                                 </template>
                                             </tr>
                                         </thead>
-                                        <tbody class="divide-y divide-slate-100">
+                                        <tbody>
                                             <template x-for="(row, rIdx) in (block.rows || [])" :key="rIdx">
-                                                <tr class="hover:bg-slate-50/50">
-                                                    <td class="p-1 text-center text-slate-400 font-bold text-[10px]">
-                                                        <div class="flex items-center justify-center gap-0.5">
+                                                <tr :class="rIdx % 2 === 0 ? 'bg-white' : 'bg-slate-50/70'" class="hover:bg-blue-50/30 transition-colors">
+                                                    <td class="p-2 text-center text-slate-500 font-bold text-xs border border-slate-300 align-top">
+                                                        <div class="flex flex-col items-center justify-center gap-1 pt-1">
                                                             <span x-text="rIdx + 1"></span>
                                                             <button type="button" @click="removeTableRow(i, rIdx)"
-                                                                    class="text-slate-400 hover:text-red-500">
-                                                                <i class="ri-delete-bin-line text-[10px]"></i>
+                                                                    title="Hapus baris ini"
+                                                                    class="w-5 h-5 flex items-center justify-center rounded text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors">
+                                                                <i class="ri-delete-bin-line text-xs"></i>
                                                             </button>
                                                         </div>
                                                     </td>
                                                     <template x-for="(cell, cIdx) in row" :key="cIdx">
-                                                        <td class="p-1">
-                                                            <label :for="'tabel_cell_' + i + '_' + rIdx + '_' + cIdx" class="sr-only">Isi Sel</label>
-                                                            <input :id="'tabel_cell_' + i + '_' + rIdx + '_' + cIdx" type="text" x-model="block.rows[rIdx][cIdx]" placeholder="Isi sel..."
-                                                                   class="w-full rounded border border-slate-200 px-1.5 py-0.5 text-xs text-slate-700 bg-slate-50/50 outline-none focus:bg-white focus:border-accent transition-all">
-                                                        </td>
+                                                         <td class="p-2 border border-slate-300 align-top">
+                                                            <div class="relative group">
+                                                                <label :for="'tabel_cell_' + i + '_' + rIdx + '_' + cIdx" class="sr-only">Isi Sel</label>
+                                                                <textarea :id="'tabel_cell_' + i + '_' + rIdx + '_' + cIdx"
+                                                                          x-model="block.rows[rIdx][cIdx]"
+                                                                          placeholder="Isi sel... (`kode` untuk tanda kode)"
+                                                                          rows="2"
+                                                                          @input="$el.style.height = 'auto'; $el.style.height = $el.scrollHeight + 'px'"
+                                                                          class="w-full rounded border border-slate-200 px-2 py-1.5 pr-8 text-xs text-slate-800 bg-white outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 transition-all resize-none font-mono leading-relaxed"></textarea>
+                                                                <button type="button" @click="wrapCellWithCode(i, rIdx, cIdx, $el.previousElementSibling)"
+                                                                        title="Bungkus dengan tanda kode (`...`)"
+                                                                        class="absolute top-1.5 right-1.5 px-2 py-0.5 rounded-md text-[10px] font-mono font-bold transition-all cursor-pointer shadow-xs flex items-center gap-1"
+                                                                        :class="block.rows[rIdx][cIdx]?.startsWith('`') && block.rows[rIdx][cIdx]?.endsWith('`')
+                                                                            ? 'bg-blue-600 text-white border border-blue-700 font-extrabold ring-2 ring-blue-400/40'
+                                                                            : 'bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-600 hover:text-white'">
+                                                                    <i class="ri-code-line text-[11px]"></i>
+                                                                    <span x-text="block.rows[rIdx][cIdx]?.startsWith('`') && block.rows[rIdx][cIdx]?.endsWith('`') ? 'Kode Aktif' : 'Kode'"></span>
+                                                                </button>
+                                                            </div>
+                                                            <div x-show="block.rows[rIdx][cIdx] && (block.rows[rIdx][cIdx].includes('`') || block.rows[rIdx][cIdx].includes('*'))"
+                                                                 class="mt-1.5 px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-xs markdown-content shadow-xs"
+                                                                 x-html="renderInlineMarkdown(block.rows[rIdx][cIdx])">
+                                                            </div>
+                                                         </td>
                                                     </template>
                                                 </tr>
                                             </template>
                                         </tbody>
                                     </table>
                                 </div>
+
+                                <!-- MODE PRATINJAU TABEL -->
+                                <div x-show="tableMode === 'preview'" class="overflow-x-auto rounded-xl border border-slate-300 shadow-sm bg-[#0d1117] p-3">
+                                    <table class="w-full text-left text-xs sm:text-sm text-slate-200 border-collapse">
+                                        <thead class="bg-slate-800 font-semibold text-white">
+                                            <tr>
+                                                <template x-for="(head, cIdx) in (block.headers || [])" :key="cIdx">
+                                                    <th class="px-4 py-3 border border-slate-700 markdown-content"
+                                                        x-html="renderInlineMarkdown(head)"></th>
+                                                </template>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template x-for="(row, rIdx) in (block.rows || [])" :key="rIdx">
+                                                <tr :class="rIdx % 2 === 0 ? 'bg-[#0d1117]' : 'bg-slate-800/40'" class="hover:bg-white/5 transition-colors">
+                                                    <template x-for="(cell, cIdx) in row" :key="cIdx">
+                                                        <td class="px-4 py-3 leading-relaxed border border-slate-700 markdown-content"
+                                                            x-html="renderInlineMarkdown(cell)"></td>
+                                                    </template>
+                                                </tr>
+                                            </template>
+                                        </tbody>
+                                    </table>
+                                </div>
+
                                 <label :for="'tabel_caption_' + i" class="sr-only">Caption Tabel</label>
                                 <input :id="'tabel_caption_' + i" type="text" x-model="block.caption" placeholder="Caption tabel (opsional)"
                                        class="w-full rounded-lg border border-slate-200 bg-slate-50/50 px-3 py-1.5 text-xs text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent focus:bg-white transition-all">

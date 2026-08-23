@@ -22,25 +22,27 @@
         @else
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="overflow-x-auto">
-                    <table class="w-full text-sm">
+                    <table class="w-full text-sm border-collapse">
                         <thead>
-                            <tr class="text-left text-xs font-semibold uppercase tracking-wider text-slate-400 border-b border-slate-100 bg-slate-50/50">
-                                <th class="px-4 py-3.5 w-12 text-center">No</th>
-                                <th class="px-4 py-3.5">Materi</th>
-                                <th class="px-4 py-3.5 hidden md:table-cell">Deskripsi</th>
-                                <th class="px-4 py-3.5 hidden sm:table-cell">Subbab</th>
-                                <th class="px-4 py-3.5 w-14 text-center"><span class="sr-only">Urutkan</span></th>
-                                <th class="px-4 py-3.5 text-right w-36">Aksi</th>
+                            <tr class="text-left text-xs font-semibold uppercase tracking-wider text-slate-400 bg-slate-50/80">
+                                <th class="px-4 py-3.5 w-12 text-center border-b-2 border-slate-200">No</th>
+                                <th class="px-4 py-3.5 border-b-2 border-slate-200">Materi</th>
+                                <th class="px-4 py-3.5 hidden md:table-cell border-b-2 border-slate-200">Deskripsi</th>
+                                <th class="px-4 py-3.5 hidden sm:table-cell border-b-2 border-slate-200">Subbab</th>
+                                <th class="px-4 py-3.5 hidden lg:table-cell border-b-2 border-slate-200">Konten</th>
+                                <th class="px-4 py-3.5 w-14 text-center border-b-2 border-slate-200"><span class="sr-only">Urutkan</span></th>
+                                <th class="px-4 py-3.5 text-right w-36 border-b-2 border-slate-200">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-100" x-data="reorderTable('{{ route('admin.courses.reorder') }}')">
+                        <tbody class="divide-y divide-slate-200/60" x-data="reorderTable('{{ route('admin.courses.reorder') }}')">
                             @foreach ($courses as $i => $course)
                                 @php
                                     $subbabCount = collect($course->konten ?? [])->where('type', 'subbab')->count();
+                                    $blockStats = collect($course->konten ?? [])->reject(fn($b) => in_array($b['type'] ?? '', ['subbab', 'pembatas']))->groupBy('type')->map->count();
                                 @endphp
-                                <tr data-id="{{ $course->id }}" class="hover:bg-slate-50/70 transition-colors">
-                                    <td class="px-4 py-3.5 text-center font-bold text-slate-400 text-xs" data-order>{{ $i + 1 }}</td>
-                                    <td class="px-4 py-3.5">
+                                <tr data-id="{{ $course->id }}" class="hover:bg-slate-50/70 transition-colors border-b border-slate-100">
+                                    <td class="px-4 py-3.5 text-center font-bold text-slate-400 text-xs border-r border-slate-100/80" data-order>{{ $i + 1 }}</td>
+                                    <td class="px-4 py-3.5 border-r border-slate-100/80">
                                         <div class="flex items-center gap-3">
                                             <div class="w-10 h-10 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
                                                 @if ($course->gambar)
@@ -57,14 +59,51 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-4 py-3.5 hidden md:table-cell text-slate-500 max-w-xs truncate text-xs">{{ $course->desk ?? '-' }}</td>
-                                    <td class="px-4 py-3.5 hidden sm:table-cell">
+                                    <td class="px-4 py-3.5 hidden md:table-cell text-slate-500 max-w-xs truncate text-xs border-r border-slate-100/80">{{ $course->desk ?? '-' }}</td>
+                                    <td class="px-4 py-3.5 hidden sm:table-cell border-r border-slate-100/80">
                                         <a href="{{ route('admin.courses.show', $course) }}"
                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-accent/10 text-accent text-xs font-bold hover:bg-accent/20 transition-colors">
                                             <i class="ri-bookmark-line"></i>{{ $subbabCount }} Subbab
                                         </a>
                                     </td>
-                                    <td class="px-4 py-3.5 text-center">
+                                    <td class="px-4 py-3.5 hidden lg:table-cell border-r border-slate-100/80">
+                                        <div class="flex flex-wrap items-center gap-1.5">
+                                            @if (($blockStats['paragraf'] ?? 0) > 0)
+                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 font-medium text-[11px]">
+                                                    <i class="ri-paragraph text-slate-400"></i>{{ $blockStats['paragraf'] }} Teks
+                                                </span>
+                                            @endif
+                                            @if (($blockStats['kode'] ?? 0) > 0)
+                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-medium text-[11px] border border-emerald-200">
+                                                    <i class="ri-code-box-line text-emerald-500"></i>{{ $blockStats['kode'] }} Kode
+                                                </span>
+                                            @endif
+                                            @if (($blockStats['gambar'] ?? 0) > 0)
+                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 font-medium text-[11px]">
+                                                    <i class="ri-image-line text-slate-400"></i>{{ $blockStats['gambar'] }} Gambar
+                                                </span>
+                                            @endif
+                                            @if (($blockStats['tabel'] ?? 0) > 0)
+                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 font-medium text-[11px] border border-amber-200">
+                                                    <i class="ri-table-line text-amber-500"></i>{{ $blockStats['tabel'] }} Tabel
+                                                </span>
+                                            @endif
+                                            @if (($blockStats['link'] ?? 0) > 0)
+                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-sky-50 text-sky-700 font-medium text-[11px] border border-sky-200">
+                                                    <i class="ri-links-line text-sky-500"></i>{{ $blockStats['link'] }} Link
+                                                </span>
+                                            @endif
+                                            @if (($blockStats['subheading'] ?? 0) > 0)
+                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 font-medium text-[11px]">
+                                                    <i class="ri-h-2 text-slate-400"></i>{{ $blockStats['subheading'] }} Heading
+                                                </span>
+                                            @endif
+                                            @if ($blockStats->isEmpty())
+                                                <span class="text-slate-400 italic text-[11px]">Kosong</span>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3.5 text-center border-r border-slate-100/80">
                                         <span draggable="true"
                                               class="inline-flex w-8 h-8 items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-grab active:cursor-grabbing transition-colors"
                                               title="Tahan & geser baris ini untuk mengurutkan posisi">

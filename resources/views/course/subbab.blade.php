@@ -341,26 +341,26 @@
                             @endphp
                             <div class="my-6 space-y-2">
                                 <div
-                                    class="overflow-x-auto rounded-xl border border-slate-200 dark:border-white/10 shadow-sm bg-white dark:bg-[#0d1117]">
+                                    class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700 shadow-sm bg-white dark:bg-[#0d1117]">
                                     <table
-                                        class="w-full text-left text-xs sm:text-sm text-slate-700 dark:text-slate-200 divide-y divide-slate-200 dark:divide-slate-800">
+                                        class="w-full text-left text-xs sm:text-sm text-slate-700 dark:text-slate-200 border-collapse">
                                         @if (!empty($headers))
                                             <thead
-                                                class="bg-slate-50 dark:bg-slate-800/60 font-semibold text-slate-900 dark:text-white">
+                                                class="bg-slate-100 dark:bg-slate-800/90 font-semibold text-slate-900 dark:text-white border-b border-slate-300 dark:border-slate-700">
                                                 <tr>
                                                     @foreach ($headers as $head)
                                                         <th
-                                                            class="px-4 py-3 border-b border-slate-200 dark:border-slate-800">
+                                                            class="px-4 py-3 border border-slate-300 dark:border-slate-700 markdown-content font-bold">
                                                             {!! render_markdown($head) !!}</th>
                                                     @endforeach
                                                 </tr>
                                             </thead>
                                         @endif
-                                        <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 font-normal">
-                                            @foreach ($rows as $row)
-                                                <tr class="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
+                                        <tbody class="font-normal">
+                                            @foreach ($rows as $rowIdx => $row)
+                                                <tr class="{{ $rowIdx % 2 === 0 ? 'bg-white dark:bg-[#0d1117]' : 'bg-slate-50/70 dark:bg-slate-800/40' }} hover:bg-blue-50/40 dark:hover:bg-slate-800/80 transition-colors">
                                                     @foreach ($row as $cell)
-                                                        <td class="px-4 py-3 leading-relaxed">{!! render_markdown($cell) !!}</td>
+                                                        <td class="px-4 py-3 leading-relaxed border border-slate-300 dark:border-slate-700 markdown-content">{!! render_markdown($cell) !!}</td>
                                                     @endforeach
                                                 </tr>
                                             @endforeach

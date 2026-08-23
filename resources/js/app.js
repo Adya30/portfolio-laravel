@@ -1035,6 +1035,66 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '', autosave
             this.uploadingIndex = null;
         }
     },
+
+    renderInlineMarkdown(text) {
+        if (!text) return '';
+        let escaped = String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+
+        // Inline code `code`
+        escaped = escaped.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+        // Bold **bold**
+        escaped = escaped.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+
+        // Italic *italic*
+        escaped = escaped.replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<em>$1</em>');
+
+        // Line breaks
+        escaped = escaped.replace(/\n/g, '<br>');
+
+        return escaped;
+    },
+
+    wrapCellWithCode(blockIndex, rIdx, cIdx, textareaEl = null) {
+        if (!this.blocks[blockIndex]?.rows?.[rIdx]) return;
+        this.pushHistory();
+
+        if (textareaEl && typeof textareaEl.selectionStart === 'number') {
+            const start = textareaEl.selectionStart;
+            const end = textareaEl.selectionEnd;
+            const fullVal = this.blocks[blockIndex].rows[rIdx][cIdx] || '';
+
+            if (start !== end) {
+                const selected = fullVal.substring(start, end);
+                let replacement;
+                if (selected.startsWith('`') && selected.endsWith('`') && selected.length >= 2) {
+                    replacement = selected.slice(1, -1);
+                } else {
+                    replacement = '`' + selected + '`';
+                }
+                this.blocks[blockIndex].rows[rIdx][cIdx] = fullVal.substring(0, start) + replacement + fullVal.substring(end);
+                setTimeout(() => {
+                    textareaEl.focus();
+                    textareaEl.setSelectionRange(start, start + replacement.length);
+                }, 10);
+                return;
+            }
+        }
+
+        let val = (this.blocks[blockIndex].rows[rIdx][cIdx] || '').trim();
+        if (val.startsWith('`') && val.endsWith('`') && val.length >= 2) {
+            this.blocks[blockIndex].rows[rIdx][cIdx] = val.slice(1, -1);
+        } else if (val.length > 0) {
+            this.blocks[blockIndex].rows[rIdx][cIdx] = '`' + val + '`';
+        } else {
+            this.blocks[blockIndex].rows[rIdx][cIdx] = '`kode`';
+        }
+    },
 }));
 
 /* ============================================================
@@ -1051,9 +1111,10 @@ Alpine.data('quillParagraphEditor', (block, index) => ({
 
             const toolbarOptions = [
                 ['bold', 'italic', 'underline', 'strike'],
+                ['code'], // Hanya penanda kode inline (`kode`)
                 [{ 'align': '' }, { 'align': 'center' }, { 'align': 'right' }, { 'align': 'justify' }],
                 [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                ['blockquote', 'code-block', 'link'],
+                ['blockquote', 'link'],
                 ['clean']
             ];
 
@@ -1064,6 +1125,12 @@ Alpine.data('quillParagraphEditor', (block, index) => ({
                     toolbar: toolbarOptions,
                 }
             });
+
+            // Beri tooltip ramah pada tombol penanda kode Quill
+            const codeBtn = box.parentElement?.querySelector('.ql-code');
+            if (codeBtn) {
+                codeBtn.setAttribute('title', 'Tanda Kode (</>)');
+            }
 
             // Set initial content
             if (block.teks) {

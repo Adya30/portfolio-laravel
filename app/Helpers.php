@@ -13,6 +13,25 @@ if (! function_exists('render_markdown')) {
             return '';
         }
 
+        // 1. Normalisasi list format Quill v2 jika teks mengandung tag list dari Quill
+        if (str_contains($text, '<') && (str_contains($text, 'data-list=') || str_contains($text, 'ql-ui'))) {
+            // Hapus elemen span dekorasi ql-ui
+            $text = preg_replace('/<span class="ql-ui"[^>]*><\/span>/i', '', $text);
+
+            // Normalisasi tag <ol> yang berisi data-list="bullet" menjadi <ul>, dan bersihkan attribute
+            $text = preg_replace_callback('/<ol[^>]*>([\s\S]*?)<\/ol>/i', function ($matches) {
+                $inner = $matches[1];
+
+                if (preg_match('/data-list=["\']bullet["\']/i', $inner)) {
+                    $inner = preg_replace('/\s*data-list=["\']bullet["\']/i', '', $inner);
+                    return '<ul>' . $inner . '</ul>';
+                }
+
+                $inner = preg_replace('/\s*data-list=["\']ordered["\']/i', '', $inner);
+                return '<ol>' . $inner . '</ol>';
+            }, $text);
+        }
+
         $converter = once(function () {
             $env = new Environment([
                 'html_input'         => 'allow',
