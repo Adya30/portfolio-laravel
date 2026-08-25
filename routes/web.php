@@ -39,6 +39,9 @@ Route::get('/certificate/{certificate}', [LandingController::class, 'showCertifi
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:login')->name('login.attempt');
+
+    Route::get('/2fa', [\App\Http\Controllers\Auth\TwoFactorLoginController::class, 'showForm'])->name('2fa.form');
+    Route::post('/2fa', [\App\Http\Controllers\Auth\TwoFactorLoginController::class, 'verify'])->name('2fa.verify');
 });
 
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');

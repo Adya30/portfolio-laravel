@@ -51,6 +51,18 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             RateLimiter::clear($throttleKey);
+
+            $user = Auth::user();
+
+            if ($user->hasTwoFactorEnabled()) {
+                // Generate signed URL for 2FA verification
+                $twoFaUrl = \App\Http\Controllers\Auth\TwoFactorLoginController::generateSignedUrl($user->id);
+
+                Auth::logout();
+
+                return redirect($twoFaUrl);
+            }
+
             $request->session()->regenerate();
 
             return redirect()->route('admin.dashboard');
