@@ -157,21 +157,15 @@ class ProfileController extends Controller
     }
 
     /**
-     * Verify and activate 2FA.
+     * Activate 2FA after QR code has been scanned.
      */
     public function enableTwoFactor(Request $request): RedirectResponse
     {
-        $request->validate([
-            'one_time_password' => ['required', 'string', 'size:6'],
-        ], [
-            'one_time_password.required' => 'Kode verifikasi wajib diisi.',
-            'one_time_password.size' => 'Kode verifikasi harus 6 digit.',
-        ]);
-
         $secret = session('2fa_setup_secret');
 
-        if (! $secret || ! $this->twoFactorAuth->verifyKey($secret, $request->input('one_time_password'))) {
-            return back()->withErrors(['one_time_password' => 'Kode verifikasi salah. Pastikan kode di aplikasi Authenticator benar.'])->withInput();
+        if (! $secret) {
+            return redirect()->route('admin.profile.2fa.setup')
+                ->withErrors(['error' => 'Sesi telah berakhir. Silakan muat ulang halaman.']);
         }
 
         $user = $request->user();
