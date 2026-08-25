@@ -28,9 +28,7 @@
                                 <th class="px-4 py-3.5 w-12 text-center border-b-2 border-slate-200">No</th>
                                 <th class="px-4 py-3.5 border-b-2 border-slate-200">Materi</th>
                                 <th class="px-4 py-3.5 hidden md:table-cell border-b-2 border-slate-200">Deskripsi</th>
-                                <th class="px-4 py-3.5 hidden sm:table-cell border-b-2 border-slate-200">Subbab</th>
-                                <th class="px-4 py-3.5 hidden lg:table-cell border-b-2 border-slate-200">Konten</th>
-                                <th class="px-4 py-3.5 w-14 text-center border-b-2 border-slate-200"><span class="sr-only">Urutkan</span></th>
+                                <th class="px-4 py-3.5 hidden sm:table-cell border-b-2 border-slate-200">Subbab</th>                                <th class="px-4 py-3.5 w-14 text-center border-b-2 border-slate-200"><span class="sr-only">Urutkan</span></th>
                                 <th class="px-4 py-3.5 text-right w-36 border-b-2 border-slate-200">Aksi</th>
                             </tr>
                         </thead>
@@ -65,43 +63,6 @@
                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-accent/10 text-accent text-xs font-bold hover:bg-accent/20 transition-colors">
                                             <i class="ri-bookmark-line"></i>{{ $subbabCount }} Subbab
                                         </a>
-                                    </td>
-                                    <td class="px-4 py-3.5 hidden lg:table-cell border-r border-slate-100/80">
-                                        <div class="flex flex-wrap items-center gap-1.5">
-                                            @if (($blockStats['paragraf'] ?? 0) > 0)
-                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 font-medium text-[11px]">
-                                                    <i class="ri-paragraph text-slate-400"></i>{{ $blockStats['paragraf'] }} Teks
-                                                </span>
-                                            @endif
-                                            @if (($blockStats['kode'] ?? 0) > 0)
-                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-medium text-[11px] border border-emerald-200">
-                                                    <i class="ri-code-box-line text-emerald-500"></i>{{ $blockStats['kode'] }} Kode
-                                                </span>
-                                            @endif
-                                            @if (($blockStats['gambar'] ?? 0) > 0)
-                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 font-medium text-[11px]">
-                                                    <i class="ri-image-line text-slate-400"></i>{{ $blockStats['gambar'] }} Gambar
-                                                </span>
-                                            @endif
-                                            @if (($blockStats['tabel'] ?? 0) > 0)
-                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 font-medium text-[11px] border border-amber-200">
-                                                    <i class="ri-table-line text-amber-500"></i>{{ $blockStats['tabel'] }} Tabel
-                                                </span>
-                                            @endif
-                                            @if (($blockStats['link'] ?? 0) > 0)
-                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-sky-50 text-sky-700 font-medium text-[11px] border border-sky-200">
-                                                    <i class="ri-links-line text-sky-500"></i>{{ $blockStats['link'] }} Link
-                                                </span>
-                                            @endif
-                                            @if (($blockStats['subheading'] ?? 0) > 0)
-                                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 font-medium text-[11px]">
-                                                    <i class="ri-h-2 text-slate-400"></i>{{ $blockStats['subheading'] }} Heading
-                                                </span>
-                                            @endif
-                                            @if ($blockStats->isEmpty())
-                                                <span class="text-slate-400 italic text-[11px]">Kosong</span>
-                                            @endif
-                                        </div>
                                     </td>
                                     <td class="px-4 py-3.5 text-center border-r border-slate-100/80">
                                         <span draggable="true"

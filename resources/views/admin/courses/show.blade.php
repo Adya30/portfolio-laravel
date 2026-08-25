@@ -59,7 +59,6 @@
                         <tr class="text-left text-xs font-semibold uppercase tracking-wider text-slate-400 bg-slate-50/80">
                             <th class="px-4 py-3 w-12 text-center border-b-2 border-slate-200">No</th>
                             <th class="px-4 py-3 border-b-2 border-slate-200">Subbab</th>
-                            <th class="px-4 py-3 hidden md:table-cell border-b-2 border-slate-200">Konten</th>
                             <th class="px-4 py-3 w-14 text-center border-b-2 border-slate-200"><span class="sr-only">Urutkan</span></th>
                             <th class="px-4 py-3 text-right w-28 border-b-2 border-slate-200">Aksi</th>
                         </tr>
@@ -80,43 +79,7 @@
                                         </a>
                                     </div>
                                 </td>
-                                <td class="px-4 py-3 hidden md:table-cell border-r border-slate-100/80">
-                                    <div class="flex flex-wrap items-center gap-1.5 text-[11px] text-slate-500">
-                                        @if (($stats['paragraf'] ?? 0) > 0)
-                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 font-medium border border-slate-200/60">
-                                                <i class="ri-paragraph text-slate-400"></i>{{ $stats['paragraf'] }} Teks
-                                            </span>
-                                        @endif
-                                        @if (($stats['subheading'] ?? 0) > 0)
-                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 font-medium border border-slate-200/60">
-                                                <i class="ri-h-2 text-slate-400"></i>{{ $stats['subheading'] }} Heading
-                                            </span>
-                                        @endif
-                                        @if (($stats['gambar'] ?? 0) > 0)
-                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 font-medium border border-slate-200/60">
-                                                <i class="ri-image-line text-slate-400"></i>{{ $stats['gambar'] }} Gambar
-                                            </span>
-                                        @endif
-                                        @if (($stats['kode'] ?? 0) > 0)
-                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-medium border border-emerald-200">
-                                                <i class="ri-code-box-line text-emerald-500"></i>{{ $stats['kode'] }} Kode
-                                            </span>
-                                        @endif
-                                        @if (($stats['tabel'] ?? 0) > 0)
-                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-50 text-amber-700 font-medium border border-amber-200">
-                                                <i class="ri-table-line text-amber-500"></i>{{ $stats['tabel'] }} Tabel
-                                            </span>
-                                        @endif
-                                        @if (($stats['link'] ?? 0) > 0)
-                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-sky-50 text-sky-700 font-medium border border-sky-200">
-                                                <i class="ri-links-line text-sky-500"></i>{{ $stats['link'] }} Link
-                                            </span>
-                                        @endif
-                                        @if (empty(array_filter($stats)))
-                                            <span class="text-slate-400 italic text-[11px]">Belum ada blok isi</span>
-                                        @endif
-                                    </div>
-                                </td>
+
                                 <td class="px-4 py-3 text-center border-r border-slate-100/80">
                                     <span draggable="true"
                                           class="inline-flex w-8 h-8 items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 cursor-grab active:cursor-grabbing transition-colors"
