@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Profile;
+use App\Services\TwoFactorAuth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -12,6 +13,13 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
+    private TwoFactorAuth $twoFactorAuth;
+
+    public function __construct(TwoFactorAuth $twoFactorAuth)
+    {
+        $this->twoFactorAuth = $twoFactorAuth;
+    }
+
     public function edit(): View
     {
         return view('admin.profile.edit', [
@@ -115,5 +123,93 @@ class ProfileController extends Controller
         }
 
         return $current;
+    }
+
+    /**
+     * Show the 2FA setup form with QR code.
+     */
+    public function showTwoFactorSetup(): View
+    {
+        $user = request()->user();
+
+        if ($user->hasTwoFactorEnabled()) {
+            return view('admin.profile.two-factor-enabled', [
+                'profile' => Profile::firstOrCreate(['id' => 1]),
+            ]);
+        }
+
+        // Generate a new secret
+        $secret = $this->twoFactorAuth->generateSecretKey();
+        $qrUrl = $this->twoFactorAuth->getQRCodeUrl(
+            config('app.name', 'Portfolio'),
+            $user->email,
+            $secret
+        );
+
+        // Store secret temporarily in session for verification
+        session(['2fa_setup_secret' => $secret]);
+
+        return view('admin.profile.two-factor-setup', [
+            'profile' => Profile::firstOrCreate(['id' => 1]),
+            'qrUrl' => $qrUrl,
+            'secret' => $secret,
+        ]);
+    }
+
+    /**
+     * Verify and activate 2FA.
+     */
+    public function enableTwoFactor(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'one_time_password' => ['required', 'string', 'size:6'],
+        ], [
+            'one_time_password.required' => 'Kode verifikasi wajib diisi.',
+            'one_time_password.size' => 'Kode verifikasi harus 6 digit.',
+        ]);
+
+        $secret = session('2fa_setup_secret');
+
+        if (! $secret || ! $this->twoFactorAuth->verifyKey($secret, $request->input('one_time_password'))) {
+            return back()->withErrors(['one_time_password' => 'Kode verifikasi salah. Pastikan kode di aplikasi Authenticator benar.'])->withInput();
+        }
+
+        $user = $request->user();
+        $user->update([
+            'two_factor_secret' => $secret,
+            'two_factor_enabled' => true,
+        ]);
+
+        session()->forget('2fa_setup_secret');
+
+        return redirect()->route('admin.profile.edit')
+            ->with('success', 'Autentikasi dua faktor berhasil diaktifkan!');
+    }
+
+    /**
+     * Disable 2FA.
+     */
+    public function disableTwoFactor(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'one_time_password' => ['required', 'string', 'size:6'],
+        ], [
+            'one_time_password.required' => 'Kode verifikasi wajib diisi untuk menonaktifkan 2FA.',
+            'one_time_password.size' => 'Kode verifikasi harus 6 digit.',
+        ]);
+
+        $user = $request->user();
+
+        if (! $this->twoFactorAuth->verifyKey($user->two_factor_secret, $request->input('one_time_password'))) {
+            return back()->withErrors(['one_time_password' => 'Kode verifikasi salah. 2FA tidak dinonaktifkan.'])->withInput();
+        }
+
+        $user->update([
+            'two_factor_secret' => null,
+            'two_factor_enabled' => false,
+        ]);
+
+        return redirect()->route('admin.profile.edit')
+            ->with('success', 'Autentikasi dua faktor berhasil dinonaktifkan.');
     }
 }

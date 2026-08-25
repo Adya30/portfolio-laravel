@@ -176,18 +176,18 @@
                         <div class="relative w-full group flex justify-center z-10">
                             <img src="{{ $heroImage }}" alt="{{ $profileName }}" width="864" height="1080"
                                 fetchpriority="high"
-                                class="max-w-full h-auto object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.35)]">
+                                class="w-[60vw] max-w-[18rem] sm:w-[50vw] sm:max-w-[22rem] md:w-[45vw] md:max-w-[26rem] lg:w-full lg:max-w-none h-auto object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.35)]">
                         </div>
 
-                        <div class="relative w-full max-w-md -mt-6 z-20">
+                        <div class="relative w-full max-w-md -mt-5 z-20">
                             <div
-                                class="relative flex items-start gap-3.5 px-5 py-4 rounded-2xl bg-white dark:bg-[#1a1a2e] backdrop-blur-md shadow-xl border border-slate-200/90 dark:border-white/10 text-slate-700 dark:text-slate-200">
+                                class="relative flex items-start gap-2.5 px-3.5 py-3 rounded-xl bg-white dark:bg-[#1a1a2e] backdrop-blur-md shadow-xl border border-slate-200/90 dark:border-white/10 text-slate-700 dark:text-slate-200">
                                 <span
-                                    class="w-8 h-8 flex items-center justify-center rounded-xl bg-accent/15 text-accent dark:text-[#60a5fa] shrink-0 mt-0.5">
-                                    <i class="ri-double-quotes-l text-lg"></i>
+                                    class="w-7 h-7 flex items-center justify-center rounded-lg bg-accent/15 text-accent dark:text-[#60a5fa] shrink-0 mt-0.5">
+                                    <i class="ri-double-quotes-l text-sm"></i>
                                 </span>
                                 <div class="flex flex-col">
-                                    <p class="text-xs sm:text-sm font-medium leading-relaxed italic"
+                                    <p class="text-[11px] sm:text-xs font-medium leading-relaxed italic"
                                         x-text="L(heroQuote.en || heroQuote.defaultEn, heroQuote.idn || heroQuote.defaultIdn)">
                                         Code is like humor. When you have to explain it, it's bad. Build with passion, learn
                                         with coding.
@@ -201,34 +201,34 @@
                 <div
                     class="flex flex-col items-center lg:items-end gap-5 order-3 lg:order-3 animate__animated animate__fadeInUp animate__delay-3s w-full">
 
-                    <div class="flex flex-col gap-3 w-full max-w-xs sm:max-w-sm lg:w-full">
+                    <div class="flex flex-col gap-2 w-full max-w-xs sm:max-w-sm lg:w-full">
                         <div
-                            class="w-full bg-white dark:bg-[#1a1a2e] rounded-2xl px-5 py-4 shadow-lg shadow-accent/5 dark:shadow-accent/10 border border-slate-100 dark:border-white/5 hover:shadow-xl hover:shadow-accent/10 dark:hover:shadow-accent/15 transition-all duration-300 hover:-translate-y-0.5">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-accent/10 dark:bg-accent/15 flex items-center justify-center">
-                                    <i class="ri-code-box-line text-accent dark:text-[#60a5fa] text-lg"></i>
+                            class="w-full bg-white dark:bg-[#1a1a2e] rounded-xl px-3.5 py-2.5 shadow-lg shadow-accent/5 dark:shadow-accent/10 border border-slate-100 dark:border-white/5 hover:shadow-xl hover:shadow-accent/10 dark:hover:shadow-accent/15 transition-all duration-300 hover:-translate-y-0.5">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-lg bg-accent/10 dark:bg-accent/15 flex items-center justify-center">
+                                    <i class="ri-code-box-line text-accent dark:text-[#60a5fa] text-sm"></i>
                                 </div>
                                 <div>
-                                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500" x-text="t('projects')">
+                                    <p class="text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500" x-text="t('projects')">
                                         Projects</p>
                                     <p
-                                        class="text-2xl font-bold bg-linear-to-br from-accent to-[#8b5cf6] bg-clip-text text-transparent">
+                                        class="text-xl font-bold bg-linear-to-br from-accent to-[#8b5cf6] bg-clip-text text-transparent">
                                         <span x-data="counter({{ $projects->count() }}, '+')" x-text="value + suffix"></span>
                                     </p>
                                 </div>
                             </div>
                         </div>
                         <div
-                            class="w-full bg-white dark:bg-[#1a1a2e] rounded-2xl px-5 py-4 shadow-lg shadow-accent/5 dark:shadow-accent/10 border border-slate-100 dark:border-white/5 hover:shadow-xl hover:shadow-accent/10 dark:hover:shadow-accent/15 transition-all duration-300 hover:-translate-y-0.5">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-purple-500/10 dark:bg-purple-400/15 flex items-center justify-center">
-                                    <i class="ri-award-line text-purple-500 dark:text-purple-400 text-lg"></i>
+                            class="w-full bg-white dark:bg-[#1a1a2e] rounded-xl px-3.5 py-2.5 shadow-lg shadow-accent/5 dark:shadow-accent/10 border border-slate-100 dark:border-white/5 hover:shadow-xl hover:shadow-accent/10 dark:hover:shadow-accent/15 transition-all duration-300 hover:-translate-y-0.5">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-lg bg-purple-500/10 dark:bg-purple-400/15 flex items-center justify-center">
+                                    <i class="ri-award-line text-purple-500 dark:text-purple-400 text-sm"></i>
                                 </div>
                                 <div>
-                                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500" x-text="t('certificates')">
+                                    <p class="text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500" x-text="t('certificates')">
                                         Certificates</p>
                                     <p
-                                        class="text-2xl font-bold bg-linear-to-br from-purple-500 to-accent bg-clip-text text-transparent">
+                                        class="text-xl font-bold bg-linear-to-br from-purple-500 to-accent bg-clip-text text-transparent">
                                         <span x-data="counter({{ $certificates->count() }})" x-text="value + suffix"></span>
                                     </p>
                                 </div>
@@ -236,22 +236,22 @@
                         </div>
                     </div>
 
-                    <div class="flex flex-col sm:flex-row lg:flex-col gap-3 w-full max-w-xs sm:max-w-sm lg:w-full">
+                    <div class="flex flex-col sm:flex-row lg:flex-col gap-2 w-full max-w-xs sm:max-w-sm lg:w-full">
                         <a href="{{ $cvUrl }}" target="_blank" rel="noopener noreferrer"
-                            class="group inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-2xl bg-accent text-white text-sm font-bold cursor-pointer transition-all duration-300 hover:bg-blue-600 hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(59,130,246,0.4)] active:translate-y-0">
-                            <i class="ri-download-2-line text-lg"></i><span x-text="t('downloadCv')">Download CV</span>
+                            class="group inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-accent text-white text-xs font-bold cursor-pointer transition-all duration-300 hover:bg-blue-600 hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(59,130,246,0.4)] active:translate-y-0">
+                            <i class="ri-download-2-line text-sm"></i><span x-text="t('downloadCv')">Download CV</span>
                         </a>
                         <a href="#proyek" @click.prevent="scrollToSection($event, '#proyek')"
-                            class="group inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-2xl border-[1.5px] border-accent/30 text-accent dark:text-[#60a5fa] text-sm font-bold cursor-pointer transition-all duration-300 hover:bg-accent/10 hover:border-accent hover:-translate-y-0.5 dark:hover:bg-accent/15 dark:hover:border-[#60a5fa] hover:shadow-[0_8px_30px_rgba(59,130,246,0.15)]">
+                            class="group inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl border-[1.5px] border-accent/30 text-accent dark:text-[#60a5fa] text-xs font-bold cursor-pointer transition-all duration-300 hover:bg-accent/10 hover:border-accent hover:-translate-y-0.5 dark:hover:bg-accent/15 dark:hover:border-[#60a5fa] hover:shadow-[0_8px_30px_rgba(59,130,246,0.15)]">
                             <i class="ri-eye-line text-lg group-hover:scale-110 transition-transform"></i><span x-text="t('viewProjects')">Lihat Proyek</span>
                         </a>
                     </div>
 
-                    <div class="flex items-center gap-2.5 justify-center lg:justify-end w-full">
+                    <div class="flex items-center gap-2 justify-center lg:justify-end w-full">
                         @foreach ($socials as $social)
                             <a href="{{ $social['url'] }}" target="_blank" rel="noopener noreferrer"
                                 aria-label="{{ $social['label'] }}"
-                                class="w-11 h-11 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400 hover:bg-accent hover:text-white dark:hover:bg-accent hover:shadow-[0_4px_15px_rgba(59,130,246,0.3)] transition-all duration-300 hover:-translate-y-0.5">
+                                class="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400 hover:bg-accent hover:text-white dark:hover:bg-accent hover:shadow-[0_4px_15px_rgba(59,130,246,0.3)] transition-all duration-300 hover:-translate-y-0.5">
                                 <i class="{{ $social['icon'] }} text-lg"></i>
                             </a>
                         @endforeach
@@ -273,7 +273,7 @@
         </div>
 
         <div class="max-w-5xl mx-auto px-4 space-y-8">
-            <div class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-2xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-8 md:p-10"
+            <div class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-5 md:p-7"
                 data-aos="fade-up" data-aos-duration="800">
                 <div class="flex-1 min-w-0">
                     <p class="text-sm sm:text-base leading-relaxed text-slate-600 dark:text-slate-300"
@@ -293,45 +293,45 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-4" data-aos="fade-up" data-aos-duration="800"
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3" data-aos="fade-up" data-aos-duration="800"
                 data-aos-delay="150">
                 <div
-                    class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-2xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-5 sm:p-6 text-center">
+                    class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-3.5 sm:p-4 text-center">
                     <div
-                        class="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 rounded-xl bg-accent/10 flex items-center justify-center">
-                        <i class="ri-code-box-line text-accent text-lg sm:text-xl"></i>
+                        class="w-8 h-8 sm:w-9 sm:h-9 mx-auto mb-2 rounded-lg bg-accent/10 flex items-center justify-center">
+                        <i class="ri-code-box-line text-accent text-sm sm:text-base"></i>
                     </div>
                     <p
-                        class="text-2xl sm:text-3xl font-bold bg-linear-to-br from-accent to-[#8b5cf6] bg-clip-text text-transparent">
+                        class="text-xl sm:text-2xl font-bold bg-linear-to-br from-accent to-[#8b5cf6] bg-clip-text text-transparent">
                         <span x-data="counter({{ $projects->count() }}, '+')" x-text="value + suffix"></span>
                     </p>
-                    <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1.5 font-medium"
+                    <p class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium"
                         x-text="t('projectsCompleted')">Projects Completed</p>
                 </div>
                 <div
-                    class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-2xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-5 sm:p-6 text-center">
+                    class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-3.5 sm:p-4 text-center">
                     <div
-                        class="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 rounded-xl bg-accent/10 flex items-center justify-center">
-                        <i class="ri-award-line text-accent text-lg sm:text-xl"></i>
+                        class="w-8 h-8 sm:w-9 sm:h-9 mx-auto mb-2 rounded-lg bg-accent/10 flex items-center justify-center">
+                        <i class="ri-award-line text-accent text-sm sm:text-base"></i>
                     </div>
                     <p
-                        class="text-2xl sm:text-3xl font-bold bg-linear-to-br from-accent to-[#8b5cf6] bg-clip-text text-transparent">
+                        class="text-xl sm:text-2xl font-bold bg-linear-to-br from-accent to-[#8b5cf6] bg-clip-text text-transparent">
                         <span x-data="counter({{ $certificates->count() }})" x-text="value + suffix"></span>
                     </p>
-                    <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1.5 font-medium"
+                    <p class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium"
                         x-text="t('certifications')">Certifications</p>
                 </div>
                 <div
-                    class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-2xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-5 sm:p-6 text-center">
+                    class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-3.5 sm:p-4 text-center">
                     <div
-                        class="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-3 rounded-xl bg-accent/10 flex items-center justify-center">
-                        <i class="ri-tools-line text-accent text-lg sm:text-xl"></i>
+                        class="w-8 h-8 sm:w-9 sm:h-9 mx-auto mb-2 rounded-lg bg-accent/10 flex items-center justify-center">
+                        <i class="ri-tools-line text-accent text-sm sm:text-base"></i>
                     </div>
                     <p
-                        class="text-2xl sm:text-3xl font-bold bg-linear-to-br from-accent to-[#8b5cf6] bg-clip-text text-transparent">
+                        class="text-xl sm:text-2xl font-bold bg-linear-to-br from-accent to-[#8b5cf6] bg-clip-text text-transparent">
                         <span x-data="counter({{ $tools->count() }}, '+')" x-text="value + suffix"></span>
                     </p>
-                    <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1.5 font-medium"
+                    <p class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium"
                         x-text="t('toolsMastered')">Tools Mastered</p>
                 </div>
             </div>
@@ -353,15 +353,15 @@
                     class="grid grid-flow-col grid-rows-2 gap-4 overflow-x-auto scrollbar-none snap-x snap-mandatory pb-4 auto-cols-[100%] sm:auto-cols-[calc(50%-0.5rem)] md:auto-cols-[calc(33.333%-0.67rem)] lg:auto-cols-[calc(25%-0.75rem)] scroll-smooth">
                     <template x-for="t in tools" :key="t.id">
                         <div
-                            class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-2xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-5 flex items-center gap-4 group cursor-pointer snap-start w-full min-w-0">
+                            class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-3 flex items-center gap-3 group cursor-pointer snap-start w-full min-w-0">
                             <div
-                                class="w-12 h-12 rounded-xl bg-slate-50 dark:bg-white/5 flex items-center justify-center shrink-0 group-hover:bg-accent/10 transition-colors">
-                                <img :src="t.img" :alt="t.nama" class="w-7 h-7 object-contain">
+                                class="w-9 h-9 rounded-lg bg-slate-50 dark:bg-white/5 flex items-center justify-center shrink-0 group-hover:bg-accent/10 transition-colors">
+                                <img :src="t.img" :alt="t.nama" class="w-5 h-5 object-contain">
                             </div>
                             <div class="min-w-0">
-                                <h4 class="font-semibold text-sm text-slate-800 dark:text-slate-200 group-hover:text-accent transition-colors truncate"
+                                <h4 class="font-semibold text-xs text-slate-800 dark:text-slate-200 group-hover:text-accent transition-colors truncate"
                                     x-text="t.nama"></h4>
-                                <p class="text-xs text-slate-400 dark:text-slate-500 truncate" x-text="t.ket"></p>
+                                <p class="text-[10px] text-slate-400 dark:text-slate-500 truncate" x-text="t.ket"></p>
                             </div>
                         </div>
                     </template>
@@ -413,10 +413,10 @@
                     class="grid grid-flow-col grid-rows-2 gap-6 overflow-x-auto scrollbar-none snap-x snap-mandatory pb-4 auto-cols-[100%] sm:auto-cols-[calc(50%-0.75rem)] lg:auto-cols-[calc(33.333%-1rem)] scroll-smooth">
                     <template x-for="p in visibleProjects" :key="p.id">
                         <a :href="p.url"
-                            class="block bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-2xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] overflow-hidden group snap-start w-full min-w-0">
+                            class="block bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] overflow-hidden group snap-start w-full min-w-0">
                             <div class="relative overflow-hidden">
                                 <img x-show="p.img" :src="p.img" :alt="p.nama"
-                                    class="w-full aspect-600/383 object-cover transition-transform duration-500 group-hover:scale-105"
+                                    class="w-full aspect-600/383 object-contain bg-slate-50 dark:bg-slate-900 transition-transform duration-500 group-hover:scale-105"
                                     loading="lazy">
                                 <template x-if="!p.img">
                                     <div
@@ -424,9 +424,8 @@
                                         <span class="text-5xl font-bold text-accent/40 dark:text-[#60a5fa]/40"
                                             x-text="(p.nama || 'P').charAt(0).toUpperCase()"></span>
                                     </div>
-                                </template>
-                                <div
-                                    class="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                                </template>                                    <div
+                                        class="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
                                 </div>
                                 <div
                                     class="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -435,19 +434,19 @@
                                             class="ri-eye-line mr-1"></i><span x-text="t('view')">View</span></span>
                                 </div>
                             </div>
-                            <div class="p-4">
-                                <div class="flex items-center gap-2 mb-2">
-                                    <span class="text-xs font-medium text-accent"
+                            <div class="p-3">
+                                <div class="flex items-center gap-2 mb-1.5">
+                                    <span class="text-[10px] font-medium text-accent"
                                         x-text="'#' + String(p.id).padStart(2, '0')"></span>
                                     <span class="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600"></span>
-                                    <span class="text-xs text-slate-400 dark:text-slate-500"
+                                    <span class="text-[10px] text-slate-400 dark:text-slate-500"
                                         x-text="t('project')">Project</span>
                                 </div>
-                                <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mb-1.5 group-hover:text-accent transition-colors"
+                                <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100 mb-1 group-hover:text-accent transition-colors"
                                     x-text="p.nama"></h3>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mb-3 line-clamp-2 leading-relaxed"
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400 mb-2 line-clamp-2 leading-relaxed"
                                     x-text="L(p.desk, p.deskIdn)"></p>
-                                <div class="flex flex-wrap gap-1.5">
+                                <div class="flex flex-wrap gap-1">
                                     <template x-for="tool in p.tools" :key="tool">
                                         <span
                                             class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium text-accent dark:text-[#60a5fa] bg-accent/10 dark:bg-accent/15 border border-accent/15 dark:border-accent/25 transition-all duration-200 hover:bg-accent/15 hover:-translate-y-px text-[10px]"
@@ -496,7 +495,7 @@
 
                         <a :href="e.url" class="block group w-full">
                             <div
-                                class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-2xl p-6 sm:p-8 transition-all duration-300 group-hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:group-hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)]">
+                                class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-xl p-4 sm:p-5 transition-all duration-300 group-hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:group-hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)]">
 
                                 <div class="flex items-start gap-4 mb-4">
                                     <span
@@ -612,12 +611,12 @@
                     class="grid grid-flow-col grid-rows-2 gap-6 overflow-x-auto scrollbar-none snap-x snap-mandatory pb-4 auto-cols-[100%] sm:auto-cols-[calc(50%-0.75rem)] lg:auto-cols-[calc(33.333%-1rem)] scroll-smooth">
                     <template x-for="c in certificates" :key="c.id">
                         <a :href="c.url"
-                            class="block bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-2xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] overflow-hidden flex flex-col justify-between group snap-start w-full min-w-0">
+                            class="block bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] overflow-hidden flex flex-col justify-between group snap-start w-full min-w-0">
                             <div>
                                 <div
                                     class="relative h-60 w-full bg-slate-100 dark:bg-slate-900 border-b border-slate-200/50 dark:border-white/5 overflow-hidden">
                                     <img :src="c.img" :alt="c.nama"
-                                        class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
+                                        class="w-full h-full object-contain p-2 group-hover:scale-[1.03] transition-transform duration-300"
                                         loading="lazy">
                                     <div
                                         class="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
@@ -629,14 +628,14 @@
                                                 class="ri-eye-line mr-1"></i><span x-text="t('view')">View</span></span>
                                     </div>
                                 </div>
-                                <div class="p-5">
+                                <div class="p-3.5">
                                     <div
-                                        class="flex items-center justify-between gap-2 text-xs text-slate-400 dark:text-slate-500 font-medium mb-1">
+                                        class="flex items-center justify-between gap-2 text-[10px] text-slate-400 dark:text-slate-500 font-medium mb-1">
                                         <span x-text="c.penerbit"></span>
                                         <span class="flex items-center gap-1 text-[11px]"><i
                                                 class="ri-calendar-line"></i><span x-text="c.tanggal"></span></span>
                                     </div>
-                                    <h3 class="font-bold text-slate-800 dark:text-slate-100 text-base group-hover:text-accent transition-colors leading-snug"
+                                    <h3 class="font-bold text-slate-800 dark:text-slate-100 text-sm group-hover:text-accent transition-colors leading-snug"
                                         x-text="L(c.nama, c.namaIdn)"></h3>
                                 </div>
                             </div>
@@ -668,7 +667,7 @@
         <div class="max-w-5xl mx-auto text-center px-4 sm:px-6 lg:px-8" data-aos="fade-up" data-aos-duration="600"
             data-aos-delay="200">
             <div
-                class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-2xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-8 md:p-16">
+                class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-5 md:p-10">
                 <p class="text-sm sm:text-base text-slate-500 dark:text-slate-400 mb-6 leading-relaxed max-w-xl mx-auto"
                     x-text="t('contactBody')">
                     I am always open to discussing new projects, collaboration opportunities, or just to say hi. Send your

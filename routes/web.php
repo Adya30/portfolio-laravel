@@ -69,5 +69,10 @@ Route::middleware(['auth', EnsureMateriRoleAccess::class, 'throttle:120,1'])->pr
 
     Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    // Two-Factor Authentication
+    Route::get('profile/2fa/setup', [ProfileController::class, 'showTwoFactorSetup'])->name('profile.2fa.setup');
+    Route::post('profile/2fa/enable', [ProfileController::class, 'enableTwoFactor'])->name('profile.2fa.enable');
+    Route::post('profile/2fa/disable', [ProfileController::class, 'disableTwoFactor'])->name('profile.2fa.disable');
 });
 

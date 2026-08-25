@@ -230,6 +230,8 @@
                                             <option value="python">Python</option>
                                             <option value="bash">Bash</option>
                                             <option value="json">JSON</option>
+                                            <option value="csharp">C#</option>
+                                            <option value="java">Java</option>
                                             <option value="plaintext">Plain Text</option>
                                         </select>
                                     </div>

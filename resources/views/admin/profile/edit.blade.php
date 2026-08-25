@@ -113,6 +113,33 @@
                         <x-admin.field name="new_password_confirmation" label="Konfirmasi Password Baru" type="password" />
                     </div>
                 </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+                    <h3 class="font-poppins font-bold text-slate-800 mb-5 flex items-center gap-2">
+                        <i class="ri-shield-check-line text-accent"></i>Keamanan 2 Langkah (2FA)
+                    </h3>
+                    @if (auth()->user()->hasTwoFactorEnabled())
+                        <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-4 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                                <i class="ri-checkbox-circle-fill text-emerald-600 text-xl"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-semibold text-emerald-800">2FA Aktif</p>
+                                <p class="text-xs text-emerald-600">Akun Anda dilindungi autentikasi dua faktor.</p>
+                            </div>
+                        </div>
+                        <a href="{{ route('admin.profile.2fa.setup') }}"
+                           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-bold hover:bg-red-100 transition-colors">
+                            <i class="ri-shield-cross-line"></i> Nonaktifkan 2FA
+                        </a>
+                    @else
+                        <p class="text-xs text-slate-500 mb-4">Tambahkan lapisan keamanan ekstra dengan autentikasi dua faktor menggunakan aplikasi seperti Google Authenticator.</p>
+                        <a href="{{ route('admin.profile.2fa.setup') }}"
+                           class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 transition-colors">
+                            <i class="ri-shield-check-line"></i> Aktifkan 2FA
+                        </a>
+                    @endif
+                </div>
             </div>
         </div>
 
