@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,14 +11,16 @@
         $seo = $seo ?? [];
 
         $seoTitle = $seo['title'] ?? 'Course | Course Programming';
-        $seoDescription = $seo['description'] ?? 'Collection of Course Programming covering web development, programming, and UI design.';
+        $seoDescription =
+            $seo['description'] ??
+            'Collection of Course Programming covering web development, programming, and UI design.';
         $seoType = $seo['type'] ?? 'website';
         $seoUrl = $seo['url'] ?? url()->current();
         $seoImage = null;
-        if (! empty($seo['image'])) {
+        if (!empty($seo['image'])) {
             $seoImage = img_url($seo['image']);
             if (str_starts_with($seoImage, '//')) {
-                $seoImage = 'https:'.$seoImage;
+                $seoImage = 'https:' . $seoImage;
             }
         }
         $seoJsonLd = $seo['jsonld'] ?? [];
@@ -31,7 +34,7 @@
 
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon.png') }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon.ico') }}">
 
     <meta property="og:site_name" content="Adya Handika Putra AP | Portfolio">
     <meta property="og:title" content="{{ $seoTitle }}">
@@ -57,7 +60,7 @@
     @endif
 
     <script>
-        (function () {
+        (function() {
             try {
                 var t = localStorage.getItem('theme');
                 var dark = t ? t === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -72,8 +75,9 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
+
 <body x-data="app" data-active-nav="course"
-      class="bg-slate-50 dark:bg-[#0a0a0f] text-slate-800 dark:text-white transition-colors duration-300">
+    class="bg-slate-50 dark:bg-[#0a0a0f] text-slate-800 dark:text-white transition-colors duration-300">
 
     @hasSection('topbar')
         @yield('topbar')
@@ -81,12 +85,13 @@
         <div class="fixed top-4 left-4 right-4 z-100 flex items-center justify-between pointer-events-none" x-cloak>
             <div class="pointer-events-auto">
                 <a href="{{ route('landing') }}"
-                   class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl border backdrop-blur-xl shadow-lg bg-white/80 dark:bg-[#0b1329]/80 border-slate-200/60 dark:border-white/10 text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-accent dark:hover:text-[#60a5fa] hover:border-accent/30 dark:hover:border-[#60a5fa]/30 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-2xl border backdrop-blur-xl shadow-lg bg-white/80 dark:bg-[#0b1329]/80 border-slate-200/60 dark:border-white/10 text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-accent dark:hover:text-[#60a5fa] hover:border-accent/30 dark:hover:border-[#60a5fa]/30 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
                     <i class="ri-arrow-left-line text-base text-accent dark:text-[#60a5fa]"></i>
                     <span x-text="t('home')">Home</span>
                 </a>
             </div>
-            <div class="pointer-events-auto flex items-center gap-2 p-1 rounded-2xl border backdrop-blur-xl shadow-lg bg-white/80 dark:bg-[#0b1329]/80 border-slate-200/60 dark:border-white/10">
+            <div
+                class="pointer-events-auto flex items-center gap-2 p-1 rounded-2xl border backdrop-blur-xl shadow-lg bg-white/80 dark:bg-[#0b1329]/80 border-slate-200/60 dark:border-white/10">
                 @include('course._toggles')
             </div>
         </div>
@@ -96,4 +101,5 @@
         @yield('content')
     </main>
 </body>
+
 </html>

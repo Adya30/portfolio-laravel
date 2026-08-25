@@ -1,12 +1,14 @@
 <div class="fixed inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true">
     <div class="absolute inset-0
-                bg-[linear-gradient(rgba(59,130,246,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.04)_1px,transparent_1px)]
-                bg-size-[48px_48px]
-                dark:bg-[linear-gradient(rgba(96,165,250,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(96,165,250,0.04)_1px,transparent_1px)]"></div>
+                bg-[linear-gradient(rgba(59,130,246,0.09)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.09)_1px,transparent_1px)]
+                bg-size-[56px_56px]
+                dark:bg-[linear-gradient(rgba(96,165,250,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(96,165,250,0.08)_1px,transparent_1px)]"
+         style="mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, black 55%, transparent 100%);
+                -webkit-mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, black 55%, transparent 100%);"></div>
 
-    <div class="absolute rounded-full pointer-events-none opacity-25 dark:opacity-15 blur-[120px]"
+    <div class="absolute rounded-full pointer-events-none opacity-20 dark:opacity-12 blur-[120px]"
          style="width: 400px; height: 400px; left: -10%; top: 10%; background: radial-gradient(circle, #3b82f6 0%, #8b5cf6 70%);"></div>
-    <div class="absolute rounded-full pointer-events-none opacity-25 dark:opacity-15 blur-[120px]"
+    <div class="absolute rounded-full pointer-events-none opacity-20 dark:opacity-12 blur-[120px]"
          style="width: 450px; height: 450px; left: 60%; top: 45%; background: radial-gradient(circle, #8b5cf6 0%, #06b6d4 70%);"></div>
 
     @for($i = 0; $i < 15; $i++)

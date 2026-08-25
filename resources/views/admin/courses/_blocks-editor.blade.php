@@ -311,7 +311,6 @@
                                 </div>
 
 
-                                <!-- MODE EDIT -->
                                 <div x-show="tableMode === 'edit'" class="overflow-x-auto border border-slate-300 rounded-xl bg-white shadow-xs">
                                     <table class="w-full text-left text-xs border-collapse">
                                         <thead class="bg-slate-100 border-b-2 border-slate-300">
@@ -379,7 +378,6 @@
                                     </table>
                                 </div>
 
-                                <!-- MODE PRATINJAU TABEL -->
                                 <div x-show="tableMode === 'preview'" class="overflow-x-auto rounded-xl border border-slate-300 shadow-sm bg-[#0d1117] p-3">
                                     <table class="w-full text-left text-xs sm:text-sm text-slate-200 border-collapse">
                                         <thead class="bg-slate-800 font-semibold text-white">

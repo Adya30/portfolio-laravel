@@ -18,6 +18,8 @@ use Illuminate\Database\Eloquent\Model;
     'email',
     'cv_url',
     'hero_image',
+    'hero_quote',
+    'hero_quote_idn',
     'github',
     'instagram',
     'youtube',

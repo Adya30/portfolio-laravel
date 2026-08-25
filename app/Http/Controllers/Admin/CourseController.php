@@ -475,10 +475,6 @@ class CourseController extends Controller
         ]);
     }
 
-    /**
-     * Parse nilai updated_at dari form (bisa berupa Unix timestamp integer
-     * atau string datetime) menjadi Carbon instance yang kompatibel dengan MySQL.
-     */
     private function parseUpdatedAt(mixed $value): ?Carbon
     {
         if (! $value) {

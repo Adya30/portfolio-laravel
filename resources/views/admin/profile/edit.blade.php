@@ -74,6 +74,18 @@
                     <div class="sm:col-span-2">
                         <x-admin.image-input name="hero_image" label="Foto Profil (Hero)" :current="$profile->hero_image" ratio="1" />
                     </div>
+
+                    <div class="sm:col-span-2">
+                        <x-admin.field name="hero_quote" label="Quote (English)" type="textarea" rows="2" :value="$profile->hero_quote"
+                                       placeholder="Contoh: Code is like humor. When you have to explain it, it's bad. Build with passion, learn with coding."
+                                       help="Teks quote di hero section. Kosongkan untuk menggunakan default." />
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <x-admin.field name="hero_quote_idn" label="Quote (Indonesia)" type="textarea" rows="2" :value="$profile->hero_quote_idn"
+                                       placeholder="Contoh: Kode itu seperti humor. Ketika harus dijelaskan, artinya buruk. Bangun dengan semangat, belajar sambil ngoding."
+                                       help="Kosongkan untuk memakai versi Inggris." />
+                    </div>
                 </div>
             </div>
 

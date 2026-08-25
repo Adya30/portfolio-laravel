@@ -8,7 +8,7 @@
     $fullDeskIdn = $project->full_desk_idn ?? $project->desk_idn ?? null;
 @endphp
 
-<section class="relative z-20 pt-20 pb-16 sm:pt-24">
+<section class="relative z-20 pt-28 pb-20 sm:pt-32">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-3xl overflow-hidden shadow-xl shadow-slate-200/50 dark:shadow-black/20" data-aos="fade-up" data-aos-duration="700">
             <div class="grid lg:grid-cols-[1fr_340px] items-stretch divide-y lg:divide-y-0 lg:divide-x divide-slate-200 dark:divide-white/5">
