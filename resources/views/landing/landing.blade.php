@@ -151,7 +151,7 @@
 
     <x-page-background />
 
-    <section id="beranda" class="relative min-h-screen flex items-center pt-24 pb-16 z-10 scroll-mt-20">
+    <section id="beranda" class="relative min-h-screen flex items-center pt-24 pb-2 z-10 scroll-mt-20">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
             <div class="grid lg:grid-cols-3 items-center gap-8 lg:gap-8 w-full">
 
@@ -179,15 +179,15 @@
                                 class="w-[60vw] max-w-[18rem] sm:w-[50vw] sm:max-w-[22rem] md:w-[45vw] md:max-w-[26rem] lg:w-full lg:max-w-none h-auto object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.35)]">
                         </div>
 
-                        <div class="relative w-full max-w-md -mt-5 z-20">
+                        <div class="relative w-full max-w-lg -mt-5 z-20">
                             <div
-                                class="relative flex items-start gap-2.5 px-3.5 py-3 rounded-xl bg-white dark:bg-[#1a1a2e] backdrop-blur-md shadow-xl border border-slate-200/90 dark:border-white/10 text-slate-700 dark:text-slate-200">
+                                class="relative flex items-start gap-2 sm:gap-3 px-3 sm:px-5 py-3 sm:py-4 rounded-2xl bg-white dark:bg-[#1a1a2e] backdrop-blur-md shadow-xl border border-slate-200/90 dark:border-white/10 text-slate-700 dark:text-slate-200">
                                 <span
-                                    class="w-7 h-7 flex items-center justify-center rounded-lg bg-accent/15 text-accent dark:text-[#60a5fa] shrink-0 mt-0.5">
-                                    <i class="ri-double-quotes-l text-sm"></i>
+                                    class="w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center rounded-lg sm:rounded-xl bg-accent/15 text-accent dark:text-[#60a5fa] shrink-0 mt-0.5">
+                                    <i class="ri-double-quotes-l text-sm sm:text-base"></i>
                                 </span>
                                 <div class="flex flex-col">
-                                    <p class="text-[11px] sm:text-xs font-medium leading-relaxed italic"
+                                    <p class="text-[10px] sm:text-xs md:text-sm font-medium leading-relaxed italic"
                                         x-text="L(heroQuote.en || heroQuote.defaultEn, heroQuote.idn || heroQuote.defaultIdn)">
                                         Code is like humor. When you have to explain it, it's bad. Build with passion, learn
                                         with coding.
@@ -201,34 +201,34 @@
                 <div
                     class="flex flex-col items-center lg:items-end gap-5 order-3 lg:order-3 animate__animated animate__fadeInUp animate__delay-3s w-full">
 
-                    <div class="flex flex-col gap-2 w-full max-w-xs sm:max-w-sm lg:w-full">
+                    <div class="flex flex-col gap-2 sm:gap-3 w-full max-w-xs sm:max-w-sm lg:w-full">
                         <div
-                            class="w-full bg-white dark:bg-[#1a1a2e] rounded-xl px-3.5 py-2.5 shadow-lg shadow-accent/5 dark:shadow-accent/10 border border-slate-100 dark:border-white/5 hover:shadow-xl hover:shadow-accent/10 dark:hover:shadow-accent/15 transition-all duration-300 hover:-translate-y-0.5">
-                            <div class="flex items-center gap-2.5">
-                                <div class="w-8 h-8 rounded-lg bg-accent/10 dark:bg-accent/15 flex items-center justify-center">
-                                    <i class="ri-code-box-line text-accent dark:text-[#60a5fa] text-sm"></i>
+                            class="w-full bg-white dark:bg-[#1a1a2e] rounded-xl sm:rounded-2xl px-3 sm:px-5 py-3 sm:py-4 shadow-lg shadow-accent/5 dark:shadow-accent/10 border border-slate-100 dark:border-white/5 hover:shadow-xl hover:shadow-accent/10 dark:hover:shadow-accent/15 transition-all duration-300 hover:-translate-y-0.5">
+                            <div class="flex items-center gap-2 sm:gap-3">
+                                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-accent/10 dark:bg-accent/15 flex items-center justify-center">
+                                    <i class="ri-code-box-line text-accent dark:text-[#60a5fa] text-sm sm:text-base"></i>
                                 </div>
                                 <div>
-                                    <p class="text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500" x-text="t('projects')">
+                                    <p class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500" x-text="t('projects')">
                                         Projects</p>
                                     <p
-                                        class="text-xl font-bold bg-linear-to-br from-accent to-[#8b5cf6] bg-clip-text text-transparent">
+                                        class="text-xl sm:text-2xl font-bold bg-linear-to-br from-accent to-[#8b5cf6] bg-clip-text text-transparent">
                                         <span x-data="counter({{ $projects->count() }}, '+')" x-text="value + suffix"></span>
                                     </p>
                                 </div>
                             </div>
                         </div>
                         <div
-                            class="w-full bg-white dark:bg-[#1a1a2e] rounded-xl px-3.5 py-2.5 shadow-lg shadow-accent/5 dark:shadow-accent/10 border border-slate-100 dark:border-white/5 hover:shadow-xl hover:shadow-accent/10 dark:hover:shadow-accent/15 transition-all duration-300 hover:-translate-y-0.5">
-                            <div class="flex items-center gap-2.5">
-                                <div class="w-8 h-8 rounded-lg bg-purple-500/10 dark:bg-purple-400/15 flex items-center justify-center">
-                                    <i class="ri-award-line text-purple-500 dark:text-purple-400 text-sm"></i>
+                            class="w-full bg-white dark:bg-[#1a1a2e] rounded-xl sm:rounded-2xl px-3 sm:px-5 py-3 sm:py-4 shadow-lg shadow-accent/5 dark:shadow-accent/10 border border-slate-100 dark:border-white/5 hover:shadow-xl hover:shadow-accent/10 dark:hover:shadow-accent/15 transition-all duration-300 hover:-translate-y-0.5">
+                            <div class="flex items-center gap-2 sm:gap-3">
+                                <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-purple-500/10 dark:bg-purple-400/15 flex items-center justify-center">
+                                    <i class="ri-award-line text-purple-500 dark:text-purple-400 text-sm sm:text-base"></i>
                                 </div>
                                 <div>
-                                    <p class="text-[9px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500" x-text="t('certificates')">
+                                    <p class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500" x-text="t('certificates')">
                                         Certificates</p>
                                     <p
-                                        class="text-xl font-bold bg-linear-to-br from-purple-500 to-accent bg-clip-text text-transparent">
+                                        class="text-xl sm:text-2xl font-bold bg-linear-to-br from-purple-500 to-accent bg-clip-text text-transparent">
                                         <span x-data="counter({{ $certificates->count() }})" x-text="value + suffix"></span>
                                     </p>
                                 </div>
@@ -263,6 +263,69 @@
         </div>
     </section>
 
+    <section class="relative z-10 scroll-mt-20 overflow-hidden" id="skills">
+        <style>
+            @keyframes marquee-left {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(-50%); }
+            }
+            @keyframes marquee-right {
+                0% { transform: translateX(-50%); }
+                100% { transform: translateX(0); }
+            }
+            .animate-marquee-left {
+                animation: marquee-left 30s linear infinite;
+            }
+            .animate-marquee-right {
+                animation: marquee-right 30s linear infinite;
+            }
+
+        </style>
+
+        <div class="py-12 sm:py-14">
+            @php
+                $toolsArray = $tools->values()->toArray();
+                $half = ceil(count($toolsArray) / 2);
+                $row1 = array_slice($toolsArray, 0, $half);
+                $row2 = array_slice($toolsArray, $half);
+            @endphp
+
+            {{-- Row 1: scrolls to the right --}}
+            <div class="relative mb-3 sm:mb-4 overflow-hidden">
+                <div class="animate-marquee-right flex gap-3 sm:gap-4 whitespace-nowrap">
+                    @foreach(array_merge($row1, $row1) as $tool)
+                        <div class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-xl sm:rounded-2xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-3 sm:p-4 flex items-center gap-3 sm:gap-4 shrink-0">
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-slate-50 dark:bg-white/5 flex items-center justify-center shrink-0">
+                                <img src="{{ img_url($tool['gambar'] ?? '') }}" alt="{{ $tool['nama'] }}" class="w-6 h-6 sm:w-7 sm:h-7 object-contain">
+                            </div>
+                            <div class="min-w-0">
+                                <h4 class="font-semibold text-xs sm:text-sm text-slate-800 dark:text-slate-200 truncate">{{ $tool['nama'] }}</h4>
+                                <p class="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 truncate">{{ $tool['ket'] }}</p>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- Row 2: scrolls to the left --}}
+            <div class="relative overflow-hidden">
+                <div class="animate-marquee-left flex gap-3 sm:gap-4 whitespace-nowrap">
+                    @foreach(array_merge($row2, $row2) as $tool)
+                        <div class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-xl sm:rounded-2xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-3 sm:p-4 flex items-center gap-3 sm:gap-4 shrink-0">
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-slate-50 dark:bg-white/5 flex items-center justify-center shrink-0">
+                                <img src="{{ img_url($tool['gambar'] ?? '') }}" alt="{{ $tool['nama'] }}" class="w-6 h-6 sm:w-7 sm:h-7 object-contain">
+                            </div>
+                            <div class="min-w-0">
+                                <h4 class="font-semibold text-xs sm:text-sm text-slate-800 dark:text-slate-200 truncate">{{ $tool['nama'] }}</h4>
+                                <p class="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 truncate">{{ $tool['ket'] }}</p>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="py-16 sm:py-20 relative z-10 scroll-mt-20" id="tentang">
         <div class="text-center mb-14">
             <h2 class="font-poppins text-[1.75rem] sm:text-4xl font-bold leading-[1.2] text-slate-800 dark:text-slate-100">
@@ -273,7 +336,7 @@
         </div>
 
         <div class="max-w-5xl mx-auto px-4 space-y-8">
-            <div class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-5 md:p-7"
+            <div class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-4 sm:p-5 md:p-7"
                 data-aos="fade-up" data-aos-duration="800">
                 <div class="flex-1 min-w-0">
                     <p class="text-sm sm:text-base leading-relaxed text-slate-600 dark:text-slate-300"
@@ -293,90 +356,51 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3" data-aos="fade-up" data-aos-duration="800"
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3" data-aos="fade-up" data-aos-duration="800"
                 data-aos-delay="150">
                 <div
-                    class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-3.5 sm:p-4 text-center">
+                    class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-2.5 sm:p-3.5 md:p-4 text-center">
                     <div
-                        class="w-8 h-8 sm:w-9 sm:h-9 mx-auto mb-2 rounded-lg bg-accent/10 flex items-center justify-center">
-                        <i class="ri-code-box-line text-accent text-sm sm:text-base"></i>
+                        class="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 mx-auto mb-1.5 sm:mb-2 rounded-lg bg-accent/10 flex items-center justify-center">
+                        <i class="ri-code-box-line text-accent text-xs sm:text-sm md:text-base"></i>
                     </div>
                     <p
-                        class="text-xl sm:text-2xl font-bold bg-linear-to-br from-accent to-[#8b5cf6] bg-clip-text text-transparent">
+                        class="text-lg sm:text-xl md:text-2xl font-bold bg-linear-to-br from-accent to-[#8b5cf6] bg-clip-text text-transparent">
                         <span x-data="counter({{ $projects->count() }}, '+')" x-text="value + suffix"></span>
                     </p>
-                    <p class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium"
+                    <p class="text-[9px] sm:text-[10px] md:text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium"
                         x-text="t('projectsCompleted')">Projects Completed</p>
                 </div>
                 <div
-                    class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-3.5 sm:p-4 text-center">
+                    class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-2.5 sm:p-3.5 md:p-4 text-center">
                     <div
-                        class="w-8 h-8 sm:w-9 sm:h-9 mx-auto mb-2 rounded-lg bg-accent/10 flex items-center justify-center">
-                        <i class="ri-award-line text-accent text-sm sm:text-base"></i>
+                        class="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 mx-auto mb-1.5 sm:mb-2 rounded-lg bg-accent/10 flex items-center justify-center">
+                        <i class="ri-award-line text-accent text-xs sm:text-sm md:text-base"></i>
                     </div>
                     <p
-                        class="text-xl sm:text-2xl font-bold bg-linear-to-br from-accent to-[#8b5cf6] bg-clip-text text-transparent">
+                        class="text-lg sm:text-xl md:text-2xl font-bold bg-linear-to-br from-accent to-[#8b5cf6] bg-clip-text text-transparent">
                         <span x-data="counter({{ $certificates->count() }})" x-text="value + suffix"></span>
                     </p>
-                    <p class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium"
+                    <p class="text-[9px] sm:text-[10px] md:text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium"
                         x-text="t('certifications')">Certifications</p>
                 </div>
                 <div
-                    class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-3.5 sm:p-4 text-center">
+                    class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-2.5 sm:p-3.5 md:p-4 text-center">
                     <div
-                        class="w-8 h-8 sm:w-9 sm:h-9 mx-auto mb-2 rounded-lg bg-accent/10 flex items-center justify-center">
-                        <i class="ri-tools-line text-accent text-sm sm:text-base"></i>
+                        class="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 mx-auto mb-1.5 sm:mb-2 rounded-lg bg-accent/10 flex items-center justify-center">
+                        <i class="ri-tools-line text-accent text-xs sm:text-sm md:text-base"></i>
                     </div>
                     <p
-                        class="text-xl sm:text-2xl font-bold bg-linear-to-br from-accent to-[#8b5cf6] bg-clip-text text-transparent">
+                        class="text-lg sm:text-xl md:text-2xl font-bold bg-linear-to-br from-accent to-[#8b5cf6] bg-clip-text text-transparent">
                         <span x-data="counter({{ $tools->count() }}, '+')" x-text="value + suffix"></span>
                     </p>
-                    <p class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium"
+                    <p class="text-[9px] sm:text-[10px] md:text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium"
                         x-text="t('toolsMastered')">Tools Mastered</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="py-16 sm:py-20 relative z-10 scroll-mt-20" id="skills">
-        <div class="text-center mb-12">
-            <h2 class="font-poppins text-[1.75rem] sm:text-4xl font-bold leading-[1.2] text-slate-800 dark:text-slate-100">
-                <span x-text="t('toolsSkills')">Tools & Skills</span>
-            </h2>
-            <p class="mt-3 mx-auto text-[0.95rem] text-slate-500 dark:text-slate-400 max-w-lg"
-                x-text="t('toolsSkillsSubtitle')">Any tools and skills I use regularly</p>
-        </div>
-
-        <div class="relative max-w-5xl mx-auto px-4" data-aos="fade-up" data-aos-duration="600">
-            <div x-data="carousel({{ $tools->count() }})">
-                <div x-ref="track"
-                    class="grid grid-flow-col grid-rows-2 gap-4 overflow-x-auto scrollbar-none snap-x snap-mandatory pb-4 auto-cols-[100%] sm:auto-cols-[calc(50%-0.5rem)] md:auto-cols-[calc(33.333%-0.67rem)] lg:auto-cols-[calc(25%-0.75rem)] scroll-smooth">
-                    <template x-for="t in tools" :key="t.id">
-                        <div
-                            class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-3 flex items-center gap-3 group cursor-pointer snap-start w-full min-w-0">
-                            <div
-                                class="w-9 h-9 rounded-lg bg-slate-50 dark:bg-white/5 flex items-center justify-center shrink-0 group-hover:bg-accent/10 transition-colors">
-                                <img :src="t.img" :alt="t.nama" class="w-5 h-5 object-contain">
-                            </div>
-                            <div class="min-w-0">
-                                <h4 class="font-semibold text-xs text-slate-800 dark:text-slate-200 group-hover:text-accent transition-colors truncate"
-                                    x-text="t.nama"></h4>
-                                <p class="text-[10px] text-slate-400 dark:text-slate-500 truncate" x-text="t.ket"></p>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-                <div class="flex justify-center items-center gap-2 mt-4">
-                    <template x-for="i in pages" :key="i">
-                        <button @click="go(i)" class="h-2 rounded-full transition-all duration-500 cursor-pointer"
-                            :class="current === i ? 'bg-accent w-6' :
-                                'bg-slate-300 dark:bg-slate-600 w-2 hover:bg-slate-400 dark:hover:bg-slate-500'"
-                            :aria-label="'Go to page ' + i"></button>
-                    </template>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <section class="py-16 sm:py-20 relative z-10 scroll-mt-20" id="proyek">
         <div class="text-center mb-12">
@@ -416,11 +440,11 @@
                             class="block bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] overflow-hidden group snap-start w-full min-w-0">
                             <div class="relative overflow-hidden">
                                 <img x-show="p.img" :src="p.img" :alt="p.nama"
-                                    class="w-full aspect-600/383 object-contain bg-slate-50 dark:bg-slate-900 transition-transform duration-500 group-hover:scale-105"
+                                    class="w-full aspect-video object-cover bg-slate-50 dark:bg-slate-900 transition-transform duration-500 group-hover:scale-105"
                                     loading="lazy">
                                 <template x-if="!p.img">
                                     <div
-                                        class="w-full aspect-600/383 flex items-center justify-center bg-linear-to-br from-accent/15 via-accent/5 to-transparent dark:from-accent/20 dark:via-accent/10 dark:to-transparent">
+                                        class="w-full aspect-video flex items-center justify-center bg-linear-to-br from-accent/15 via-accent/5 to-transparent dark:from-accent/20 dark:via-accent/10 dark:to-transparent">
                                         <span class="text-5xl font-bold text-accent/40 dark:text-[#60a5fa]/40"
                                             x-text="(p.nama || 'P').charAt(0).toUpperCase()"></span>
                                     </div>

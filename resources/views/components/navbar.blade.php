@@ -1,7 +1,7 @@
 @php
     $menuItems = [
         ['id' => 'beranda', 'tKey' => 'navHome', 'label' => 'Home', 'href' => '#beranda', 'icon' => 'ri-home-5-line'],
-        ['id' => 'skills', 'tKey' => 'navSkills', 'label' => 'Skills', 'href' => '#skills', 'icon' => 'ri-tools-line'],
+        ['id' => 'tentang', 'tKey' => 'navAbout', 'label' => 'About', 'href' => '#tentang', 'icon' => 'ri-user-3-line'],
         ['id' => 'proyek', 'tKey' => 'navProjects', 'label' => 'Projects', 'href' => '#proyek', 'icon' => 'ri-folder-open-line'],
         ['id' => 'experiences', 'tKey' => 'navExperiences', 'label' => 'Experiences', 'href' => '#experiences', 'icon' => 'ri-briefcase-line'],
         ['id' => 'certificates', 'tKey' => 'navCertificates', 'label' => 'Certificates', 'href' => '#certificates', 'icon' => 'ri-award-line'],
