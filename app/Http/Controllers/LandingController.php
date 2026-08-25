@@ -85,9 +85,28 @@ class LandingController extends Controller
             'courses' => $courses,
             'activeNav' => 'course',
             'seo' => [
-                'title' => 'Course Programming',
-                'description' => 'Collection of Course Programming (materi) covering web development, programming, and UI design.',
+                'title' => 'Course Programming | Materi Pembelajaran Web Development',
+                'description' => 'Kumpulan materi belajar programming dan web development. Tutorial Laravel, JavaScript, PHP, dan desain UI untuk pemula hingga lanjut.',
                 'url' => route('course.index'),
+                'keywords' => 'Course Programming, Tutorial Web Development, Materi Laravel, Belajar JavaScript, PHP Tutorial, UI Design, Pemrograman Web',
+                'jsonld' => [
+                    '@context' => 'https://schema.org',
+                    '@graph' => [
+                        [
+                            '@type' => 'CollectionPage',
+                            'name' => 'Course Programming',
+                            'description' => 'Kumpulan materi belajar programming dan web development.',
+                            'url' => route('course.index'),
+                        ],
+                        [
+                            '@type' => 'BreadcrumbList',
+                            'itemListElement' => [
+                                ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => route('landing')],
+                                ['@type' => 'ListItem', 'position' => 2, 'name' => 'Course', 'item' => route('course.index')],
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ]);
     }
@@ -191,6 +210,35 @@ class LandingController extends Controller
                 'title' => ($blocks[$index]['judul'] ?? '').' | '.$course->nama,
                 'description' => $course->desk ?? $course->nama,
                 'url' => route('course.subbab', [$course, $subbabSlug]),
+                'image' => $course->gambar ?? null,
+                'jsonld' => [
+                    '@context' => 'https://schema.org',
+                    '@graph' => [
+                        [
+                            '@type' => 'Article',
+                            'headline' => $blocks[$index]['judul'] ?? 'Subbab',
+                            'description' => $course->desk,
+                            'image' => $course->gambar ? img_url($course->gambar) : null,
+                            'url' => route('course.subbab', [$course, $subbabSlug]),
+                            'author' => ['@type' => 'Person', 'name' => profile()->name ?? 'Adya Handika Putra AP'],
+                            'publisher' => ['@type' => 'Organization', 'name' => profile()->name ?? 'Adya Handika Putra AP'],
+                            'isPartOf' => [
+                                '@type' => 'LearningResource',
+                                'name' => $course->nama,
+                                'url' => route('course.show', $course),
+                            ],
+                        ],
+                        [
+                            '@type' => 'BreadcrumbList',
+                            'itemListElement' => [
+                                ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => route('landing')],
+                                ['@type' => 'ListItem', 'position' => 2, 'name' => 'Course', 'item' => route('course.index')],
+                                ['@type' => 'ListItem', 'position' => 3, 'name' => $course->nama, 'item' => route('course.show', $course)],
+                                ['@type' => 'ListItem', 'position' => 4, 'name' => $blocks[$index]['judul'] ?? 'Subbab', 'item' => route('course.subbab', [$course, $subbabSlug])],
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ]);
     }
@@ -267,6 +315,19 @@ class LandingController extends Controller
                 'jsonld' => [
                     '@context' => 'https://schema.org',
                     '@graph' => [
+                        [
+                            '@type' => 'WorkExperience',
+                            'name' => $experience->role,
+                            'description' => $experience->desk,
+                            'url' => route('experience.show', $experience),
+                            'image' => $experience->gambar ? img_url($experience->gambar) : null,
+                            'employee' => ['@type' => 'Person', 'name' => 'Adya Handika Putra AP'],
+                            'hiringOrganization' => [
+                                '@type' => 'Organization',
+                                'name' => $experience->company,
+                            ],
+                            'datePosted' => $experience->duration,
+                        ],
                         [
                             '@type' => 'BreadcrumbList',
                             'itemListElement' => [
@@ -349,6 +410,21 @@ class LandingController extends Controller
 
         foreach (Course::orderBy('sort_order')->get() as $course) {
             $entries[] = ['loc' => route('course.show', $course), 'priority' => '0.7', 'lastmod' => $course->updated_at];
+
+            // Add subbab URLs
+            $blocks = $course->konten ?? [];
+            foreach ($blocks as $block) {
+                if (($block['type'] ?? '') === 'subbab') {
+                    $slug = $course->getSubbabSlugByIndex(array_search($block, $blocks, true));
+                    if ($slug) {
+                        $entries[] = [
+                            'loc' => route('course.subbab', [$course, $slug]),
+                            'priority' => '0.6',
+                            'lastmod' => $course->updated_at,
+                        ];
+                    }
+                }
+            }
         }
 
         $xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n"
@@ -365,7 +441,10 @@ class LandingController extends Controller
 
         $xml .= '</urlset>';
 
-        return response($xml, 200, ['Content-Type' => 'application/xml']);
+        return response($xml, 200, [
+            'Content-Type' => 'application/xml',
+            'Cache-Control' => 'public, max-age=3600',
+        ]);
     }
 
     private function navigation($current, $ordered): array

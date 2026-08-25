@@ -28,6 +28,7 @@
 
     <title>{{ $seoTitle }}</title>
     <meta name="description" content="{{ $seoDescription }}">
+    <meta name="keywords" content="{{ $seo['keywords'] ?? 'Web Developer, Programming, Course, Tutorial, Laravel, JavaScript, UI Design, Portfolio' }}">
     <meta name="author" content="Adya Handika Putra AP">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <link rel="canonical" href="{{ $seoUrl }}">
@@ -46,6 +47,8 @@
     @if ($seoImage)
         <meta property="og:image" content="{{ $seoImage }}">
         <meta property="og:image:alt" content="{{ $seoTitle }}">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
     @endif
 
     <meta name="twitter:card" content="{{ $seoImage ? 'summary_large_image' : 'summary' }}">
@@ -54,6 +57,10 @@
     @if ($seoImage)
         <meta name="twitter:image" content="{{ $seoImage }}">
     @endif
+
+    <link rel="alternate" hreflang="en" href="{{ $seoUrl }}">
+    <link rel="alternate" hreflang="id" href="{{ $seoUrl }}">
+    <link rel="alternate" hreflang="x-default" href="{{ $seoUrl }}">
 
     @if ($seoJsonLd)
         <script type="application/ld+json">{!! json_encode($seoJsonLd, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!}</script>
@@ -72,6 +79,11 @@
             } catch (e) {}
         })();
     </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>

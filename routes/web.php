@@ -21,11 +21,18 @@ Route::get('/sitemap.xml', [LandingController::class, 'sitemap'])->name('sitemap
 Route::get('/robots.txt', function () {
     $content = "User-agent: *\n"
         ."Allow: /\n"
+        ."Allow: /storage/\n"
         ."Disallow: /admin\n"
-        ."Disallow: /login\n\n"
+        ."Disallow: /login\n"
+        ."Disallow: /2fa\n"
+        ."Disallow: /logout\n\n"
+        ."# Sitemap\n"
         .'Sitemap: '.url('/sitemap.xml')."\n";
 
-    return response($content, 200, ['Content-Type' => 'text/plain']);
+    return response($content, 200, [
+        'Content-Type' => 'text/plain',
+        'Cache-Control' => 'public, max-age=86400',
+    ]);
 })->name('robots');
 
 Route::get('/course', [LandingController::class, 'courseIndex'])->name('course.index');
