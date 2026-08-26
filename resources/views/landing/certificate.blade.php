@@ -3,7 +3,7 @@
 @section('content')
 <x-page-background />
 
-<section class="relative z-20 pt-28 pb-20 sm:pt-32">
+<section class="relative z-20 pt-24 pb-16 sm:pt-28 sm:pb-20 md:pt-32 overflow-x-clip">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
         <div class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-3xl overflow-hidden shadow-xl shadow-slate-200/50 dark:shadow-black/20" data-aos="fade-up" data-aos-duration="700">

@@ -51,12 +51,16 @@
     display: none !important;
 }
 
+html {
+    overflow-x: hidden;
+}
+
 body {
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
-    padding-top: calc(1rem + env(safe-area-inset-top, 0px));
+    padding-top: 0;
 }
 
 .admin-body {
