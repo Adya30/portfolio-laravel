@@ -1018,11 +1018,13 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '', autosave
         if (!file) return;
 
         const name = (file.name || '').toLowerCase();
+        const isPng = file.type === 'image/png' || name.endsWith('.png');
+        const isJpg = file.type === 'image/jpeg' || name.endsWith('.jpg') || name.endsWith('.jpeg');
         const isWebp = file.type === 'image/webp' || name.endsWith('.webp');
         const isSvg = file.type === 'image/svg+xml' || name.endsWith('.svg');
 
-        if (!isWebp && !isSvg) {
-            this.uploadError = 'Format gambar ditolak! Hanya file berformat WebP (.webp) atau SVG (.svg) yang diperbolehkan.';
+        if (!isPng && !isJpg && !isWebp && !isSvg) {
+            this.uploadError = 'Format gambar ditolak! Hanya file berformat PNG, JPG, JPEG, WebP, atau SVG yang diperbolehkan.';
             return;
         }
 

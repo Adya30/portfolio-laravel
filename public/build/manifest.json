@@ -92,7 +92,7 @@
     "src": "node_modules/cropperjs/dist/cropper.css"
   },
   "node_modules/cropperjs/dist/cropper.js": {
-    "file": "assets/cropper-DYlE7cQO.js",
+    "file": "assets/cropper-efEPa4Dq.js",
     "name": "cropper",
     "src": "node_modules/cropperjs/dist/cropper.js",
     "isDynamicEntry": true,
@@ -121,7 +121,7 @@
     "src": "node_modules/remixicon/fonts/remixicon.woff2"
   },
   "resources/css/app.css": {
-    "file": "assets/app-DjT3eaZQ.css",
+    "file": "assets/app-BXjOyNHo.css",
     "name": "app",
     "names": [
       "app.css"
@@ -154,7 +154,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-CuC2ZQgE.js",
+    "file": "assets/app-Bn7HqciO.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
