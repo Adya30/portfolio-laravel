@@ -357,82 +357,15 @@
         </div>
     </section>
 
-    <section class="py-14 sm:py-20 relative z-10 scroll-mt-24 sm:scroll-mt-28 overflow-x-clip" id="tentang">
-        <div class="text-center mb-10 sm:mb-14">
-            <h2 class="font-poppins text-2xl sm:text-4xl font-bold leading-[1.2] text-slate-800 dark:text-slate-100">
-                <span x-text="t('aboutMe')">About Me</span>
-            </h2>
-            <p class="mt-2 sm:mt-3 mx-auto text-xs sm:text-[0.95rem] text-slate-500 dark:text-slate-400 max-w-lg px-4"
-                x-text="t('aboutSubtitle')">A
-                brief story about my journey in tech and what drives me</p>
-        </div>
-
-        <div class="max-w-5xl mx-auto px-4 space-y-6 sm:space-y-8">
-            <div class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-2xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-4 sm:p-6 md:p-7"
-                data-aos="fade-up" data-aos-duration="800">
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm sm:text-base leading-relaxed text-slate-600 dark:text-slate-300"
-                        x-html='L(@json($about1Html), @json($about1IdnHtml))'>
-                        {!! $about1Html !!}
-                    </p>
-                    <p class="text-sm sm:text-base leading-relaxed text-slate-500 dark:text-slate-400 mt-4"
-                        x-text='L(@json($about2), @json($about2Idn))'>
-                        {{ $about2 }}
-                    </p>
-                    <div class="flex flex-wrap gap-1.5 sm:gap-2 mt-6">
-                        @foreach ($chips as $chip)
-                            <span
-                                class="px-2.5 sm:px-3 py-1 sm:py-1.5 text-[11px] sm:text-xs font-medium rounded-full bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-white/5 hover:border-accent/30 hover:text-accent dark:hover:text-accent transition-all duration-200 cursor-default">{{ $chip }}</span>
-                        @endforeach
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4" data-aos="fade-up" data-aos-duration="800"
-                data-aos-delay="150">
-                <div
-                    class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-xl sm:rounded-2xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-2.5 sm:p-3.5 md:p-4 text-center">
-                    <div
-                        class="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 mx-auto mb-1.5 sm:mb-2 rounded-lg bg-accent/10 flex items-center justify-center">
-                        <i class="ri-code-box-line text-accent text-xs sm:text-sm md:text-base"></i>
-                    </div>
-                    <p
-                        class="text-base sm:text-xl md:text-2xl font-bold bg-linear-to-br from-accent to-[#8b5cf6] bg-clip-text text-transparent">
-                        <span x-data="counter({{ $projects->count() }}, '+')" x-text="value + suffix"></span>
-                    </p>
-                    <p class="text-[9px] sm:text-[10px] md:text-xs text-slate-500 dark:text-slate-400 mt-0.5 sm:mt-1 font-medium leading-tight"
-                        x-text="t('projectsCompleted')">Projects Completed</p>
-                </div>
-                <div
-                    class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-xl sm:rounded-2xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-2.5 sm:p-3.5 md:p-4 text-center">
-                    <div
-                        class="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 mx-auto mb-1.5 sm:mb-2 rounded-lg bg-accent/10 flex items-center justify-center">
-                        <i class="ri-award-line text-accent text-xs sm:text-sm md:text-base"></i>
-                    </div>
-                    <p
-                        class="text-base sm:text-xl md:text-2xl font-bold bg-linear-to-br from-accent to-[#8b5cf6] bg-clip-text text-transparent">
-                        <span x-data="counter({{ $certificates->count() }})" x-text="value + suffix"></span>
-                    </p>
-                    <p class="text-[9px] sm:text-[10px] md:text-xs text-slate-500 dark:text-slate-400 mt-0.5 sm:mt-1 font-medium leading-tight"
-                        x-text="t('certifications')">Certifications</p>
-                </div>
-                <div
-                    class="bg-white dark:bg-[#1a1a2e] border border-slate-200 dark:border-white/5 rounded-xl sm:rounded-2xl transition-all duration-300 hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] dark:hover:shadow-[0_12px_40px_rgba(59,130,246,0.08)] p-2.5 sm:p-3.5 md:p-4 text-center">
-                    <div
-                        class="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 mx-auto mb-1.5 sm:mb-2 rounded-lg bg-accent/10 flex items-center justify-center">
-                        <i class="ri-tools-line text-accent text-xs sm:text-sm md:text-base"></i>
-                    </div>
-                    <p
-                        class="text-base sm:text-xl md:text-2xl font-bold bg-linear-to-br from-accent to-[#8b5cf6] bg-clip-text text-transparent">
-                        <span x-data="counter({{ $tools->count() }}, '+')" x-text="value + suffix"></span>
-                    </p>
-                    <p class="text-[9px] sm:text-[10px] md:text-xs text-slate-500 dark:text-slate-400 mt-0.5 sm:mt-1 font-medium leading-tight"
-                        x-text="t('toolsMastered')">Tools Mastered</p>
-                </div>
+    <section class="py-20 scroll-mt-20" id="tentang">
+        <div class="max-w-4xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-8 text-center" x-text="t('aboutMe')">About Me</h2>
+            <div class="bg-white dark:bg-[#1a1a2e] p-8 rounded-3xl border border-slate-100 dark:border-white/5 shadow-sm">
+                <p class="text-slate-600 dark:text-slate-300 leading-relaxed mb-6" x-html='L(@json($about1Html), @json($about1IdnHtml))'></p>
+                <p class="text-slate-600 dark:text-slate-300 leading-relaxed" x-text='L(@json($about2), @json($about2Idn))'></p>
             </div>
         </div>
     </section>
-
 
     <section class="py-14 sm:py-20 relative z-10 scroll-mt-24 sm:scroll-mt-28 overflow-x-clip" id="proyek">
         <div class="text-center mb-10 sm:mb-12">
@@ -529,7 +462,7 @@
     <section class="py-14 sm:py-20 relative z-10 scroll-mt-24 sm:scroll-mt-28 overflow-x-clip" id="experiences">
         <div class="text-center mb-10 sm:mb-14">
             <h2 class="font-poppins text-2xl sm:text-4xl font-bold leading-[1.2] text-slate-800 dark:text-slate-100">
-                <span x-text="t('myExperience')">My Experience</span>
+                <span class="inline-block pb-2 " x-text="t('myExperience')">My Experience</span>
             </h2>
             <p class="mt-2 sm:mt-3 mx-auto text-xs sm:text-[0.95rem] text-slate-500 dark:text-slate-400 max-w-lg px-4"
                 x-text="t('experiencesSubtitle')">Click on any experience to see the full details</p>
@@ -657,7 +590,7 @@
     <section class="py-14 sm:py-20 relative z-10 scroll-mt-24 sm:scroll-mt-28 overflow-x-clip" id="certificates">
         <div class="text-center mb-10 sm:mb-12">
             <h2 class="font-poppins text-2xl sm:text-4xl font-bold leading-[1.2] text-slate-800 dark:text-slate-100">
-                <span x-text="t('certificatesAwards')">Certificates & Awards</span>
+                <span class="inline-block pb-2 " x-text="t('certificatesAwards')">Certificates & Awards</span>
             </h2>
             <p class="mt-2 sm:mt-3 mx-auto text-xs sm:text-[0.95rem] text-slate-500 dark:text-slate-400 max-w-lg px-4"
                 x-text="t('certificatesSubtitle')">Click on any certificate to see full details</p>
@@ -715,7 +648,7 @@
     <section class="py-14 sm:py-20 relative z-10 scroll-mt-24 sm:scroll-mt-28 overflow-x-clip" id="kontak">
         <div class="text-center mb-10 sm:mb-12">
             <h2 class="font-poppins text-2xl sm:text-4xl font-bold leading-[1.2] text-slate-800 dark:text-slate-100">
-                <span x-text="t('letsTalk')">Let's Talk</span>
+                <span class="inline-block pb-2 " x-text="t('letsTalk')">Let's Talk</span>
             </h2>
             <p class="mt-2 sm:mt-3 mx-auto text-xs sm:text-[0.95rem] text-slate-500 dark:text-slate-400 max-w-lg px-4"
                 x-text="t('contactSubtitle')">Have a project in mind or just want to say hi? Feel free to reach out
