@@ -167,11 +167,18 @@
                 <div x-show="tocOpen" x-cloak x-collapse
                     class="pointer-events-auto mt-2 mr-0 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0a0a0f] shadow-lg overflow-hidden max-h-60">
                     <nav @click="
-                        const link = $event.target.closest('a[href^="#"]'); if (link) {
-                        $event.preventDefault(); tocOpen=false; const id=link.getAttribute('href').slice(1); const
-                        target=document.getElementById(id); if (target) { target.scrollIntoView({ behavior: 'smooth' ,
-                        block: 'start' }); history.replaceState(null, '' , '#' + id); } } "
-                         class="p-3 space-y-1 overflow-y-auto custom-scrollbar">
+                        const link = $event.target.closest('a[href^=&quot;#&quot;]');
+                        if (link) {
+                            $event.preventDefault();
+                            tocOpen = false;
+                            const id = link.getAttribute('href').slice(1);
+                            const target = document.getElementById(id);
+                            if (target) {
+                                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                history.replaceState(null, '', '#' + id);
+                            }
+                        }
+                    " class="p-3 space-y-1 overflow-y-auto custom-scrollbar">
                          @foreach ($tocItems as $toc)
                         <a href="#{{ $toc['id'] }}"
                             class="block px-3 py-2 rounded-lg text-sm leading-snug transition-all duration-200 border-l-2

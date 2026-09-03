@@ -31,8 +31,11 @@ hljs.registerLanguage('java', java);
 hljs.registerLanguage('plaintext', plaintext);
 import AOS from 'aos';
 import Alpine from 'alpinejs';
+import collapse from '@alpinejs/collapse';
 import Quill from 'quill';
 import './image-uploader';
+
+Alpine.plugin(collapse);
 
 window.Alpine = Alpine;
 window.Quill = Quill;
