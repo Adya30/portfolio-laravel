@@ -3,6 +3,7 @@ import 'animate.css/animate.min.css';
 import 'aos/dist/aos.css';
 
 import hljs from 'highlight.js/lib/core';
+hljs.configure({ ignoreUnescapedHTML: true });
 import 'highlight.js/styles/atom-one-dark.min.css';
 import php from 'highlight.js/lib/languages/php';
 import javascript from 'highlight.js/lib/languages/javascript';
