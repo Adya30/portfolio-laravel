@@ -365,6 +365,7 @@ Alpine.data('app', () => ({
         this.$nextTick(() => {
             document.querySelectorAll('pre code').forEach((el) => {
                 try {
+                    delete el.dataset.highlighted;
                     hljs.highlightElement(el);
                 } catch (e) {}
             });
@@ -485,7 +486,10 @@ Alpine.data('app', () => ({
                 
                 this.$nextTick(() => {
                     document.querySelectorAll('pre code').forEach(el => {
-                        try { hljs.highlightElement(el); } catch (e) {}
+                        try {
+                            delete el.dataset.highlighted;
+                            hljs.highlightElement(el);
+                        } catch (e) {}
                     });
                 });
 
@@ -1631,6 +1635,9 @@ document.addEventListener('submit', (event) => {
     }
 });
 
-document.querySelectorAll('pre > code[class*="language-"]').forEach((el) => hljs.highlightElement(el));
+document.querySelectorAll('pre > code[class*="language-"]').forEach((el) => {
+    delete el.dataset.highlighted;
+    hljs.highlightElement(el);
+});
 
 Alpine.start();
