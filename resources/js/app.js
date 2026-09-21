@@ -398,6 +398,9 @@ Alpine.data('app', () => ({
         this.dark = !this.dark;
         document.documentElement.classList.toggle('dark', this.dark);
         localStorage.setItem('theme', this.dark ? 'dark' : 'light');
+
+        const themeColor = document.querySelector('meta[name="theme-color"]');
+        if (themeColor) themeColor.setAttribute('content', this.dark ? '#0a0a0f' : '#f7f8fb');
     },
 
     
@@ -544,7 +547,7 @@ Alpine.data('app', () => ({
     
     async copyCode(button) {
         
-        const wrapper = button.closest('div[class*="rounded-xl"]');
+        const wrapper = button.closest('[data-code-block]') || button.closest('div[class*="rounded-xl"]');
         const codeEl  = wrapper ? wrapper.querySelector('pre code') : null;
         const text    = codeEl ? (codeEl.innerText || codeEl.textContent || '') : '';
 

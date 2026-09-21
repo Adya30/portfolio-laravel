@@ -38,7 +38,7 @@
         $tocItems = [];
         foreach ($subbabBlocks as $bIdx => $block) {
             $type = $block['type'] ?? '';
-            if ($type === 'subheading' && !empty($block['teks'])) {
+            if (in_array($type, ['subheading', 'subheading3'], true) && !empty($block['teks'])) {
                 $slug = Str::slug($block['teks']);
                 $tocItems[] = ['id' => $slug, 'judul' => $block['teks']];
             } elseif ($type === 'paragraf' && !empty($block['teks'])) {
@@ -147,9 +147,9 @@
                 <nav class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-1">
                     @foreach ($tocItems as $toc)
                         <a href="#{{ $toc['id'] }}"
-                            class="block px-3 py-2 rounded-lg text-sm leading-snug transition-all duration-200 border-l-2"
+                            class="block px-3 py-2 rounded-lg text-sm leading-snug transition-all duration-200 border"
                             :class="isActive('{{ $toc['id'] }}') ?
-                                'text-blue-700 dark:text-blue-400 font-semibold bg-blue-50 dark:bg-blue-900/20 border-blue-500' :
+                                'text-blue-700 dark:text-blue-400 font-semibold bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' :
                                 'text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 border-transparent'">
                             {{ $toc['judul'] }}
                         </a>
@@ -181,7 +181,7 @@
                     " class="p-3 space-y-1 overflow-y-auto custom-scrollbar">
                          @foreach ($tocItems as $toc)
                         <a href="#{{ $toc['id'] }}"
-                            class="block px-3 py-2 rounded-lg text-sm leading-snug transition-all duration-200 border-l-2
+                            class="block px-3 py-2 rounded-lg text-sm leading-snug transition-all duration-200 border
                                   text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 border-transparent">
                             {{ $toc['judul'] }}
                         </a>
@@ -193,15 +193,16 @@
 
     <main class="flex-1 w-full transition-all duration-300 ease-in-out xl:pr-[19rem]"
         :class="sidebarOpen ? 'lg:pl-[22rem]' : 'lg:pl-[5.5rem]'">
-        <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+        <section class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
 
             <header class="pt-16 sm:pt-14 lg:pt-2">
                 <span
                     class="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 dark:bg-blue-900/20 rounded-full text-xs font-medium text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
-                    <i class="ri-book-open-line"></i>
+                    <i class="ri-book-open-line" aria-hidden="true"></i>
                     <span x-text="t('subchapter')">Subbab</span> {{ $currentSubbabPos + 1 }} / {{ count($subbabs) }}
                 </span>
-                <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 dark:text-white leading-tight mt-2">
+                <h1
+                    class="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-slate-900 dark:text-white leading-tight mt-2">
                     {{ $subbabs[$currentSubbabPos]['judul'] ?? 'Subbab ' . ($currentSubbabPos + 1) }}
                 </h1>
             </header>
@@ -214,9 +215,17 @@
                         @if ($type === 'subheading')
                             @php $slug = Str::slug($block['teks'] ?? ''); @endphp
                             <h2 id="{{ $slug }}"
-                                class="scroll-mt-24 border-l-4 border-blue-600 dark:border-blue-400 pl-4 font-poppins text-lg sm:text-xl font-bold text-slate-900 dark:text-white mt-6 mb-2">
+                                class="prose-measure scroll-mt-24 pt-8 font-poppins text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
                                 {{ $block['teks'] ?? '' }}
                             </h2>
+                        @elseif ($type === 'subheading3')
+                            {{-- Legacy heading level from older content: keeps the
+                                 sub-section visible instead of dropping it. --}}
+                            @php $slug = Str::slug($block['teks'] ?? ''); @endphp
+                            <h3 id="{{ $slug }}"
+                                class="prose-measure scroll-mt-24 pt-6 font-poppins text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+                                {{ $block['teks'] ?? '' }}
+                            </h3>
                         @elseif ($type === 'paragraf')
                             @php
                                 $align = $block['align'] ?? 'kiri';
@@ -228,7 +237,7 @@
                                 };
                             @endphp
                             <div
-                                class="text-sm sm:text-base text-slate-700 dark:text-white leading-relaxed markdown-content {{ $alignClass }}">
+                                class="prose-measure text-[15px] leading-[1.75] sm:text-base sm:leading-[1.8] text-slate-700 dark:text-slate-200 markdown-content {{ $alignClass }}">
                                 {!! render_markdown($block['teks'] ?? '') !!}
                             </div>
                         @elseif ($type === 'gambar')
@@ -260,42 +269,46 @@
                                 $lang = in_array($block['bahasa'] ?? '', $codeLangs, true)
                                     ? $block['bahasa']
                                     : 'plaintext';
-                                $rawCode = $block['kode'] ?? '';
-                                $lines = explode("\n", $rawCode);
+                                $rawCode = rtrim(str_replace("\r\n", "\n", $block['kode'] ?? ''), "\n");
+                                $lines = $rawCode === '' ? [] : explode("\n", $rawCode);
                             @endphp
-                            <div
-                                class="rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 bg-[#0d1117] my-4">
-                                <div
-                                    class="flex items-center justify-between gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-2.5 bg-[#161b22] border-b border-slate-800 select-none">
-                                    <div class="flex items-center gap-3">
-                                        <div class="flex items-center gap-1.5">
-                                            <span class="w-3 h-3 rounded-full bg-[#ff5f56]"></span>
-                                            <span class="w-3 h-3 rounded-full bg-[#ffbd2e]"></span>
-                                            <span class="w-3 h-3 rounded-full bg-[#27c93f]"></span>
-                                        </div>
-                                        <span
-                                            class="px-2.5 py-0.5 rounded text-[11px] font-mono font-medium uppercase tracking-wider text-slate-300 bg-slate-800/80 border border-slate-700">
-                                            {{ $lang }}
-                                        </span>
-                                    </div>
-                                    <button type="button" @click="copyCode($el)" title="Salin kode"
-                                        class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 transition-all cursor-pointer">
-                                        <i class="ri-file-copy-line"></i><span x-text="t('copy')">Copy</span>
-                                    </button>
-                                </div>
-                                <div class="overflow-x-auto custom-scrollbar bg-[#0d1117]">
+                            @if (count($lines))
+                                <div data-code-block
+                                    class="my-5 rounded-xl overflow-hidden border border-code-line bg-code shadow-[0_18px_44px_-30px_rgba(2,6,23,0.85)]">
                                     <div
-                                        class="p-3 sm:p-5 font-mono text-xs sm:text-sm text-slate-100 leading-6 tab-size-4 flex min-w-full bg-[#0d1117]">
-                                        <div
-                                            class="select-none text-slate-500 text-right pr-2 sm:pr-4 border-r border-slate-800 shrink-0 font-mono text-xs sm:text-sm leading-6">
-                                            @foreach ($lines as $lineIndex => $lineContent)
-                                                <div>{{ $lineIndex + 1 }}</div>
-                                            @endforeach
+                                        class="flex items-center justify-between gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-2.5 bg-code-header border-b border-code-line">
+                                        <div class="flex items-center gap-3">
+                                            <div class="flex items-center gap-1.5" aria-hidden="true">
+                                                <span class="w-2.5 h-2.5 rounded-full bg-[#ff5f56]"></span>
+                                                <span class="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]"></span>
+                                                <span class="w-2.5 h-2.5 rounded-full bg-[#27c93f]"></span>
+                                            </div>
+                                            <span
+                                                class="px-2.5 py-0.5 rounded-md text-[11px] font-code font-semibold uppercase tracking-wider text-code-gutter bg-white/[0.06] border border-code-line">
+                                                {{ $lang }}
+                                            </span>
                                         </div>
-                                        <pre class="pl-4 font-mono text-xs sm:text-sm leading-6 whitespace-pre overflow-x-visible bg-transparent"><code class="language-{{ $lang }} bg-transparent">{!! e($rawCode) !!}</code></pre>
+                                        <button type="button" @click="copyCode($el)" :title="t('copy')"
+                                            :aria-label="t('copy')"
+                                            class="focus-ring inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-lg text-xs font-medium text-code-gutter hover:text-code-text bg-white/[0.06] hover:bg-white/[0.12] border border-code-line transition-colors cursor-pointer">
+                                            <i class="ri-file-copy-line" aria-hidden="true"></i><span
+                                                x-text="t('copy')">Copy</span>
+                                        </button>
+                                    </div>
+                                    <div class="overflow-x-auto custom-scrollbar">
+                                        <div class="flex min-w-full font-code text-[12.5px] leading-6 sm:text-[13.5px]">
+                                            <div
+                                                class="sticky left-0 z-10 min-w-10 shrink-0 select-none border-r border-code-line bg-code px-3 py-3.5 text-right tabular-nums text-code-gutter">
+                                                @foreach ($lines as $lineIndex => $lineContent)
+                                                    <div>{{ $lineIndex + 1 }}</div>
+                                                @endforeach
+                                            </div>
+                                            <pre
+                                                class="tab-size-4 whitespace-pre py-3.5 pl-4 pr-5 font-code text-code-text"><code class="language-{{ $lang }} font-code">{!! e($rawCode) !!}</code></pre>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            @endif
                         @elseif ($type === 'link')
                             @php
                                 $href = $block['href'] ?? '#';

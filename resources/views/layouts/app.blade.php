@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0a0a0f" media="(prefers-color-scheme: dark)">
-    <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#eaeef5">
 
     @php
         $seo = $seo ?? [];
@@ -76,6 +75,9 @@
                 var dark = t ? t === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
                 document.documentElement.classList.toggle('dark', dark);
 
+                var themeColor = document.querySelector('meta[name="theme-color"]');
+                if (themeColor) themeColor.setAttribute('content', dark ? '#0a0a0f' : '#eaeef5');
+
                 var lang = localStorage.getItem('lang') || 'en';
                 document.documentElement.setAttribute('lang', lang);
                 document.documentElement.setAttribute('data-lang', lang);
@@ -94,7 +96,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body x-data="app" data-active-nav="{{ $activeNav ?? 'beranda' }}"
-      class="bg-slate-50 dark:bg-[#0a0a0f] text-slate-800 dark:text-white transition-colors duration-300">
+      class="bg-canvas dark:bg-canvas-dark text-slate-800 dark:text-white transition-colors duration-300">
 
     <x-navbar />
 
