@@ -147,12 +147,13 @@ const i18n = {
         copy: 'Copy',
         copied: 'Copied!',
         toggleSidebar: 'Toggle sidebar',
-        onThisPage: 'Sub Heading',
+        onThisPage: 'On this page',
         subchapters: 'Subbab',
         tableOfContents: 'Daftar Subbab',
         subchapter: 'Subbab',
         previousSubchapter: 'Previous Subchapter',
         nextSubchapter: 'Next Subchapter',
+        startLearning: 'Start Learning',
     },
     id: {
         navHome: 'Beranda',
@@ -258,6 +259,7 @@ const i18n = {
         subchapter: 'Subbab',
         previousSubchapter: 'Subbab Sebelumnya',
         nextSubchapter: 'Subbab Berikutnya',
+        startLearning: 'Mulai Belajar',
     },
 };
 
@@ -841,69 +843,12 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '', autosave
         textarea.dispatchEvent(new Event('input'));
     },
 
-    blockLabel(type) {
-        return {
-            subbab: 'Subbab',
-            subheading: 'Sub Heading',
-            paragraf: 'Paragraf',
-            gambar: 'Gambar',
-            kode: 'Kode',
-            link: 'Sisipan Link',
-            pembatas: 'Pembatas',
-            tabel: 'Tabel Data',
-        }[type] || 'Blok';
-    },
-
-    addBlock(type) {
-        this.pushHistory();
-        const base = { type };
-        if (type === 'subbab') {
-            base.judul = '';
-        } else if (type === 'subheading') {
-            base.teks = '';
-        } else if (type === 'paragraf') {
-            base.teks = '';
-            base.align = 'kiri';
-        } else if (type === 'gambar') {
-            base.url = '';
-            base.caption = '';
-            base.ukuran = 'penuh';
-        } else if (type === 'kode') {
-            base.bahasa = 'php';
-            base.kode = '';
-        } else if (type === 'link') {
-            base.href = '';
-            base.label = '';
-            base.desc = '';
-        } else if (type === 'pembatas') {
-            base.style = 'garis';
-        } else if (type === 'tabel') {
-            base.headers = ['Header 1', 'Header 2', 'Header 3'];
-            base.rows = [
-                ['Baris 1 Kolom 1', 'Baris 1 Kolom 2', 'Baris 1 Kolom 3'],
-                ['Baris 2 Kolom 1', 'Baris 2 Kolom 2', 'Baris 2 Kolom 3']
-            ];
-            base.caption = '';
-        }
-        this.blocks.push(base);
-
-        const newIndex = this.blocks.length - 1;
-        this.$nextTick(() => {
-            const el = this.$el.querySelector('#blok-' + newIndex);
-            if (el) {
-                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                const input = el.querySelector('input[type="text"], textarea, .ql-editor');
-                if (input) input.focus();
-            }
-        });
-    },
-
     addBlockAt(type, index) {
         this.pushHistory();
         const base = { type };
         if (type === 'subbab') {
             base.judul = '';
-        } else if (type === 'subheading') {
+        } else if (['subheading', 'subheading3'].includes(type)) {
             base.teks = '';
         } else if (type === 'paragraf') {
             base.teks = '';
@@ -1091,6 +1036,12 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '', autosave
         escaped = escaped.replace(/\n/g, '<br>');
 
         return escaped;
+    },
+
+    /** True when a table cell already holds a `code` value. */
+    isCellCode(blockIndex, rIdx, cIdx) {
+        const value = this.blocks[blockIndex]?.rows?.[rIdx]?.[cIdx] || '';
+        return value.length >= 2 && value.startsWith('`') && value.endsWith('`');
     },
 
     wrapCellWithCode(blockIndex, rIdx, cIdx, textareaEl = null) {

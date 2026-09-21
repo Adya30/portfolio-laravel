@@ -4,7 +4,7 @@
     <div class="fixed top-4 left-4 right-4 z-100 flex items-center justify-between pointer-events-none" x-cloak>
         <div class="pointer-events-auto">
             <button type="button" @click="toggleSidebar" :aria-label="t('toggleSidebar')" :title="t('toggleSidebar')"
-                class="lg:hidden w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200/80 dark:border-white/10 bg-white/90 dark:bg-[#0a0a0f]/90 text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-300 dark:hover:border-blue-700 transition-all duration-300 cursor-pointer shadow-sm">
+                class="focus-ring lg:hidden w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200/80 dark:border-white/10 bg-white/90 dark:bg-[#0a0a0f]/90 text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-300 dark:hover:border-blue-700 transition-all duration-300 cursor-pointer shadow-sm">
                 <i class="ri-menu-line text-lg"></i>
             </button>
         </div>
@@ -35,17 +35,28 @@
             'java',
         ];
 
+        /* Headings are told apart by shape, not by an outline number, so this
+           pass only collects the contents list. `level` is what lets the list
+           indent a sub-section under its section. */
         $tocItems = [];
+
         foreach ($subbabBlocks as $bIdx => $block) {
             $type = $block['type'] ?? '';
             if (in_array($type, ['subheading', 'subheading3'], true) && !empty($block['teks'])) {
-                $slug = Str::slug($block['teks']);
-                $tocItems[] = ['id' => $slug, 'judul' => $block['teks']];
+                $tocItems[] = [
+                    'id' => Str::slug($block['teks']),
+                    'judul' => $block['teks'],
+                    'level' => $type === 'subheading3' ? 3 : 2,
+                ];
             } elseif ($type === 'paragraf' && !empty($block['teks'])) {
                 $rendered = render_markdown($block['teks']);
                 preg_match_all('/<h([1-6]) id="([^"]+)">(.*?)<\/h\1>/', $rendered, $m);
                 foreach ($m[2] as $i => $slug) {
-                    $tocItems[] = ['id' => $slug, 'judul' => strip_tags($m[3][$i])];
+                    $tocItems[] = [
+                        'id' => $slug,
+                        'judul' => strip_tags($m[3][$i]),
+                        'level' => (int) ($m[1][$i] ?? 2),
+                    ];
                 }
             }
         }
@@ -62,17 +73,17 @@
             class="fixed inset-0 z-105 bg-black/50 backdrop-blur-sm lg:hidden"></div>
 
         <aside x-cloak
-            class="fixed top-4 left-4 z-110 flex flex-col w-80 max-w-[85vw] border border-slate-200 dark:border-white/10 h-[calc(100vh-2rem)] bg-white dark:bg-[#0a0a0f] rounded-2xl shadow-lg shadow-slate-200/50 dark:shadow-black/50 overflow-hidden transition-all duration-300 ease-in-out"
+            class="fixed top-4 left-4 z-110 flex flex-col w-80 max-w-[85vw] border border-line dark:border-white/10 h-[calc(100vh-2rem)] bg-white dark:bg-[#0a0a0f] rounded-2xl shadow-lg shadow-slate-200/50 dark:shadow-black/50 overflow-hidden transition-all duration-300 ease-in-out"
             :class="sidebarOpen ? 'translate-x-0 lg:w-80' : '-translate-x-[calc(100%+1rem)] lg:translate-x-0 lg:w-16'">
 
             <div :class="sidebarOpen ? 'hidden' : 'flex'"
                 class="flex-col items-center gap-2 py-4 h-full overflow-y-auto custom-scrollbar">
                 <a href="{{ route('course.show', $course) }}" :title="t('backToOverview')" :aria-label="t('backToOverview')"
-                    class="w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors">
+                    class="focus-ring w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors">
                     <i class="ri-arrow-left-line text-lg"></i>
                 </a>
                 <button type="button" @click="toggleSidebar" :aria-label="t('toggleSidebar')" :title="t('toggleSidebar')"
-                    class="w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer">
+                    class="focus-ring w-9 h-9 flex items-center justify-center rounded-xl text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer">
                     <i class="ri-menu-unfold-line text-lg"></i>
                 </button>
                 <div class="w-6 border-t border-slate-200 dark:border-white/10 my-1"></div>
@@ -81,7 +92,7 @@
                     <a href="{{ route('course.subbab', [$course, $sub['slug']]) }}"
                         title="{{ $sub['judul'] ?: 'Subbab ' . ($i + 1) }}"
                         @click.prevent="navigateSubbab('{{ route('course.subbab', [$course, $sub['slug']]) }}', $event)"
-                        class="w-9 h-9 flex items-center justify-center rounded-lg text-xs font-semibold transition-all duration-200
+                        class="focus-ring w-9 h-9 flex items-center justify-center rounded-lg text-xs font-semibold transition-all duration-200
                           {{ $isActive
                               ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-700'
                               : 'text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 border border-transparent' }}">
@@ -91,7 +102,7 @@
             </div>
 
             <div :class="sidebarOpen ? '' : 'lg:hidden'" class="flex flex-col flex-1 min-h-0">
-                <div class="p-5 border-b border-slate-200 dark:border-white/10 flex items-start justify-between gap-3">
+                <div class="p-5 border-b border-line dark:border-white/10 flex items-start justify-between gap-3">
                     <div>
                         <a href="{{ route('course.show', $course) }}"
                             class="text-xs font-medium uppercase tracking-wider text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors flex items-center mb-3 group">
@@ -116,7 +127,7 @@
                         @php $isActive = $sub['index'] === $currentSubbabIndex; @endphp
                         <a href="{{ route('course.subbab', [$course, $sub['slug']]) }}"
                             @click.prevent="navigateSubbab('{{ route('course.subbab', [$course, $sub['slug']]) }}', $event)"
-                            class="flex items-start gap-3 p-2.5 rounded-xl text-sm transition-all duration-200
+                            class="focus-ring flex items-start gap-3 p-2.5 rounded-xl text-sm transition-all duration-200
                           {{ $isActive
                               ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 font-semibold border border-blue-200 dark:border-blue-800'
                               : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 border border-transparent' }}">
@@ -136,8 +147,8 @@
 
         @if ($hasToc)
             <aside x-cloak x-data="tocSpy"
-                class="hidden xl:flex flex-col fixed top-20 right-4 w-72 h-[calc(100vh-6rem)] border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0a0a0f] rounded-2xl shadow-lg shadow-slate-200/50 dark:shadow-black/50 overflow-hidden z-30">
-                <div class="p-4 border-b border-slate-200 dark:border-white/10">
+                class="hidden xl:flex flex-col fixed top-20 right-4 w-72 h-[calc(100vh-6rem)] border border-line dark:border-white/10 bg-white dark:bg-[#0a0a0f] rounded-2xl shadow-lg shadow-slate-200/50 dark:shadow-black/50 overflow-hidden z-30">
+                <div class="p-4 border-b border-line dark:border-white/10">
                     <h2
                         class="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
                         <i class="ri-list-unordered text-sm text-blue-600 dark:text-blue-400"></i>
@@ -147,7 +158,7 @@
                 <nav class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-1">
                     @foreach ($tocItems as $toc)
                         <a href="#{{ $toc['id'] }}"
-                            class="block px-3 py-2 rounded-lg text-sm leading-snug transition-all duration-200 border"
+                            class="focus-ring block px-3 py-2 rounded-lg text-sm leading-snug transition-all duration-200 border {{ ($toc['level'] ?? 2) >= 3 ? 'ml-3' : '' }}"
                             :class="isActive('{{ $toc['id'] }}') ?
                                 'text-blue-700 dark:text-blue-400 font-semibold bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' :
                                 'text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 border-transparent'">
@@ -161,11 +172,11 @@
         @if ($hasToc)
             <div x-data="{ tocOpen: false }" class="xl:hidden fixed top-4 right-4 z-100 pointer-events-none" x-cloak>
                 <button type="button" @click="tocOpen = !tocOpen"
-                    class="pointer-events-auto w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200/80 dark:border-white/10 bg-white/90 dark:bg-[#0a0a0f]/90 text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-300 dark:hover:border-blue-700 transition-all duration-300 cursor-pointer shadow-sm ml-auto">
+                    class="focus-ring pointer-events-auto w-10 h-10 flex items-center justify-center rounded-xl border border-slate-200/80 dark:border-white/10 bg-white/90 dark:bg-[#0a0a0f]/90 text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-300 dark:hover:border-blue-700 transition-all duration-300 cursor-pointer shadow-sm ml-auto">
                     <i class="ri-list-unordered text-lg"></i>
                 </button>
                 <div x-show="tocOpen" x-cloak x-collapse
-                    class="pointer-events-auto mt-2 mr-0 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0a0a0f] shadow-lg overflow-hidden max-h-60">
+                    class="pointer-events-auto mt-2 mr-0 rounded-xl border border-line dark:border-white/10 bg-white dark:bg-[#0a0a0f] shadow-lg overflow-hidden max-h-60">
                     <nav @click="
                         const link = $event.target.closest('a[href^=&quot;#&quot;]');
                         if (link) {
@@ -181,8 +192,8 @@
                     " class="p-3 space-y-1 overflow-y-auto custom-scrollbar">
                          @foreach ($tocItems as $toc)
                         <a href="#{{ $toc['id'] }}"
-                            class="block px-3 py-2 rounded-lg text-sm leading-snug transition-all duration-200 border
-                                  text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 border-transparent">
+                            class="focus-ring block px-3 py-2 rounded-lg text-sm leading-snug transition-all duration-200 border
+                                  text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 border-transparent {{ ($toc['level'] ?? 2) >= 3 ? 'ml-3' : '' }}">
                             {{ $toc['judul'] }}
                         </a>
         @endforeach
@@ -219,11 +230,11 @@
                                 {{ $block['teks'] ?? '' }}
                             </h2>
                         @elseif ($type === 'subheading3')
-                            {{-- Legacy heading level from older content: keeps the
-                                 sub-section visible instead of dropping it. --}}
+                            {{-- One notch down from a section: indented behind a rule,
+                                 smaller and softer, with no outline number. --}}
                             @php $slug = Str::slug($block['teks'] ?? ''); @endphp
                             <h3 id="{{ $slug }}"
-                                class="prose-measure scroll-mt-24 pt-6 font-poppins text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+                                class="prose-measure scroll-mt-24 ml-4 border-l-2 border-blue-200 pt-6 pl-3 font-poppins text-base font-bold tracking-tight text-slate-800 sm:ml-6 sm:pl-4 sm:text-lg dark:border-blue-900/60 dark:text-slate-100">
                                 {{ $block['teks'] ?? '' }}
                             </h3>
                         @elseif ($type === 'paragraf')
@@ -398,11 +409,11 @@
             @endif
 
             <div
-                class="mt-8 sm:mt-10 pt-5 sm:pt-6 border-t border-slate-200 dark:border-white/10 flex flex-col sm:flex-row justify-between gap-3 sm:gap-4">
+                class="mt-8 sm:mt-10 pt-5 sm:pt-6 border-t border-line dark:border-white/10 flex flex-col sm:flex-row justify-between gap-3 sm:gap-4">
                 @if ($prevSubbab)
                     <a href="{{ route('course.subbab', [$course, $prevSubbab['slug']]) }}"
                         @click.prevent="navigateSubbab('{{ route('course.subbab', [$course, $prevSubbab['slug']]) }}', $event)"
-                        class="group flex-1 min-w-0 p-3 sm:p-5 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-blue-400 dark:hover:border-blue-600 bg-white dark:bg-[#0a0a0f] hover:shadow-lg transition-all text-left">
+                        class="focus-ring group flex-1 min-w-0 p-3 sm:p-5 border border-line dark:border-slate-800 rounded-xl hover:border-blue-400 dark:hover:border-blue-600 bg-white dark:bg-[#0a0a0f] hover:shadow-lg transition-all text-left">
                         <div
                             class="text-xs font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-1.5 flex items-center gap-1">
                             <i class="ri-arrow-left-line group-hover:-translate-x-1 transition-transform"></i>
@@ -415,7 +426,7 @@
                     </a>
                 @else
                     <a href="{{ route('course.show', $course) }}"
-                        class="group flex-1 min-w-0 p-3 sm:p-5 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-blue-400 dark:hover:border-blue-600 bg-white dark:bg-[#0a0a0f] hover:shadow-lg transition-all text-left">
+                        class="focus-ring group flex-1 min-w-0 p-3 sm:p-5 border border-line dark:border-slate-800 rounded-xl hover:border-blue-400 dark:hover:border-blue-600 bg-white dark:bg-[#0a0a0f] hover:shadow-lg transition-all text-left">
                         <div
                             class="text-xs font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-1.5 flex items-center gap-1">
                             <i class="ri-arrow-left-line group-hover:-translate-x-1 transition-transform"></i>
@@ -431,7 +442,7 @@
                 @if ($nextSubbab)
                     <a href="{{ route('course.subbab', [$course, $nextSubbab['slug']]) }}"
                         @click.prevent="navigateSubbab('{{ route('course.subbab', [$course, $nextSubbab['slug']]) }}', $event)"
-                        class="group flex-1 min-w-0 p-3 sm:p-5 border border-slate-200 dark:border-slate-800 rounded-xl hover:border-blue-400 dark:hover:border-blue-600 bg-white dark:bg-[#0a0a0f] hover:shadow-lg transition-all text-right">
+                        class="focus-ring group flex-1 min-w-0 p-3 sm:p-5 border border-line dark:border-slate-800 rounded-xl hover:border-blue-400 dark:hover:border-blue-600 bg-white dark:bg-[#0a0a0f] hover:shadow-lg transition-all text-right">
                         <div
                             class="text-xs font-medium text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-1.5 flex items-center justify-end gap-1">
                             <span x-text="t('nextSubchapter')">Subbab Berikutnya</span>

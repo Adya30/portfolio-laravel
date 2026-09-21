@@ -25,28 +25,20 @@ class CourseController extends Controller
     public function show(Course $course): View
     {
         $subbabs = [];
-        $current = null;
 
         foreach ($course->konten ?? [] as $i => $block) {
-            $type = $block['type'] ?? 'paragraf';
-
-            if ($type === 'subbab') {
-                $current = [
+            if (($block['type'] ?? '') === 'subbab') {
+                $subbabs[] = [
                     'block_index' => $i,
                     'judul' => $block['judul'] ?? '',
                     'judul_idn' => $block['judul_idn'] ?? null,
-                    'stats' => ['paragraf' => 0, 'gambar' => 0, 'kode' => 0, 'subheading' => 0, 'tabel' => 0, 'link' => 0],
                 ];
-                $subbabs[] = $current;
-            } elseif ($current !== null && array_key_exists($type, $subbabs[count($subbabs) - 1]['stats'])) {
-                $subbabs[count($subbabs) - 1]['stats'][$type]++;
             }
         }
 
         return view('admin.courses.show', [
             'course' => $course,
             'subbabs' => $subbabs,
-            'totalBlocks' => count($course->konten ?? []),
         ]);
     }
 
@@ -517,7 +509,7 @@ class CourseController extends Controller
             return null;
         }
 
-        $allowed = ['subbab', 'subheading', 'paragraf', 'gambar', 'kode', 'link', 'pembatas', 'tabel'];
+        $allowed = ['subbab', 'subheading', 'subheading3', 'paragraf', 'gambar', 'kode', 'link', 'pembatas', 'tabel'];
 
         return collect($decoded)
             ->filter(fn($block) => is_array($block) && isset($block['type']) && in_array($block['type'], $allowed, true))

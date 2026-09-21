@@ -88,6 +88,51 @@ test('course subbab detail page has sidebar navigation', function () {
         ->assertSee(route('course.subbab', [$course, 'fungsi']), false);
 });
 
+test('course subbab reader separates both heading levels without numbers', function () {
+    $course = Course::create([
+        'nama' => 'JavaScript Dasar',
+        'konten' => [
+            ['type' => 'subbab', 'judul' => 'Variabel', 'judul_idn' => null],
+            ['type' => 'subheading', 'teks' => 'Deklarasi'],
+            ['type' => 'subheading3', 'teks' => 'Dengan const'],
+        ],
+    ]);
+
+    $this->get(route('course.subbab', [$course, 'variabel']))
+        ->assertOk()
+        ->assertSee('<h2 id="deklarasi"', false)
+        ->assertSee('<h3 id="dengan-const"', false)
+        ->assertSee('border-l-2 border-blue-200', false)
+        ->assertDontSee('>1.1', false)
+        ->assertSee('Dengan const');
+});
+
+test('admin keeps a level 3 sub heading block when saving a subbab', function () {
+    $user = User::factory()->create();
+    $course = Course::create([
+        'nama' => 'Pengenalan Laravel',
+        'konten' => [
+            ['type' => 'subbab', 'judul' => 'Routing'],
+        ],
+    ]);
+
+    $this->actingAs($user)
+        ->put(route('admin.courses.subbab.update', [$course, 0]), [
+            'konten' => json_encode([
+                ['type' => 'subbab', 'judul' => 'Routing'],
+                ['type' => 'subheading', 'teks' => 'Dasar'],
+                ['type' => 'subheading3', 'teks' => 'Route Model Binding'],
+            ]),
+            'updated_at' => $course->updated_at->timestamp,
+            'original_subbab_title' => 'Routing',
+            'original_subbab_position' => 0,
+        ])
+        ->assertRedirect();
+
+    expect(collect($course->fresh()->konten)->pluck('type')->all())
+        ->toBe(['subbab', 'subheading', 'subheading3']);
+});
+
 test('admin show page lists the materi subbabs with editor links', function () {
     $user = User::factory()->create();
     $course = Course::create([
@@ -122,7 +167,7 @@ test('admin subbab edit form renders the block editor', function () {
         ->get(route('admin.courses.subbab.edit', [$course, 0]))
         ->assertOk()
         ->assertSee('courseContentEditor', false)
-        ->assertSee('Tambah Blok', false);
+        ->assertSee('Sisipkan blok', false);
 });
 
 test('course pages do not include the portfolio navbar menu', function () {

@@ -4,14 +4,25 @@
 @section('page_title', 'Edit Materi')
 
 @section('content')
-    <x-admin.page-title/>
-
     <form method="POST" action="{{ route('admin.courses.update', $course) }}" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <input type="hidden" name="updated_at" value="{{ $course->updated_at->timestamp }}">
 
         <div class="max-w-4xl space-y-6">
+            {{-- Information and content are edited in two separate places, so the way
+                 to the content is stated here instead of being left to discovery. --}}
+            <div class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3.5">
+                <p class="text-xs text-slate-500">
+                    Halaman ini mengubah <span class="font-semibold text-slate-700">informasi materi</span>
+                    (nama, deskripsi, sampul, urutan).
+                </p>
+                <a href="{{ route('admin.courses.show', $course) }}"
+                   class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 text-slate-600 text-xs font-semibold hover:border-accent/40 hover:text-accent hover:bg-accent/5 transition-colors">
+                    <i class="ri-bookmark-line"></i>Kelola Subbab &amp; Isi
+                </a>
+            </div>
+
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-slate-100 bg-slate-50/50">
                     <h3 class="font-poppins font-bold text-slate-800 text-sm flex items-center gap-2">
@@ -52,9 +63,9 @@
                 </div>
             </div>
 
-            <div class="flex items-center gap-3 pb-6">
+            <div class="flex flex-wrap items-center gap-3 pb-6">
                 <button type="submit"
-                        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-white text-sm font-semibold hover:bg-blue-600 transition-colors">
+                        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-white text-sm font-semibold hover:bg-blue-600 hover:-translate-y-0.5 transition-all shadow-sm">
                     <i class="ri-save-line"></i>Simpan Perubahan
                 </button>
                 <a href="{{ route('admin.courses.show', $course) }}"

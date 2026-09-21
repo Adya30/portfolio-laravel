@@ -60,12 +60,11 @@
                             <th class="px-4 py-3 w-12 text-center border-b-2 border-slate-200">No</th>
                             <th class="px-4 py-3 border-b-2 border-slate-200">Subbab</th>
                             <th class="px-4 py-3 w-14 text-center border-b-2 border-slate-200"><span class="sr-only">Urutkan</span></th>
-                            <th class="px-4 py-3 text-right w-28 border-b-2 border-slate-200">Aksi</th>
+                            <th class="px-4 py-3 text-right w-44 border-b-2 border-slate-200">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200/60" x-data="reorderTable('{{ route('admin.courses.subbab.reorder', $course) }}')">
                         @foreach ($subbabs as $i => $subbab)
-                            @php $stats = $subbab['stats'] ?? []; @endphp
                             <tr data-id="{{ $subbab['block_index'] }}" class="hover:bg-slate-50/70 transition-colors border-b border-slate-100">
                                 <td class="px-4 py-3 text-center font-bold text-slate-400 text-xs border-r border-slate-100/80" data-order>{{ $i + 1 }}</td>
                                 <td class="px-4 py-3 border-r border-slate-100/80">
@@ -90,8 +89,11 @@
                                 <td class="px-4 py-3">
                                     <div class="flex items-center justify-end gap-1.5">
                                         <a href="{{ route('admin.courses.subbab.edit', [$course, $subbab['block_index']]) }}"
-                                           class="p-2 rounded-lg text-slate-500 hover:text-accent hover:bg-accent/10 transition-colors" title="Edit Subbab">
+                                           title="Edit judul & isi subbab ini"
+                                           aria-label="Info subbab {{ $subbab['judul'] ?: 'Subbab '.($i + 1) }}"
+                                           class="focus-ring inline-flex items-center gap-1.5 px-2.5 py-2 rounded-lg border border-slate-200 text-slate-600 text-xs font-semibold hover:border-accent/40 hover:text-accent hover:bg-accent/5 transition-colors">
                                             <i class="ri-pencil-line text-base"></i>
+                                            <span class="hidden xl:inline">Info</span>
                                         </a>
                                         <x-admin.delete-modal
                                             :action="route('admin.courses.subbab.destroy', [$course, $subbab['block_index']])"
@@ -106,11 +108,5 @@
             </div>
         @endif
 
-        @if (count($subbabs) && $totalBlocks > 0)
-            <div class="px-5 py-3 text-[11px] text-slate-400 border-t border-slate-200 bg-slate-50/50 flex items-center gap-2">
-                <i class="ri-information-line text-accent text-xs"></i>
-                <span>Total {{ $totalBlocks }} blok di materi ini.</span>
-            </div>
-        @endif
     </div>
 @endsection

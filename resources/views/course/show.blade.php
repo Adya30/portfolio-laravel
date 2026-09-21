@@ -21,26 +21,19 @@
     $nama = $course->nama;
     $desk = $course->desk ?? null;
     $deskIdn = $course->desk_idn ?? null;
-    $blocks = $course->konten ?? [];
-
-    $subbabs = [];
-    $currentSubbabBlocks = 0;
-    foreach ($blocks as $idx => $block) {
-        if (($block['type'] ?? '') === 'subbab') {
-            $slug = $course->getSubbabSlugByIndex($idx);
-            if ($slug) {
-                $subbabs[] = [
-                    'index' => $idx,
-                    'judul' => $block['judul'] ?? '',
-                    'slug' => $slug,
-                    'block_count' => 0,
-                ];
-                $currentSubbabBlocks = 0;
+    $blocks = $course->konten ?? [];        $subbabs = [];
+        foreach ($blocks as $idx => $block) {
+            if (($block['type'] ?? '') === 'subbab') {
+                $slug = $course->getSubbabSlugByIndex($idx);
+                if ($slug) {
+                    $subbabs[] = [
+                        'index' => $idx,
+                        'judul' => $block['judul'] ?? '',
+                        'slug' => $slug,
+                    ];
+                }
             }
-        } elseif (!empty($subbabs)) {
-            $subbabs[count($subbabs) - 1]['block_count']++;
         }
-    }
 @endphp
 
 <section class="relative z-20 pt-24 sm:pt-28 pb-16 overflow-hidden">
@@ -58,11 +51,19 @@
                 </p>
             @endif
 
-            <div class="mt-5 flex items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
+            <div class="mt-5 flex flex-wrap items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800 text-xs font-medium">
                     <i class="ri-file-list-line"></i>
                     {{ count($subbabs) }} <span x-text="t('subchapters')">Subbab</span>
                 </span>
+
+                @if (count($subbabs))
+                    <a href="{{ route('course.subbab', [$course, $subbabs[0]['slug']]) }}"
+                       class="focus-ring inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-accent text-white text-xs font-semibold hover:bg-blue-600 hover:-translate-y-0.5 transition-all shadow-sm">
+                        <i class="ri-play-circle-line text-base"></i>
+                        <span x-text="t('startLearning')">Mulai Belajar</span>
+                    </a>
+                @endif
             </div>
         </header>
 
@@ -76,7 +77,7 @@
                 <div class="space-y-3">
                     @foreach ($subbabs as $i => $sub)
                         <a href="{{ route('course.subbab', [$course, $sub['slug']]) }}"
-                           class="group flex items-center gap-4 p-4 sm:p-5 bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/10 rounded-2xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-200/50 dark:hover:shadow-black/30 hover:border-blue-300 dark:hover:border-blue-700"
+                           class="focus-ring group flex items-center gap-4 p-4 sm:p-5 bg-white dark:bg-[#0f172a] border border-line dark:border-white/10 rounded-2xl transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-200/50 dark:hover:shadow-black/30 hover:border-blue-300 dark:hover:border-blue-700"
                            data-aos="fade-up" data-aos-duration="600" data-aos-delay="{{ $i * 50 }}">
 
                             <div class="shrink-0 w-11 h-11 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-sm transition-colors group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30">
@@ -97,7 +98,7 @@
                 </div>
             </div>
         @else
-            <div class="text-center py-16 bg-white dark:bg-[#111827] border border-slate-200 dark:border-white/10 rounded-2xl" data-aos="fade-up">
+            <div class="text-center py-16 bg-white dark:bg-[#111827] border border-line dark:border-white/10 rounded-2xl" data-aos="fade-up">
                 <div class="w-14 h-14 mx-auto mb-4 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 flex items-center justify-center text-3xl">
                     <i class="ri-book-open-line"></i>
                 </div>
