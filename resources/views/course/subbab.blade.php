@@ -35,9 +35,6 @@
             'java',
         ];
 
-        /* Headings are told apart by shape, not by an outline number, so this
-           pass only collects the contents list. `level` is what lets the list
-           indent a sub-section under its section. */
         $tocItems = [];
 
         foreach ($subbabBlocks as $bIdx => $block) {
@@ -219,14 +216,14 @@
             </header>
 
             @if (count($subbabBlocks))
-                <article class="min-h-75 mt-2 sm:mt-4 space-y-4">
+                <article class="min-h-75 mt-2 sm:mt-3 space-y-3">
                     @foreach ($subbabBlocks as $block)
                         @php $type = $block['type'] ?? 'paragraf'; @endphp
 
                         @if ($type === 'subheading')
                             @php $slug = Str::slug($block['teks'] ?? ''); @endphp
                             <h2 id="{{ $slug }}"
-                                class="prose-measure scroll-mt-24 pt-8 font-poppins text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+                                class="prose-measure scroll-mt-24 pt-5 font-poppins text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
                                 {{ $block['teks'] ?? '' }}
                             </h2>
                         @elseif ($type === 'subheading3')
@@ -234,7 +231,7 @@
                                  smaller and softer, with no outline number. --}}
                             @php $slug = Str::slug($block['teks'] ?? ''); @endphp
                             <h3 id="{{ $slug }}"
-                                class="prose-measure scroll-mt-24 ml-4 border-l-2 border-blue-200 pt-6 pl-3 font-poppins text-base font-bold tracking-tight text-slate-800 sm:ml-6 sm:pl-4 sm:text-lg dark:border-blue-900/60 dark:text-slate-100">
+                                class="prose-measure scroll-mt-24 ml-4 border-l-2 border-blue-200 pt-3 pl-3 font-poppins text-base font-bold tracking-tight text-slate-800 sm:ml-6 sm:pl-4 sm:text-lg dark:border-blue-900/60 dark:text-slate-100">
                                 {{ $block['teks'] ?? '' }}
                             </h3>
                         @elseif ($type === 'paragraf')
@@ -261,7 +258,7 @@
                                     default => 'max-w-full',
                                 };
                             @endphp
-                            <figure class="my-4 text-center">
+                            <figure class="my-2 text-center">
                                 <div
                                     class="inline-block rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-800 mx-auto {{ $sizeClass }}">
                                     <img src="{{ img_url($block['url'] ?? '') }}"
@@ -285,7 +282,7 @@
                             @endphp
                             @if (count($lines))
                                 <div data-code-block
-                                    class="my-5 rounded-xl overflow-hidden border border-code-line bg-code shadow-[0_18px_44px_-30px_rgba(2,6,23,0.85)]">
+                                    class="my-3 rounded-xl overflow-hidden border border-code-line bg-code shadow-[0_18px_44px_-30px_rgba(2,6,23,0.85)]">
                                     <div
                                         class="flex items-center justify-between gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-2.5 bg-code-header border-b border-code-line">
                                         <div class="flex items-center gap-3">
@@ -326,7 +323,7 @@
                                 $label = $block['label'] ?? $href;
                                 $desc = $block['desc'] ?? '';
                             @endphp
-                            <div class="my-4">
+                            <div class="my-2">
                                 <a href="{{ $href }}" target="_blank" rel="noopener noreferrer"
                                     class="group flex items-start gap-3 sm:gap-4 rounded-xl border border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/10 hover:bg-blue-100/50 dark:hover:bg-blue-900/20 p-3 sm:p-5 transition-all duration-200">
                                     <div
@@ -354,15 +351,15 @@
                         @elseif ($type === 'pembatas')
                             @php $style = $block['style'] ?? 'garis'; @endphp
                             @if ($style === 'garis')
-                                <hr class="my-6 border-slate-200 dark:border-white/10">
+                                <hr class="my-4 border-slate-200 dark:border-white/10">
                             @elseif ($style === 'garis-tebal')
-                                <hr class="my-6 border-2 border-slate-300 dark:border-white/20 rounded-full">
+                                <hr class="my-4 border-2 border-slate-300 dark:border-white/20 rounded-full">
                             @elseif ($style === 'dots')
                                 <div
-                                    class="my-6 text-center text-slate-400 dark:text-slate-500 text-xl tracking-[0.6em] select-none">
+                                    class="my-4 text-center text-slate-400 dark:text-slate-500 text-xl tracking-[0.6em] select-none">
                                     · · ·</div>
                             @elseif ($style === 'spasi')
-                                <div class="my-8"></div>
+                                <div class="my-5"></div>
                             @endif
                         @elseif ($type === 'tabel')
                             @php
@@ -370,7 +367,7 @@
                                 $rows = $block['rows'] ?? [];
                                 $caption = $block['caption'] ?? '';
                             @endphp
-                            <div class="my-6 space-y-2">
+                            <div class="my-3 space-y-2">
                                 <div
                                     class="overflow-x-auto rounded-xl border border-slate-300 dark:border-slate-700 shadow-sm bg-white dark:bg-[#0d1117]">
                                     <table
@@ -409,7 +406,7 @@
             @endif
 
             <div
-                class="mt-8 sm:mt-10 pt-5 sm:pt-6 border-t border-line dark:border-white/10 flex flex-col sm:flex-row justify-between gap-3 sm:gap-4">
+                class="mt-6 sm:mt-7 pt-4 sm:pt-5 border-t border-line dark:border-white/10 flex flex-col sm:flex-row justify-between gap-3 sm:gap-4">
                 @if ($prevSubbab)
                     <a href="{{ route('course.subbab', [$course, $prevSubbab['slug']]) }}"
                         @click.prevent="navigateSubbab('{{ route('course.subbab', [$course, $prevSubbab['slug']]) }}', $event)"

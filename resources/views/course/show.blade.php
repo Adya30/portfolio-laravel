@@ -51,12 +51,7 @@
                 </p>
             @endif
 
-            <div class="mt-5 flex flex-wrap items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800 text-xs font-medium">
-                    <i class="ri-file-list-line"></i>
-                    {{ count($subbabs) }} <span x-text="t('subchapters')">Subbab</span>
-                </span>
-
+            <div class="mt-5 flex flex-wrap items-center gap-3 text-sm text-slate-500 dark:text-slate-400 justify-between">
                 @if (count($subbabs))
                     <a href="{{ route('course.subbab', [$course, $subbabs[0]['slug']]) }}"
                        class="focus-ring inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-accent text-white text-xs font-semibold hover:bg-blue-600 hover:-translate-y-0.5 transition-all shadow-sm">
@@ -64,6 +59,11 @@
                         <span x-text="t('startLearning')">Mulai Belajar</span>
                     </a>
                 @endif
+
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800 text-xs font-medium">
+                    <i class="ri-file-list-line"></i>
+                    {{ count($subbabs) }} <span x-text="t('subchapters')">Subbab</span>
+                </span>
             </div>
         </header>
 
