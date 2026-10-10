@@ -17,7 +17,7 @@
                                 <div class="flex items-start gap-3 sm:gap-3.5">
                                     @if ($experience->gambar)
                                         <img src="{{ img_url($experience->gambar) }}" alt="{{ $experience->company }}"
-                                            class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl object-cover border border-slate-200/80 dark:border-white/10 bg-slate-100/70 dark:bg-[#181824] shrink-0"
+                                            class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl object-contain p-1 border border-slate-200/80 dark:border-white/10 bg-slate-100/70 dark:bg-[#181824] shrink-0"
                                             loading="lazy">
                                     @else
                                         <span

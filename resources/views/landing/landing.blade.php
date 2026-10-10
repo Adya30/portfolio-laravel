@@ -523,11 +523,11 @@
                                             class="group block border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#181824] hover:bg-slate-100/90 dark:hover:bg-[#12121c] rounded-2xl p-4 sm:p-5 transition-all hover:border-slate-300 dark:hover:border-white/25 shadow-none">
                                             <div class="flex flex-row items-center gap-5 sm:gap-6">
                                                 <div
-                                                    class="w-48 xl:w-56 aspect-[16/10] rounded-xl overflow-hidden bg-slate-100 dark:bg-white/5 shrink-0">
+                                                    class="w-32 h-32 sm:w-36 sm:h-36 xl:w-40 xl:h-40 aspect-square rounded-2xl overflow-hidden bg-slate-100/80 dark:bg-white/5 shrink-0 flex items-center justify-center p-2.5 sm:p-3">
                                                     @if ($hasThumbnail)
                                                         <img src="{{ img_url($e->gambar) }}"
                                                             alt="{{ $e->company ?? $e->role }}"
-                                                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                            class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
                                                             loading="lazy">
                                                     @else
                                                         <div
@@ -594,11 +594,11 @@
                                             class="group block border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#181824] hover:bg-slate-100/90 dark:hover:bg-[#12121c] rounded-2xl p-4 sm:p-5 transition-all hover:border-slate-300 dark:hover:border-white/25 shadow-none">
                                             <div class="flex flex-row items-center gap-5 sm:gap-6">
                                                 <div
-                                                    class="w-48 xl:w-56 aspect-[16/10] rounded-xl overflow-hidden bg-slate-100 dark:bg-white/5 shrink-0">
+                                                    class="w-32 h-32 sm:w-36 sm:h-36 xl:w-40 xl:h-40 aspect-square rounded-2xl overflow-hidden bg-slate-100/80 dark:bg-white/5 shrink-0 flex items-center justify-center p-2.5 sm:p-3">
                                                     @if ($hasThumbnail)
                                                         <img src="{{ img_url($e->gambar) }}"
                                                             alt="{{ $e->company ?? $e->role }}"
-                                                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                            class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
                                                             loading="lazy">
                                                     @else
                                                         <div
@@ -654,16 +654,16 @@
                                 </div>
                                 <a href="{{ route('experience.show', $e) }}"
                                     class="group block border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#181824] hover:bg-slate-100/90 dark:hover:bg-[#12121c] rounded-2xl p-4 sm:p-5 transition-all hover:border-slate-300 dark:hover:border-white/25 shadow-none">
-                                    <div class="flex flex-col sm:flex-row items-center gap-4 sm:gap-5">
+                                    <div class="flex flex-row items-center gap-4 sm:gap-5">
                                         <div
-                                            class="w-full sm:w-44 aspect-[16/10] rounded-xl overflow-hidden bg-slate-100 dark:bg-white/5 shrink-0">
+                                            class="w-20 h-20 sm:w-28 sm:h-28 aspect-square rounded-xl overflow-hidden bg-slate-100/80 dark:bg-white/5 shrink-0 flex items-center justify-center p-2 sm:p-2.5">
                                             @if ($hasThumbnail)
                                                 <img src="{{ img_url($e->gambar) }}" alt="{{ $e->company ?? $e->role }}"
-                                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                    class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
                                                     loading="lazy">
                                             @else
                                                 <div
-                                                    class="w-full h-full flex items-center justify-center font-bold text-3xl text-orange-500 bg-orange-500/10">
+                                                    class="w-full h-full flex items-center justify-center font-bold text-2xl sm:text-3xl text-orange-500 bg-orange-500/10">
                                                     {{ substr($e->company ?: ($e->role ?: 'E'), 0, 1) }}
                                                 </div>
                                             @endif
