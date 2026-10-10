@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Course;
 use App\Models\Tool;
 use App\Models\User;
 
@@ -36,7 +37,7 @@ test('tools index renders the drag handle', function () {
 test('subbab reorder endpoint updates course content order', function () {
     $user = User::factory()->create();
 
-    $course = \App\Models\Course::create([
+    $course = Course::create([
         'nama' => 'Materi Reorder',
         'konten' => [
             ['type' => 'subbab', 'judul' => 'Subbab 1'],
@@ -62,7 +63,7 @@ test('subbab reorder endpoint updates course content order', function () {
 test('admin course subbab page renders reorder table and drag handle', function () {
     $user = User::factory()->create();
 
-    $course = \App\Models\Course::create([
+    $course = Course::create([
         'nama' => 'Materi Reorder',
         'konten' => [
             ['type' => 'subbab', 'judul' => 'Subbab 1'],

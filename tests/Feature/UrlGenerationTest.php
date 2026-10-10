@@ -5,6 +5,7 @@ use App\Models\Certificate;
 use App\Models\Course;
 use App\Models\Experience;
 use App\Models\Project;
+use Illuminate\Support\Facades\DB;
 
 test('landing page loads successfully even if a project has empty slug', function () {
     $category = Category::create(['nama' => 'Web App']);
@@ -15,7 +16,7 @@ test('landing page loads successfully even if a project has empty slug', functio
         'category_id' => $category->id,
     ]);
 
-    \Illuminate\Support\Facades\DB::table('projects')
+    DB::table('projects')
         ->where('id', $project->id)
         ->update(['slug' => '']);
 
@@ -53,7 +54,7 @@ test('experience route generation works with empty slug', function () {
         'desk' => 'Test experience description',
     ]);
 
-    \Illuminate\Support\Facades\DB::table('experiences')
+    DB::table('experiences')
         ->where('id', $experience->id)
         ->update(['slug' => '']);
 
@@ -75,7 +76,7 @@ test('certificate route generation works with empty slug', function () {
         'desk' => 'Test certificate description',
     ]);
 
-    \Illuminate\Support\Facades\DB::table('certificates')
+    DB::table('certificates')
         ->where('id', $certificate->id)
         ->update(['slug' => '']);
 
@@ -95,7 +96,7 @@ test('course route generation works with empty slug', function () {
         'desk' => 'Test course description',
     ]);
 
-    \Illuminate\Support\Facades\DB::table('courses')
+    DB::table('courses')
         ->where('id', $course->id)
         ->update(['slug' => '']);
 

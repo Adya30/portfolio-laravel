@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#eaeef5">
+    <meta name="theme-color" content="#e2e8f0">
 
     @php
         $seo = $seo ?? [];
@@ -76,7 +76,7 @@
                 document.documentElement.classList.toggle('dark', dark);
 
                 var themeColor = document.querySelector('meta[name="theme-color"]');
-                if (themeColor) themeColor.setAttribute('content', dark ? '#0a0a0f' : '#eaeef5');
+                if (themeColor) themeColor.setAttribute('content', dark ? '#050508' : '#e2e8f0');
 
                 var lang = localStorage.getItem('lang') || 'en';
                 document.documentElement.setAttribute('lang', lang);

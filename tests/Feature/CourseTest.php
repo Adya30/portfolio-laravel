@@ -178,7 +178,7 @@ test('course pages do not include the portfolio navbar menu', function () {
 
     $this->get(route('course.index'))
         ->assertOk()
-        ->assertDontSee("scrollToSection", false);
+        ->assertDontSee('scrollToSection', false);
 });
 
 test('admin can upload a webp image for a content block', function () {

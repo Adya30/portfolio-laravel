@@ -2,14 +2,15 @@
 
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CertificateController;
+use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ExperienceController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\ToolController;
-use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\TwoFactorLoginController;
 use App\Http\Controllers\LandingController;
 use App\Http\Middleware\EnsureMateriRoleAccess;
 use Illuminate\Support\Facades\Route;
@@ -47,8 +48,8 @@ Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:login')->name('login.attempt');
 
-    Route::get('/2fa', [\App\Http\Controllers\Auth\TwoFactorLoginController::class, 'showForm'])->name('2fa.form');
-    Route::post('/2fa', [\App\Http\Controllers\Auth\TwoFactorLoginController::class, 'verify'])->name('2fa.verify');
+    Route::get('/2fa', [TwoFactorLoginController::class, 'showForm'])->name('2fa.form');
+    Route::post('/2fa', [TwoFactorLoginController::class, 'verify'])->name('2fa.verify');
 });
 
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
@@ -85,4 +86,3 @@ Route::middleware(['auth', EnsureMateriRoleAccess::class, 'throttle:120,1'])->pr
     Route::post('profile/2fa/enable', [ProfileController::class, 'enableTwoFactor'])->name('profile.2fa.enable');
     Route::post('profile/2fa/disable', [ProfileController::class, 'disableTwoFactor'])->name('profile.2fa.disable');
 });
-

@@ -21,7 +21,7 @@ class Course extends Model
 
     public function getSubbabIndexBySlug(string $slug): ?int
     {
-        if (!$this->konten || !is_array($this->konten)) {
+        if (! $this->konten || ! is_array($this->konten)) {
             return null;
         }
 
@@ -40,7 +40,7 @@ class Course extends Model
 
     public function getSubbabSlugByIndex(int $index): ?string
     {
-        if (!$this->konten || !is_array($this->konten)) {
+        if (! $this->konten || ! is_array($this->konten)) {
             return null;
         }
 
@@ -48,6 +48,7 @@ class Course extends Model
 
         if ($block && isset($block['type']) && $block['type'] === 'subbab') {
             $judul = $block['judul'] ?? '';
+
             return Str::slug($judul) ?: ('subbab-'.($index + 1));
         }
 

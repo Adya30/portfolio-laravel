@@ -17,18 +17,18 @@ class AdminUserSeeder extends Seeder
         User::updateOrCreate(
             ['email' => env('ADMIN_EMAIL', 'handikaadya@gmail.com')],
             [
-                'name'     => env('ADMIN_NAME', 'Adya Handika Putra AP'),
+                'name' => env('ADMIN_NAME', 'Adya Handika Putra AP'),
                 'password' => env('ADMIN_PASSWORD', 'admin123'),
-                'role'     => 'admin',
+                'role' => 'admin',
             ]
         );
 
         User::updateOrCreate(
             ['email' => env('MATERI_EMAIL', 'user@materi.com')],
             [
-                'name'     => env('MATERI_NAME', 'User Materi'),
+                'name' => env('MATERI_NAME', 'User Materi'),
                 'password' => env('MATERI_PASSWORD', 'user123'),
-                'role'     => 'materi',
+                'role' => 'materi',
             ]
         );
     }

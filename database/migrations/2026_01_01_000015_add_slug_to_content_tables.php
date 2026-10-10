@@ -59,7 +59,7 @@ return new class extends Migration
             $baseSlug = $slug;
             $counter = 1;
             while (DB::table($table)->where('slug', $slug)->where('id', '!=', $row->id)->exists()) {
-                $slug = $baseSlug . '-' . $counter;
+                $slug = $baseSlug.'-'.$counter;
                 $counter++;
             }
 

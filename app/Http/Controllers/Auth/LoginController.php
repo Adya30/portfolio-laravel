@@ -12,7 +12,6 @@ use Illuminate\View\View;
 
 class LoginController extends Controller
 {
-
     protected const MAX_ATTEMPTS = 5;
 
     protected const BASE_DECAY_SECONDS = 60;
@@ -56,7 +55,7 @@ class LoginController extends Controller
 
             if ($user->hasTwoFactorEnabled()) {
                 // Generate signed URL for 2FA verification
-                $twoFaUrl = \App\Http\Controllers\Auth\TwoFactorLoginController::generateSignedUrl($user->id);
+                $twoFaUrl = TwoFactorLoginController::generateSignedUrl($user->id);
 
                 Auth::logout();
 

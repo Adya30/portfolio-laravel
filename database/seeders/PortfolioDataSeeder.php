@@ -54,9 +54,9 @@ class PortfolioDataSeeder extends Seeder
                 'tagline' => 'Design UI for website, Building modular, Web applications with a focus on architecture and precise digital experiences.',
                 'tagline_idn' => 'Mendesain UI untuk website, membangun aplikasi web modular dengan fokus pada arsitektur dan pengalaman digital yang presisi.',
                 'about_1' => "Hello! I'm Adya Handika Putra AP, a Full Stack Developer with a deep passion for technology, open source, and exploring new programming concepts to build digital solutions that are both functional and precisely crafted.",
-                'about_1_idn' => "Halo! Saya Adya Handika Putra AP, seorang Full Stack Developer dengan ketertarikan mendalam pada teknologi, open source, dan eksplorasi konsep pemrograman baru untuk membangun solusi digital yang fungsional dan dibuat dengan presisi.",
+                'about_1_idn' => 'Halo! Saya Adya Handika Putra AP, seorang Full Stack Developer dengan ketertarikan mendalam pada teknologi, open source, dan eksplorasi konsep pemrograman baru untuk membangun solusi digital yang fungsional dan dibuat dengan presisi.',
                 'about_2' => "Currently pursuing a degree in Information Systems at the University of Jember, I'm constantly driven to learn, create, and contribute to the developer community through clean code, thoughtful architecture, and collaborative projects.",
-                'about_2_idn' => "Saat ini saya menempuh pendidikan di jurusan Sistem Informasi Universitas Jember. Saya terus terdorong untuk belajar, berkarya, dan berkontribusi pada komunitas developer melalui kode yang bersih, arsitektur yang matang, dan proyek kolaboratif.",
+                'about_2_idn' => 'Saat ini saya menempuh pendidikan di jurusan Sistem Informasi Universitas Jember. Saya terus terdorong untuk belajar, berkarya, dan berkontribusi pada komunitas developer melalui kode yang bersih, arsitektur yang matang, dan proyek kolaboratif.',
                 'email' => 'handikaadya@gmail.com',
                 'cv_url' => 'https://drive.google.com/file/d/1yxphIQqnXRANWjzAER0K194RBqvTg3We/view?usp=sharing',
                 'hero_image' => null,
@@ -337,7 +337,7 @@ class PortfolioDataSeeder extends Seeder
             Experience::updateOrCreate(
                 ['role' => $experience['role']],
                 $experience + [
-                    'slug' => Str::slug($experience['role'] . ' ' . $experience['company']),
+                    'slug' => Str::slug($experience['role'].' '.$experience['company']),
                     'sort_order' => $i + 1,
                 ]
             );

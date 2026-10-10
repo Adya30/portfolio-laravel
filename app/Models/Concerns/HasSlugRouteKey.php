@@ -18,16 +18,16 @@ trait HasSlugRouteKey
         try {
             $slug = $this->getAttribute('slug');
 
-            if (!empty($slug)) {
+            if (! empty($slug)) {
                 return (string) $slug;
             }
 
             $name = $this->getSlugBaseName();
             $generatedSlug = $this->generateUniqueSlug($name, $this->id);
 
-            if (!empty($generatedSlug)) {
+            if (! empty($generatedSlug)) {
                 $this->slug = $generatedSlug;
-                if ($this->exists && !empty($this->id)) {
+                if ($this->exists && ! empty($this->id)) {
                     DB::table($this->getTable())->where('id', $this->id)->update(['slug' => $generatedSlug]);
                 }
 
@@ -65,7 +65,7 @@ trait HasSlugRouteKey
             while (static::where('slug', $slug)
                 ->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))
                 ->exists()) {
-                $slug = $baseSlug . '-' . $counter;
+                $slug = $baseSlug.'-'.$counter;
                 $counter++;
             }
         } catch (\Throwable $e) {
@@ -82,7 +82,7 @@ trait HasSlugRouteKey
                 $name = $model->getSlugBaseName();
                 if (empty($model->slug)) {
                     $model->slug = $model->generateUniqueSlug($name, $model->id);
-                } elseif ($model->isSlugNameDirty() && !$model->isDirty('slug')) {
+                } elseif ($model->isSlugNameDirty() && ! $model->isDirty('slug')) {
                     $model->slug = $model->generateUniqueSlug($name, $model->id);
                 }
             } catch (\Throwable $e) {
@@ -93,7 +93,7 @@ trait HasSlugRouteKey
     public function getSlugBaseName(): string
     {
         if (isset($this->role) || isset($this->company)) {
-            return trim(($this->role ?? '') . ' ' . ($this->company ?? '')) ?: 'experience';
+            return trim(($this->role ?? '').' '.($this->company ?? '')) ?: 'experience';
         }
 
         return $this->nama ?? 'item';

@@ -402,7 +402,7 @@ Alpine.data('app', () => ({
         localStorage.setItem('theme', this.dark ? 'dark' : 'light');
 
         const themeColor = document.querySelector('meta[name="theme-color"]');
-        if (themeColor) themeColor.setAttribute('content', this.dark ? '#0a0a0f' : '#f7f8fb');
+        if (themeColor) themeColor.setAttribute('content', this.dark ? '#050508' : '#e2e8f0');
     },
 
     
@@ -1345,7 +1345,7 @@ Alpine.data('projectGallery', (categories) => ({
     get visibleProjects() {
         return this.category === 'all'
             ? this.allProjects
-            : this.allProjects.filter((p) => p.categoryId === this.category);
+            : this.allProjects.filter((p) => String(p.categoryId) === String(this.category));
     },
 
     setCategory(cat) {

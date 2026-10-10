@@ -6,7 +6,6 @@ use App\Models\Category;
 use App\Models\Certificate;
 use App\Models\Course;
 use App\Models\Experience;
-use App\Models\Profile;
 use App\Models\Project;
 use App\Models\Tool;
 use Illuminate\Http\Response;
@@ -156,7 +155,7 @@ class LandingController extends Controller
     public function showSubbab(Course $course, string $subbabSlug): View
     {
         $index = $course->getSubbabIndexBySlug($subbabSlug);
-        
+
         if ($index === null) {
             abort(404);
         }

@@ -14,6 +14,7 @@ class TwoFactorAuth
         for ($i = 0; $i < $length; $i++) {
             $secret .= $chars[random_int(0, 31)];
         }
+
         return $secret;
     }
 
@@ -30,7 +31,7 @@ class TwoFactorAuth
             'period' => 30,
         ]);
 
-        return 'otpauth://totp/' . rawurlencode($company . ':' . $holder) . '?' . $params;
+        return 'otpauth://totp/'.rawurlencode($company.':'.$holder).'?'.$params;
     }
 
     /**
@@ -59,7 +60,7 @@ class TwoFactorAuth
         $secretKey = $this->base32Decode($secret);
 
         // Pack time into binary
-        $time = chr(0) . chr(0) . chr(0) . chr(0) . pack('N*', $timeSlice);
+        $time = chr(0).chr(0).chr(0).chr(0).pack('N*', $timeSlice);
 
         // Hash with HMAC-SHA1
         $hmac = hash_hmac('sha1', $time, $secretKey, true);
@@ -118,6 +119,7 @@ class TwoFactorAuth
         for ($i = 0; $i < $count; $i++) {
             $codes[] = strtoupper(bin2hex(random_bytes(4)));
         }
+
         return $codes;
     }
 }

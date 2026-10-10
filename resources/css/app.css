@@ -29,8 +29,8 @@
     --color-surface-muted: #f1f5fa;
     --color-surface-dark: #14141d;
     --color-surface-dark-muted: #191923;
-    --color-canvas: #eaeef5;
-    --color-canvas-dark: #0a0a0f;
+    --color-canvas: #e2e8f0;
+    --color-canvas-dark: #050508;
 
     /* Light-mode hairline: every border, chip and control edge in the light
        theme uses this instead of slate-200, which sat too close to the canvas

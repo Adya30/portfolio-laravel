@@ -58,6 +58,12 @@
             "@php artisan config:clear --ansi @no_additional_args",
             "@php artisan test"
         ],
+        "lint": [
+            "pint --test"
+        ],
+        "lint:fix": [
+            "pint"
+        ],
         "optimize": [
             "@php artisan optimize",
             "@php artisan event:cache",

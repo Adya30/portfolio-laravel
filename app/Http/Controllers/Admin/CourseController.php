@@ -76,6 +76,7 @@ class CourseController extends Controller
 
         if (! $oldUpdatedAt) {
             $course->update($this->mapCourseData($data, $request, $course));
+
             return redirect()->route('admin.courses.show', $course)->with('success', 'Materi berhasil diperbarui.');
         }
 
@@ -126,7 +127,7 @@ class CourseController extends Controller
             'currentPos' => $pos,
             'prevSubbab' => $pos > 0 ? $subbabs[$pos - 1] : null,
             'nextSubbab' => $pos < count($subbabs) - 1 ? $subbabs[$pos + 1] : null,
-            'subbabTitle' => $allBlocks[$blockIndex]['judul'] ?? self::DEFAULT_SUBBAB_PREFIX . ($pos + 1),
+            'subbabTitle' => $allBlocks[$blockIndex]['judul'] ?? self::DEFAULT_SUBBAB_PREFIX.($pos + 1),
             'originalSubbabTitle' => $allBlocks[$blockIndex]['judul'] ?? '',
             'originalSubbabPosition' => $pos,
         ]);
@@ -182,7 +183,7 @@ class CourseController extends Controller
         $end = isset($subbabIndices[$pos + 1]) ? $subbabIndices[$pos + 1] : count($allBlocks);
 
         if (empty($newBlocks[0]['judul'])) {
-            $newBlocks[0]['judul'] = $allBlocks[$targetIndex]['judul'] ?: (self::DEFAULT_SUBBAB_PREFIX . ($pos + 1));
+            $newBlocks[0]['judul'] = $allBlocks[$targetIndex]['judul'] ?: (self::DEFAULT_SUBBAB_PREFIX.($pos + 1));
         }
 
         $before = array_slice($allBlocks, 0, $targetIndex);
@@ -197,6 +198,7 @@ class CourseController extends Controller
 
             if ($updated === 0) {
                 $course->refresh();
+
                 return $this->retryUpdateSubbab($course, $newBlocks, $originalTitle, $originalPosition);
             }
         } else {
@@ -213,7 +215,7 @@ class CourseController extends Controller
         $subbabTitle = $merged[$newBlockIndex]['judul'] ?? 'Subbab';
 
         return redirect()->route('admin.courses.subbab.edit', [$course, $newBlockIndex])
-            ->with('success', 'Subbab "' . $subbabTitle . '" berhasil diperbarui.');
+            ->with('success', 'Subbab "'.$subbabTitle.'" berhasil diperbarui.');
     }
 
     private function retryUpdateSubbab(Course $course, array $newBlocks, ?string $originalTitle, int $originalPosition): RedirectResponse
@@ -237,7 +239,7 @@ class CourseController extends Controller
         $end = isset($subbabIndices[$pos + 1]) ? $subbabIndices[$pos + 1] : count($allBlocks);
 
         if (empty($newBlocks[0]['judul'])) {
-            $newBlocks[0]['judul'] = $allBlocks[$targetIndex]['judul'] ?: (self::DEFAULT_SUBBAB_PREFIX . ($pos + 1));
+            $newBlocks[0]['judul'] = $allBlocks[$targetIndex]['judul'] ?: (self::DEFAULT_SUBBAB_PREFIX.($pos + 1));
         }
 
         $before = array_slice($allBlocks, 0, $targetIndex);
@@ -256,7 +258,7 @@ class CourseController extends Controller
         $subbabTitle = $merged[$newBlockIndex]['judul'] ?? 'Subbab';
 
         return redirect()->route('admin.courses.subbab.edit', [$course, $newBlockIndex])
-            ->with('success', 'Subbab "' . $subbabTitle . '" berhasil diperbarui.');
+            ->with('success', 'Subbab "'.$subbabTitle.'" berhasil diperbarui.');
     }
 
     private function resolveTargetIndex(array $allBlocks, string $originalTitle, int $originalPosition, int $blockIndex): ?int
@@ -351,7 +353,7 @@ class CourseController extends Controller
         $subbabTitle = $allBlocks[$blockIndex]['judul'] ?? 'Subbab';
 
         return redirect()->route('admin.courses.show', $course)
-            ->with('success', 'Subbab "' . $subbabTitle . '" berhasil dihapus.');
+            ->with('success', 'Subbab "'.$subbabTitle.'" berhasil dihapus.');
     }
 
     public function destroy(Course $course): RedirectResponse
@@ -373,6 +375,7 @@ class CourseController extends Controller
             $url = $this->uploadImage($request->file('gambar'), 'courses');
         } catch (\Throwable $e) {
             report($e);
+
             return response()->json(['error' => 'Upload gambar gagal.'], 422);
         }
 
@@ -512,13 +515,14 @@ class CourseController extends Controller
         $allowed = ['subbab', 'subheading', 'subheading3', 'paragraf', 'gambar', 'kode', 'link', 'pembatas', 'tabel'];
 
         return collect($decoded)
-            ->filter(fn($block) => is_array($block) && isset($block['type']) && in_array($block['type'], $allowed, true))
+            ->filter(fn ($block) => is_array($block) && isset($block['type']) && in_array($block['type'], $allowed, true))
             ->map(function ($block) {
-                if (($block['type'] ?? '') === 'link' && !empty($block['href'])) {
+                if (($block['type'] ?? '') === 'link' && ! empty($block['href'])) {
                     $block['href'] = filter_var($block['href'], FILTER_VALIDATE_URL)
                         && preg_match('#^https?://#i', $block['href'])
                         ? $block['href'] : '#';
                 }
+
                 return $block;
             })
             ->take(500)

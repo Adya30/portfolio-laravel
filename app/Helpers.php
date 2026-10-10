@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Profile;
 use Illuminate\Support\Str;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
@@ -21,19 +22,21 @@ if (! function_exists('render_markdown')) {
 
                 if (preg_match('/data-list=["\']bullet["\']/i', $inner)) {
                     $inner = preg_replace('/\s*data-list=["\']bullet["\']/i', '', $inner);
-                    return '<ul>' . $inner . '</ul>';
+
+                    return '<ul>'.$inner.'</ul>';
                 }
 
                 $inner = preg_replace('/\s*data-list=["\']ordered["\']/i', '', $inner);
-                return '<ol>' . $inner . '</ol>';
+
+                return '<ol>'.$inner.'</ol>';
             }, $text);
         }
 
         $converter = once(function () {
             $env = new Environment([
-                'html_input'         => 'allow',
+                'html_input' => 'allow',
                 'allow_unsafe_links' => false,
-                'max_nesting_level'  => 10,
+                'max_nesting_level' => 10,
             ]);
             $env->addExtension(new CommonMarkCoreExtension);
             $env->addExtension(new TableExtension);
@@ -51,6 +54,7 @@ if (! function_exists('render_markdown')) {
             $level = $m[1];
             $inner = $m[2];
             $slug = Str::slug(strip_tags($inner));
+
             return '<h'.$level.' id="'.$slug.'">'.$inner.'</h'.$level.'>';
         }, $html);
 
@@ -59,9 +63,9 @@ if (! function_exists('render_markdown')) {
 }
 
 if (! function_exists('profile')) {
-    function profile(): ?\App\Models\Profile
+    function profile(): ?Profile
     {
-        return once(fn () => \App\Models\Profile::first(), 'app.profile');
+        return once(fn () => Profile::first(), 'app.profile');
     }
 }
 
@@ -92,12 +96,13 @@ if (! function_exists('tool_icon_url')) {
         }
 
         $letter = strtoupper(substr($nama, 0, 1));
-        return 'data:image/svg+xml;utf8,' . rawurlencode(
+
+        return 'data:image/svg+xml;utf8,'.rawurlencode(
             '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">'
-            . '<rect width="100%" height="100%" rx="10" fill="#3b82f6" fill-opacity="0.15"/>'
-            . '<text x="50%" y="58%" font-family="sans-serif" font-size="20" font-weight="bold" fill="#3b82f6" text-anchor="middle" dominant-baseline="middle">'
-            . $letter
-            . '</text></svg>'
+            .'<rect width="100%" height="100%" rx="10" fill="#3b82f6" fill-opacity="0.15"/>'
+            .'<text x="50%" y="58%" font-family="sans-serif" font-size="20" font-weight="bold" fill="#3b82f6" text-anchor="middle" dominant-baseline="middle">'
+            .$letter
+            .'</text></svg>'
         );
     }
 }

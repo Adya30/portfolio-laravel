@@ -37,4 +37,3 @@ class User extends Authenticatable
         return $this->two_factor_enabled && ! empty($this->two_factor_secret);
     }
 }
-

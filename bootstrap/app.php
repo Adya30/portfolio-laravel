@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -81,7 +82,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // per menit (120) untuk semua halaman web sebagai mitigasi
         // dasar serangan brute-force / DDoS di level aplikasi.
         $middleware->web(append: [
-            \App\Http\Middleware\SecurityHeaders::class,
+            SecurityHeaders::class,
             'throttle:120,1',
         ]);
     })
