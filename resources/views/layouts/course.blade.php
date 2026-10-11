@@ -85,6 +85,8 @@
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
 
+    <x-custom-cursor-styles />
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 

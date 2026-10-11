@@ -1,19 +1,22 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none">
-    <g filter="url(#shadow-pointer)">
-        <!-- Subtle interactive sparkle on hover -->
-        <path d="M5 1 L5 5 M3 3 L7 3" stroke="#FBBF24" stroke-width="1.6" stroke-linecap="round"/>
-        <!-- Main Yellow Body with energetic glow on hover -->
-        <polygon points="5,4 27,25.5 13.5,26.5 5,35" fill="#FFE01A"/>
-        <!-- Bottom Shade -->
-        <polygon points="5,35 7.5,31.5 13.5,24.5 24.5,23.8 27,25.5 13.5,26.5" fill="#EAB308"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+    <g filter="url(#shadow)">
+        <!-- Main Yellow Body -->
+        <polygon points="3,2 25,23.5 11.5,24.5 3,33" fill="#FADE1D"/>
+
+        <!-- Bottom Shade (Darker Gold) -->
+        <polygon points="3,33 5.5,29.5 11.5,22.5 22.5,21.8 25,23.5 11.5,24.5" fill="#EAB308"/>
+
         <!-- Outer Black Outline -->
-        <path d="M5 4 L27 25.5 L13.5 26.5 L5 35" stroke="#000000" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M5 4 L5 21" stroke="#000000" stroke-width="2.6" stroke-linecap="round"/>
-        <path d="M5 25 L5 35" stroke="#000000" stroke-width="2.6" stroke-linecap="round"/>
+        <!-- Right diagonal side -->
+        <path d="M3 2 L25 23.5 L11.5 24.5 L3 33" stroke="#000000" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+
+        <!-- Left vertical side (with stylized gap matching user image) -->
+        <path d="M3 2 L3 19" stroke="#000000" stroke-width="2.6" stroke-linecap="round"/>
+        <path d="M3 23 L3 33" stroke="#000000" stroke-width="2.6" stroke-linecap="round"/>
     </g>
     <defs>
-        <filter id="shadow-pointer" x="-10%" y="-10%" width="140%" height="140%">
-            <feDropShadow dx="1" dy="2" stdDeviation="1" flood-color="#F59E0B" flood-opacity="0.6"/>
+        <filter id="shadow" x="-10%" y="-10%" width="140%" height="140%">
+            <feDropShadow dx="1" dy="1.5" stdDeviation="0.8" flood-color="#000000" flood-opacity="0.3"/>
         </filter>
     </defs>
 </svg>
