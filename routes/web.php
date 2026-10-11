@@ -43,6 +43,7 @@ Route::get('/course/{course}/{subbabSlug}', [LandingController::class, 'showSubb
 Route::get('/project/{project}', [LandingController::class, 'showProject'])->name('project.show');
 Route::get('/experience/{experience}', [LandingController::class, 'showExperience'])->name('experience.show');
 Route::get('/certificate/{certificate}', [LandingController::class, 'showCertificate'])->name('certificate.show');
+Route::get('/api/github-contributions/{year?}', [LandingController::class, 'githubContributions'])->name('api.github-contributions');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');

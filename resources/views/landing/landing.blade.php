@@ -141,6 +141,8 @@
 
     <script>
         window.portfolioData = @json($portfolioData);
+        window.githubData = @json($githubData);
+        window.githubUsername = @json($githubUsername);
         window.heroQuote = {
             en: @json($profile?->hero_quote),
             idn: @json($profile?->hero_quote_idn),
@@ -399,6 +401,93 @@
 
                 </div>
             </div>
+        </div>
+    </section>
+
+
+    <section class="pt-2 sm:pt-3 pb-2 sm:pb-3 relative z-10 scroll-mt-24 sm:scroll-mt-28" id="github-activity">
+        <div class="w-[calc(100%-2.5rem)] max-w-6xl mx-auto" data-aos="fade-up" x-data="githubCalendar()">
+
+            <div
+                class="rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#0f172a] p-4 sm:p-6 lg:p-7 relative shadow-none">
+
+                <div class="mb-4 sm:mb-5 select-none pb-3 border-b border-slate-200/80 dark:border-white/10">
+                    <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-tight">
+                        <span x-text="totalContributions">639</span>
+                        <span x-text="' ' + t('contributionsInLastYear')"> contributions in the last year</span>
+                    </h3>
+                </div>
+
+                <div x-ref="calendarScroll" class="overflow-x-auto scrollbar-none pb-2 pt-1 scroll-smooth w-full">
+                    <div class="w-full min-w-[700px]">
+                        <div
+                            class="flex text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1.5 select-none relative h-4">
+                            <span class="w-6 sm:w-7 shrink-0 mr-2"></span>
+                            <div class="relative flex-1">
+                                <template x-for="m in monthLabels" :key="m.month + m.weekIndex">
+                                    <span class="absolute" :style="`left: ${(m.weekIndex / (weeks.length || 53)) * 100}%`"
+                                        x-text="m.month"></span>
+                                </template>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-2 items-stretch w-full">
+                            <div
+                                class="grid grid-rows-7 gap-[2px] sm:gap-[3px] text-[10px] font-semibold text-slate-400 dark:text-slate-500 select-none w-6 sm:w-7 shrink-0 text-right pr-1">
+                                <span class="flex items-center justify-end opacity-0">Sun</span>
+                                <span class="flex items-center justify-end">Mon</span>
+                                <span class="flex items-center justify-end opacity-0">Tue</span>
+                                <span class="flex items-center justify-end">Wed</span>
+                                <span class="flex items-center justify-end opacity-0">Thu</span>
+                                <span class="flex items-center justify-end">Fri</span>
+                                <span class="flex items-center justify-end opacity-0">Sat</span>
+                            </div>
+
+                            <div class="flex-1 flex justify-between gap-[2px] sm:gap-[3px]">
+                                <template x-for="(week, wIdx) in weeks" :key="wIdx">
+                                    <div class="flex-1 grid grid-rows-7 gap-[2px] sm:gap-[3px]">
+                                        <template x-for="(day, dIdx) in week" :key="dIdx">
+                                            <div class="w-full aspect-square rounded-[2px] sm:rounded-[2.5px] transition-transform duration-150 hover:scale-125 cursor-pointer"
+                                                :class="getCellColor(day)" @mouseenter="showCellTooltip($event, day)"
+                                                @mouseleave="hideCellTooltip()">
+                                            </div>
+                                        </template>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <div
+                            class="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400 mt-5 pt-3.5 border-t border-slate-200/70 dark:border-white/5 select-none pl-8 sm:pl-9">
+                            <a :href="'https://github.com/' + username" target="_blank" rel="noopener noreferrer"
+                                class="hover:text-orange-500 dark:hover:text-orange-400 transition-colors inline-flex items-center gap-1 font-medium focus:outline-none">
+                                <span x-text="t('learnHowCount')">Learn how we count contributions</span>
+                                <i class="ri-arrow-right-up-line text-xs" aria-hidden="true"></i>
+                            </a>
+
+                            <div class="flex items-center gap-1.5">
+                                <span x-text="t('less')">Less</span>
+                                <div class="flex items-center gap-1">
+                                    <div class="w-[11px] h-[11px] rounded-[2px] bg-slate-200/90 dark:bg-[#162032]"></div>
+                                    <div class="w-[11px] h-[11px] rounded-[2px] bg-[#0e4429]"></div>
+                                    <div class="w-[11px] h-[11px] rounded-[2px] bg-[#006d32]"></div>
+                                    <div class="w-[11px] h-[11px] rounded-[2px] bg-[#26a641]"></div>
+                                    <div class="w-[11px] h-[11px] rounded-[2px] bg-[#39d353]"></div>
+                                </div>
+                                <span x-text="t('more')">More</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div x-show="tooltip.show" x-cloak
+                    class="fixed z-[999] pointer-events-none px-2.5 py-1.5 rounded-lg bg-slate-900/95 dark:bg-black/95 text-white text-xs font-medium shadow-xl border border-white/10 backdrop-blur -translate-x-1/2 -translate-y-full mb-2 transition-all duration-75 whitespace-nowrap"
+                    :style="`top: ${tooltip.y - 8}px; left: ${tooltip.x}px;`">
+                    <span x-text="tooltip.text"></span>
+                </div>
+
+            </div>
+
         </div>
     </section>
 

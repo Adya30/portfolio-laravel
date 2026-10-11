@@ -91,7 +91,13 @@ const i18n = {
         skillsLabel: 'Skills:',
         viewDetails: 'View Details',
         certificatesAwards: 'Certificates & Awards',
-        certificatesSubtitle: 'Click on any certificate to see full details',
+        githubActivity: 'GitHub Activity',
+        githubActivitySubtitle: 'Live coding activity and contribution calendar',
+        contributionsInYear: 'contributions in',
+        contributionsInLastYear: 'contributions in the last year',
+        learnHowCount: 'Learn how we count contributions',
+        less: 'Less',
+        more: 'More',
         letsTalk: "Let's Talk",
         contactSubtitle: 'Have a project in mind or just want to say hi? Feel free to reach out directly!',
         contactBody: 'I am always open to discussing new projects, collaboration opportunities, or just to say hi. Send your email and I will respond as soon as possible!',
@@ -197,7 +203,13 @@ const i18n = {
         skillsLabel: 'Keahlian:',
         viewDetails: 'Lihat Detail',
         certificatesAwards: 'Sertifikat & Penghargaan',
-        certificatesSubtitle: 'Sertifikat dan penghargaan yang saya raih',
+        githubActivity: 'Aktivitas GitHub',
+        githubActivitySubtitle: 'Aktivitas koding dan kalender kontribusi real-time',
+        contributionsInYear: 'kontribusi pada tahun',
+        contributionsInLastYear: 'kontribusi dalam satu tahun terakhir',
+        learnHowCount: 'Pelajari cara kami menghitung kontribusi',
+        less: 'Sedikit',
+        more: 'Banyak',
         letsTalk: 'Mari Berbicara',
         contactSubtitle: 'Punya proyek atau sekadar ingin menyapa? Jangan ragu untuk menghubungi saya!',
         contactBody: 'Saya selalu terbuka untuk berdiskusi soal proyek baru, peluang kolaborasi, atau sekadar menyapa. Kirim email Anda dan saya akan segera membalas!',
@@ -1381,6 +1393,176 @@ Alpine.data('projectGallery', (categories) => ({
         const track = this.$refs.track;
         if (track) track.scrollLeft = 0;
         this.$nextTick(() => this.calc());
+    },
+}));
+
+Alpine.data('githubCalendar', (config = {}) => ({
+    username: config.username || window.githubUsername || 'Adya30',
+    selectedYear: 'last',
+    availableYears: ['last', '2026', '2025', '2024'],
+    loading: false,
+    tooltip: { show: false, text: '', x: 0, y: 0 },
+    cache: {
+        last: config.initial || window.githubData || null,
+    },
+    days: (config.initial && config.initial.contributions) || (window.githubData && window.githubData.contributions) || [],
+    totalContributions: (config.initial && config.initial.total && config.initial.total.lastYear) || (window.githubData && window.githubData.total && window.githubData.total.lastYear) || 0,
+    activeDays: 0,
+    maxDayCount: 0,
+
+    init() {
+        const initialData = this.cache.last || window.githubData;
+        if (initialData && initialData.contributions && initialData.contributions.length > 0) {
+            this.cache.last = initialData;
+            this.applyData(initialData, 'last');
+        } else {
+            this.fetchYear('last');
+        }
+        this.$nextTick(() => {
+            const el = this.$refs.calendarScroll;
+            if (el) {
+                el.scrollLeft = el.scrollWidth;
+            }
+        });
+    },
+
+    async fetchYear(year) {
+        this.selectedYear = year;
+        if (this.cache[year]) {
+            this.applyData(this.cache[year], year);
+            return;
+        }
+
+        this.loading = true;
+        try {
+            const res = await fetch(`/api/github-contributions/${year}`);
+            if (res.ok) {
+                const data = await res.json();
+                this.cache[year] = data;
+                this.applyData(data, year);
+            }
+        } catch (e) {
+            console.error('Failed to load GitHub contributions', e);
+        } finally {
+            this.loading = false;
+        }
+    },
+
+    applyData(data, year) {
+        if (!data || !data.contributions) return;
+        this.days = data.contributions;
+        if (year === 'last') {
+            this.totalContributions = data.total?.lastYear ?? data.contributions.reduce((s, c) => s + c.count, 0);
+        } else {
+            this.totalContributions = data.total?.[year] ?? data.contributions.reduce((s, c) => s + c.count, 0);
+        }
+        this.activeDays = this.days.filter((d) => d.count > 0).length;
+        this.maxDayCount = Math.max(0, ...this.days.map((d) => d.count));
+        this.$nextTick(() => {
+            const el = this.$refs.calendarScroll;
+            if (el) {
+                el.scrollLeft = el.scrollWidth;
+            }
+        });
+    },
+
+    get weeks() {
+        if (!this.days || this.days.length === 0) return [];
+        const weeks = [];
+        let currentWeek = [];
+        const parts = this.days[0].date.split('-');
+        const firstDate = new Date(Date.UTC(parts[0], parseInt(parts[1], 10) - 1, parseInt(parts[2], 10)));
+        const firstDayOfWeek = firstDate.getUTCDay();
+
+        for (let i = 0; i < firstDayOfWeek; i++) {
+            currentWeek.push(null);
+        }
+
+        for (const day of this.days) {
+            currentWeek.push(day);
+            if (currentWeek.length === 7) {
+                weeks.push(currentWeek);
+                currentWeek = [];
+            }
+        }
+
+        if (currentWeek.length > 0) {
+            while (currentWeek.length < 7) {
+                currentWeek.push(null);
+            }
+            weeks.push(currentWeek);
+        }
+
+        return weeks;
+    },
+
+    get monthLabels() {
+        const weeks = this.weeks;
+        if (weeks.length === 0) return [];
+        const labels = [];
+        let lastMonth = null;
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        weeks.forEach((week, wIdx) => {
+            for (const day of week) {
+                if (day) {
+                    const parts = day.date.split('-');
+                    const m = monthNames[parseInt(parts[1], 10) - 1];
+                    if (m !== lastMonth) {
+                        labels.push({ month: m, weekIndex: wIdx });
+                        lastMonth = m;
+                    }
+                    break;
+                }
+            }
+        });
+
+        return labels;
+    },
+
+    showCellTooltip(e, day) {
+        if (!day) return;
+        const parts = day.date.split('-');
+        const d = new Date(Date.UTC(parts[0], parseInt(parts[1], 10) - 1, parseInt(parts[2], 10)));
+        const lang = Alpine.store('lang').current;
+        const formattedDate = d.toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+            timeZone: 'UTC',
+        });
+        const countText = day.count === 0
+            ? (lang === 'id' ? `Tidak ada kontribusi pada ${formattedDate}` : `No contributions on ${formattedDate}`)
+            : (lang === 'id' ? `${day.count} kontribusi pada ${formattedDate}` : `${day.count} contribution${day.count > 1 ? 's' : ''} on ${formattedDate}`);
+
+        const rect = e.target.getBoundingClientRect();
+        this.tooltip = {
+            show: true,
+            text: countText,
+            x: rect.left + rect.width / 2,
+            y: rect.top,
+        };
+    },
+
+    hideCellTooltip() {
+        this.tooltip.show = false;
+    },
+
+    getCellColor(day) {
+        if (!day) return 'opacity-0 pointer-events-none';
+        switch (day.level) {
+            case 1:
+                return 'bg-[#0e4429] dark:bg-[#0e4429] border border-[#0e4429]';
+            case 2:
+                return 'bg-[#006d32] dark:bg-[#006d32] border border-[#006d32]';
+            case 3:
+                return 'bg-[#26a641] dark:bg-[#26a641] border border-[#26a641]';
+            case 4:
+                return 'bg-[#39d353] dark:bg-[#39d353] border border-[#39d353]';
+            case 0:
+            default:
+                return 'bg-slate-200/90 dark:bg-[#162032] border border-transparent';
+        }
     },
 }));
 

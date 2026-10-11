@@ -8,7 +8,10 @@ use App\Models\Course;
 use App\Models\Experience;
 use App\Models\Project;
 use App\Models\Tool;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
 
 class LandingController extends Controller
@@ -31,6 +34,27 @@ class LandingController extends Controller
             $profile->linkedin ?? null,
         ]);
 
+        $githubUsername = 'Adya30';
+        if (!empty($profile->github)) {
+            $parsedPath = parse_url($profile->github, PHP_URL_PATH);
+            $trimmed = trim((string) $parsedPath, '/');
+            if (!empty($trimmed)) {
+                $githubUsername = $trimmed;
+            }
+        }
+
+        $githubData = Cache::remember("github_contributions_{$githubUsername}_last", 7200, function () use ($githubUsername) {
+            try {
+                $response = Http::timeout(5)->get("https://github-contributions-api.jogruber.de/v4/{$githubUsername}?y=last");
+                if ($response->successful()) {
+                    return $response->json();
+                }
+            } catch (\Throwable $e) {
+                // fallback
+            }
+            return null;
+        });
+
         return view('landing.landing', [
             'profile' => $profile,
             'categories' => $categories,
@@ -38,6 +62,8 @@ class LandingController extends Controller
             'tools' => $tools,
             'experiences' => $experiences,
             'certificates' => $certificates,
+            'githubData' => $githubData,
+            'githubUsername' => $githubUsername,
             'seo' => [
                 'title' => $name.' | Web Developer & UI Designer Portfolio',
                 'description' => $profile->tagline
@@ -454,5 +480,35 @@ class LandingController extends Controller
             'prev' => $index !== false && $index > 0 ? $ordered[$index - 1] : null,
             'next' => $index !== false && $index < $ordered->count() - 1 ? $ordered[$index + 1] : null,
         ];
+    }
+
+    public function githubContributions(string $year = 'last'): JsonResponse
+    {
+        $year = in_array($year, ['last', '2024', '2025', '2026', '2027']) ? $year : 'last';
+        $profile = profile();
+        $githubUsername = 'Adya30';
+        if (!empty($profile->github)) {
+            $parsedPath = parse_url($profile->github, PHP_URL_PATH);
+            $trimmed = trim((string) $parsedPath, '/');
+            if (!empty($trimmed)) {
+                $githubUsername = $trimmed;
+            }
+        }
+
+        $cacheKey = "github_contributions_{$githubUsername}_{$year}";
+        $data = Cache::remember($cacheKey, 7200, function () use ($githubUsername, $year) {
+            try {
+                $url = "https://github-contributions-api.jogruber.de/v4/{$githubUsername}?y={$year}";
+                $response = Http::timeout(5)->get($url);
+                if ($response->successful()) {
+                    return $response->json();
+                }
+            } catch (\Throwable $e) {
+                //
+            }
+            return null;
+        });
+
+        return response()->json($data ?? ['total' => [], 'contributions' => []]);
     }
 }
