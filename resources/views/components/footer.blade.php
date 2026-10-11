@@ -45,7 +45,7 @@
 <footer class="relative z-10 pt-2 sm:pt-3 pb-8 sm:pb-12" id="footer">
     <div class="w-[calc(100%-2.5rem)] max-w-6xl mx-auto">
         <div
-            class="rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#12121a]/95 p-6 sm:p-10 lg:p-12 shadow-none">
+            class="rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#0f172a]/95 p-6 sm:p-10 lg:p-12 shadow-none">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10 lg:gap-16">
 
                 <div class="space-y-4">
@@ -105,7 +105,7 @@
 
     <div class="w-[calc(100%-2.5rem)] max-w-6xl mx-auto mt-3 sm:mt-4">
         <div
-            class="rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#12121a]/95 px-6 py-4 sm:px-8 sm:py-4.5 shadow-none flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            class="rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#0f172a]/95 px-6 py-4 sm:px-8 sm:py-4.5 shadow-none flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
             <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium">
                 © {{ date('Y') }} {{ $footerName }}. All rights reserved.
             </p>

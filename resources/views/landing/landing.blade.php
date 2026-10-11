@@ -193,7 +193,7 @@
         class="relative z-10 flex flex-col justify-start pt-20 sm:pt-22 lg:pt-24 pb-2 sm:pb-3 scroll-mt-24 sm:scroll-mt-28 overflow-x-clip">
         <div class="w-[calc(100%-2.5rem)] max-w-6xl mx-auto">
 
-            <div class="relative bg-white dark:bg-[#12121a] rounded-[28px] sm:rounded-[36px] lg:rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-[0_15px_35px_-12px_rgba(0,0,0,0.06)] dark:shadow-[0_15px_35px_-12px_rgba(0,0,0,0.6)] px-6 pt-3.5 pb-8 sm:px-10 sm:pt-4 sm:pb-10 lg:px-12 lg:pt-4 lg:pb-0 xl:px-14 xl:pt-5 xl:pb-0 overflow-hidden w-full"
+            <div class="relative bg-white dark:bg-[#0f172a] rounded-[28px] sm:rounded-[36px] lg:rounded-3xl border border-slate-200/80 dark:border-white/10 shadow-[0_15px_35px_-12px_rgba(0,0,0,0.06)] dark:shadow-[0_15px_35px_-12px_rgba(0,0,0,0.6)] px-6 pt-3.5 pb-8 sm:px-10 sm:pt-4 sm:pb-10 lg:px-12 lg:pt-4 lg:pb-0 xl:px-14 xl:pt-5 xl:pb-0 overflow-hidden w-full"
                 data-aos="fade-up">
 
                 <div class="flex lg:hidden flex-col items-center relative mb-6 w-full">
@@ -204,7 +204,7 @@
                     </div>
 
                     <div
-                        class="inline-flex items-center gap-3 px-5 sm:px-6 py-2.5 sm:py-3 rounded-2xl sm:rounded-3xl border border-slate-300 dark:border-white/20 bg-white dark:bg-[#181824] shadow-md -mt-5 sm:-mt-6 z-20 relative max-w-full">
+                        class="inline-flex items-center gap-3 px-5 sm:px-6 py-2.5 sm:py-3 rounded-2xl sm:rounded-3xl border border-slate-300 dark:border-white/20 bg-white dark:bg-[#1e293b] shadow-md -mt-5 sm:-mt-6 z-20 relative max-w-full">
                         <img src="{{ asset('images/icons/quote.png') }}" alt=""
                             class="w-4.5 sm:w-5.5 h-auto shrink-0 dark:invert object-contain select-none"
                             aria-hidden="true">
@@ -236,9 +236,7 @@
 
                         <h1
                             class="font-poppins font-extrabold text-3xl py-2 sm:text-4xl md:text-5xl lg:text-[40px] xl:leading-tight tracking-tight mb-2 sm:mb-2.5">
-                            <span
-                                class="inline-block bg-gradient-to-r from-[#ca8a04] via-[#0d9488] to-[#0891b2] bg-clip-text text-transparent"
-                                style="background-image: linear-gradient(90deg, #f97316 0%, #0d9488 50%, #2563eb 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                            <span class="hero-name-gradient inline-block bg-clip-text text-transparent">
                                 {{ $profileName }}
                             </span>
                         </h1>
@@ -311,8 +309,7 @@
         </div>
     </section>
 
-    <section class="relative z-10 scroll-mt-24 sm:scroll-mt-28 overflow-hidden pt-0 pb-2 sm:pb-3" id="skills"
-        data-aos="fade-up">
+    <section class="relative z-10 scroll-mt-24 sm:scroll-mt-28 overflow-hidden pt-0 pb-2 sm:pb-3" data-aos="fade-up">
         <div class="py-1">
             @php
                 $toolsArray = $tools->values()->toArray();
@@ -325,7 +322,7 @@
                 <div class="animate-marquee-right flex gap-4 sm:gap-5 whitespace-nowrap">
                     @foreach (array_merge($row1, $row1) as $tool)
                         <div
-                            class="bg-white dark:bg-[#181824] border border-slate-200/90 dark:border-white/10 px-5 py-3 sm:px-6 sm:py-3.5 rounded-2xl flex items-center gap-3.5 sm:gap-4 shrink-0 min-w-[190px] sm:min-w-[220px] shadow-none hover:border-slate-300 dark:hover:border-white/20 transition-all select-none">
+                            class="bg-white dark:bg-[#1e293b] border border-slate-200/90 dark:border-white/10 px-5 py-3 sm:px-6 sm:py-3.5 rounded-2xl flex items-center gap-3.5 sm:gap-4 shrink-0 min-w-[190px] sm:min-w-[220px] shadow-none hover:border-slate-300 dark:hover:border-white/20 transition-all select-none">
                             <div
                                 class="surface-muted w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center shrink-0">
                                 <img src="{{ img_url($tool['gambar'] ?? '') }}" alt="{{ $tool['nama'] }}"
@@ -347,7 +344,7 @@
                 <div class="animate-marquee-left flex gap-4 sm:gap-5 whitespace-nowrap">
                     @foreach (array_merge($row2, $row2) as $tool)
                         <div
-                            class="bg-white dark:bg-[#181824] border border-slate-200/90 dark:border-white/10 px-5 py-3 sm:px-6 sm:py-3.5 rounded-2xl flex items-center gap-3.5 sm:gap-4 shrink-0 min-w-[190px] sm:min-w-[220px] shadow-none hover:border-slate-300 dark:hover:border-white/20 transition-all select-none">
+                            class="bg-white dark:bg-[#1e293b] border border-slate-200/90 dark:border-white/10 px-5 py-3 sm:px-6 sm:py-3.5 rounded-2xl flex items-center gap-3.5 sm:gap-4 shrink-0 min-w-[190px] sm:min-w-[220px] shadow-none hover:border-slate-300 dark:hover:border-white/20 transition-all select-none">
                             <div
                                 class="surface-muted w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center shrink-0">
                                 <img src="{{ img_url($tool['gambar'] ?? '') }}" alt="{{ $tool['nama'] }}"
@@ -371,7 +368,7 @@
         data-aos="fade-up">
         <div class="w-[calc(100%-2.5rem)] max-w-6xl mx-auto">
             <div
-                class="rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#12121a]/95 p-6 sm:p-10 lg:p-14 shadow-none">
+                class="rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#0f172a]/95 p-6 sm:p-10 lg:p-14 shadow-none">
                 <div class="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
 
                     <div class="shrink-0 flex items-center justify-center w-full lg:w-auto order-1 lg:order-2">
@@ -408,7 +405,7 @@
     <section class="pt-2 sm:pt-3 pb-2 sm:pb-3 scroll-mt-24 sm:scroll-mt-28 relative z-10" id="proyek"
         data-aos="fade-up">
         <div class="w-[calc(100%-2.5rem)] max-w-6xl mx-auto">
-            <div class="rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#12121a]/95 p-6 sm:p-10 lg:p-12 shadow-none"
+            <div class="rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#0f172a]/95 p-6 sm:p-10 lg:p-12 shadow-none"
                 x-data="projectGallery({{ json_encode($categories->map(fn($c) => ['id' => $c->id, 'nama' => $c->nama])->values()) }})">
 
                 <div class="flex flex-col items-center justify-center text-center mb-6 sm:mb-8">
@@ -447,7 +444,7 @@
                     class="grid grid-flow-col grid-rows-2 gap-5 sm:gap-6 lg:gap-7 overflow-x-auto scrollbar-none snap-x snap-mandatory pt-1 pb-3 auto-cols-[100%] sm:auto-cols-[calc(50%-0.75rem)] lg:auto-cols-[calc(33.333%-1.17rem)] scroll-smooth">
                     <template x-for="p in visibleProjects" :key="p.id">
                         <a :href="p.url"
-                            class="border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#181824] rounded-2xl overflow-hidden flex flex-col group snap-start w-full min-w-0 transition-all hover:border-slate-300 dark:hover:border-white/25 shadow-none">
+                            class="border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#1e293b] rounded-2xl overflow-hidden flex flex-col group snap-start w-full min-w-0 transition-all hover:border-slate-300 dark:hover:border-white/25 shadow-none">
                             <div class="relative overflow-hidden aspect-[16/10] bg-slate-100 dark:bg-white/5">
                                 <img x-show="p.img" :src="p.img" :alt="p.nama"
                                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -490,7 +487,7 @@
 
     <section class="pt-2 sm:pt-3 pb-2 sm:pb-3 relative z-10 scroll-mt-24 sm:scroll-mt-28" id="experiences">
         <div class="w-[calc(100%-2.5rem)] max-w-6xl mx-auto">
-            <div class="rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#12121a]/95 p-6 sm:p-10 lg:p-12 shadow-none"
+            <div class="rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#0f172a]/95 p-6 sm:p-10 lg:p-12 shadow-none"
                 data-aos="fade-up">
 
                 <div class="flex flex-col items-center justify-center text-center mb-10 sm:mb-14">
@@ -520,7 +517,7 @@
                                 @if ($isLeft)
                                     <div class="w-[60%] z-10">
                                         <a href="{{ route('experience.show', $e) }}"
-                                            class="group block border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#181824] hover:bg-slate-100/90 dark:hover:bg-[#12121c] rounded-2xl p-4 sm:p-5 transition-all hover:border-slate-300 dark:hover:border-white/25 shadow-none">
+                                            class="group block border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#1e293b] hover:bg-slate-100/90 dark:hover:bg-[#162032] rounded-2xl p-4 sm:p-5 transition-all hover:border-slate-300 dark:hover:border-white/25 shadow-none">
                                             <div class="flex flex-row items-center gap-5 sm:gap-6">
                                                 <div
                                                     class="w-32 h-32 sm:w-36 sm:h-36 xl:w-40 xl:h-40 aspect-square rounded-2xl overflow-hidden bg-slate-100/80 dark:bg-white/5 shrink-0 flex items-center justify-center p-2.5 sm:p-3">
@@ -591,7 +588,7 @@
 
                                     <div class="w-[60%] z-10">
                                         <a href="{{ route('experience.show', $e) }}"
-                                            class="group block border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#181824] hover:bg-slate-100/90 dark:hover:bg-[#12121c] rounded-2xl p-4 sm:p-5 transition-all hover:border-slate-300 dark:hover:border-white/25 shadow-none">
+                                            class="group block border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#1e293b] hover:bg-slate-100/90 dark:hover:bg-[#162032] rounded-2xl p-4 sm:p-5 transition-all hover:border-slate-300 dark:hover:border-white/25 shadow-none">
                                             <div class="flex flex-row items-center gap-5 sm:gap-6">
                                                 <div
                                                     class="w-32 h-32 sm:w-36 sm:h-36 xl:w-40 xl:h-40 aspect-square rounded-2xl overflow-hidden bg-slate-100/80 dark:bg-white/5 shrink-0 flex items-center justify-center p-2.5 sm:p-3">
@@ -653,47 +650,52 @@
                                     <span>{{ $e->duration }}</span>
                                 </div>
                                 <a href="{{ route('experience.show', $e) }}"
-                                    class="group block border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#181824] hover:bg-slate-100/90 dark:hover:bg-[#12121c] rounded-2xl p-4 sm:p-5 transition-all hover:border-slate-300 dark:hover:border-white/25 shadow-none">
-                                    <div class="flex flex-row items-center gap-4 sm:gap-5">
-                                        <div
-                                            class="w-20 h-20 sm:w-28 sm:h-28 aspect-square rounded-xl overflow-hidden bg-slate-100/80 dark:bg-white/5 shrink-0 flex items-center justify-center p-2 sm:p-2.5">
-                                            @if ($hasThumbnail)
-                                                <img src="{{ img_url($e->gambar) }}" alt="{{ $e->company ?? $e->role }}"
-                                                    class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
-                                                    loading="lazy">
-                                            @else
-                                                <div
-                                                    class="w-full h-full flex items-center justify-center font-bold text-2xl sm:text-3xl text-orange-500 bg-orange-500/10">
-                                                    {{ substr($e->company ?: ($e->role ?: 'E'), 0, 1) }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                        <div class="flex-1 min-w-0 flex flex-col items-start w-full">
-                                            <h3
-                                                class="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
-                                                {{ $e->company ?: $e->role }}
-                                            </h3>
-                                            @if ($e->company && $e->role)
-                                                <p class="text-xs font-semibold text-orange-500 mt-0.5">
-                                                    <span
-                                                        x-text='L(@json($e->role), @json($e->role_idn))'>{{ $e->role }}</span>
-                                                </p>
-                                            @endif
-                                            <p class="text-xs text-slate-600 dark:text-slate-400 mt-2 line-clamp-2 leading-relaxed"
-                                                x-text='L(@json($e->desk), @json($e->desk_idn))'>
-                                                {{ $e->desk }}
-                                            </p>
-                                            @if (!empty($e->skills))
-                                                <div class="flex flex-wrap items-center gap-2 mt-3 pt-1">
-                                                    @foreach (array_slice($e->skills, 0, 4) as $skill)
+                                    class="group block border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#1e293b] hover:bg-slate-100/90 dark:hover:bg-[#162032] rounded-2xl p-4 sm:p-5 transition-all hover:border-slate-300 dark:hover:border-white/25 shadow-none">
+                                    <div class="flex flex-col">
+                                        <div class="flex items-center gap-3.5 sm:gap-4 mb-3">
+                                            <div
+                                                class="w-12 h-12 sm:w-14 sm:h-14 aspect-square rounded-xl overflow-hidden bg-slate-100/80 dark:bg-white/5 shrink-0 flex items-center justify-center p-2 sm:p-2.5">
+                                                @if ($hasThumbnail)
+                                                    <img src="{{ img_url($e->gambar) }}"
+                                                        alt="{{ $e->company ?? $e->role }}"
+                                                        class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                                                        loading="lazy">
+                                                @else
+                                                    <div
+                                                        class="w-full h-full flex items-center justify-center font-bold text-xl sm:text-2xl text-orange-500 bg-orange-500/10 rounded-lg">
+                                                        {{ substr($e->company ?: ($e->role ?: 'E'), 0, 1) }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            <div class="min-w-0 flex-1">
+                                                <h3
+                                                    class="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors">
+                                                    {{ $e->company ?: $e->role }}
+                                                </h3>
+                                                @if ($e->company && $e->role)
+                                                    <p class="text-xs font-semibold text-orange-500 mt-0.5">
                                                         <span
-                                                            class="rounded-full border border-slate-300 dark:border-white/20 px-3.5 py-0.5 text-xs text-slate-600 dark:text-slate-300 font-normal bg-white dark:bg-white/5">
-                                                            {{ $skill }}
-                                                        </span>
-                                                    @endforeach
-                                                </div>
-                                            @endif
+                                                            x-text='L(@json($e->role), @json($e->role_idn))'>{{ $e->role }}</span>
+                                                    </p>
+                                                @endif
+                                            </div>
                                         </div>
+
+                                        <p class="text-xs sm:text-[13px] text-slate-600 dark:text-slate-400 mb-3 line-clamp-3 leading-relaxed"
+                                            x-text='L(@json($e->desk), @json($e->desk_idn))'>
+                                            {{ $e->desk }}
+                                        </p>
+
+                                        @if (!empty($e->skills))
+                                            <div class="flex flex-wrap items-center gap-2 pt-0.5">
+                                                @foreach (array_slice($e->skills, 0, 4) as $skill)
+                                                    <span
+                                                        class="rounded-full border border-slate-300 dark:border-white/20 px-3.5 py-0.5 text-xs text-slate-600 dark:text-slate-300 font-normal bg-white dark:bg-white/5">
+                                                        {{ $skill }}
+                                                    </span>
+                                                @endforeach
+                                            </div>
+                                        @endif
                                     </div>
                                 </a>
                             </div>
@@ -708,7 +710,7 @@
 
     <section class="pt-2 sm:pt-3 pb-2 sm:pb-3 relative z-10 scroll-mt-24 sm:scroll-mt-28" id="certificates">
         <div class="w-[calc(100%-2.5rem)] max-w-6xl mx-auto">
-            <div class="rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#12121a]/95 p-6 sm:p-10 lg:p-12 shadow-none"
+            <div class="rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#0f172a]/95 p-6 sm:p-10 lg:p-12 shadow-none"
                 data-aos="fade-up">
 
                 <div class="flex flex-col items-center justify-center text-center mb-8 sm:mb-10">
@@ -729,7 +731,7 @@
                         class="grid grid-flow-col grid-rows-2 gap-5 sm:gap-6 lg:gap-7 overflow-x-auto scrollbar-none snap-x snap-mandatory pt-1 pb-3 auto-cols-[100%] sm:auto-cols-[calc(50%-0.75rem)] lg:auto-cols-[calc(33.333%-1.17rem)] scroll-smooth">
                         <template x-for="c in certificates" :key="c.id">
                             <a :href="c.url"
-                                class="border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#181824] rounded-2xl overflow-hidden flex flex-col group snap-start w-full min-w-0 transition-all hover:border-slate-300 dark:hover:border-white/25 shadow-none">
+                                class="border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#1e293b] rounded-2xl overflow-hidden flex flex-col group snap-start w-full min-w-0 transition-all hover:border-slate-300 dark:hover:border-white/25 shadow-none">
                                 <div
                                     class="relative h-44 sm:h-52 w-full shrink-0 border-b border-slate-200/80 dark:border-white/10 overflow-hidden bg-slate-50 dark:bg-white/[0.03]">
                                     <img :src="c.img" :alt="c.nama"
@@ -779,7 +781,7 @@
 
     <section class="pt-2 sm:pt-3 pb-2 sm:pb-3 relative z-10 scroll-mt-24 sm:scroll-mt-28" id="kontak">
         <div class="w-[calc(100%-2.5rem)] max-w-6xl mx-auto">
-            <div class="rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#12121a]/95 p-6 sm:p-10 lg:p-14 shadow-none text-center"
+            <div class="rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#0f172a]/95 p-6 sm:p-10 lg:p-14 shadow-none text-center"
                 data-aos="fade-up">
 
                 <div class="flex flex-col items-center justify-center text-center mb-6 sm:mb-8">

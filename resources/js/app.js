@@ -345,7 +345,10 @@ Alpine.data('app', () => ({
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
-                    if (entry.isIntersecting) this.active = entry.target.id;
+                    if (entry.isIntersecting) {
+                        this.active = entry.target.id;
+                        this.scrollActiveNavIntoView(entry.target.id);
+                    }
                 });
             },
             { threshold: 0.15, rootMargin: '-80px 0px -40px 0px' }
@@ -366,6 +369,7 @@ Alpine.data('app', () => ({
 
         
         this.$nextTick(() => {
+            this.scrollActiveNavIntoView(this.active);
             document.querySelectorAll('pre code').forEach((el) => {
                 try {
                     delete el.dataset.highlighted;
@@ -527,9 +531,32 @@ Alpine.data('app', () => ({
         return en ?? '';
     },
 
+    scrollActiveNavIntoView(id) {
+        if (!id) return;
+        const mobileNavScroll = document.querySelector('[data-mobile-nav-scroll]');
+        if (mobileNavScroll) {
+            const activeEl = mobileNavScroll.querySelector(`[data-nav-id="${id}"]`);
+            if (activeEl) {
+                const containerWidth = mobileNavScroll.clientWidth;
+                const elLeft = activeEl.offsetLeft;
+                const elWidth = activeEl.offsetWidth;
+                const targetScroll = elLeft - (containerWidth / 2) + (elWidth / 2);
+                mobileNavScroll.scrollTo({
+                    left: Math.max(0, targetScroll),
+                    behavior: 'smooth'
+                });
+            }
+        }
+    },
+
     scrollToSection(e, href) {
         if (e && e.preventDefault) e.preventDefault();
         if (!href || href === '#') return;
+        const id = href.replace(/^#/, '');
+        if (id) {
+            this.active = id;
+            this.scrollActiveNavIntoView(id);
+        }
         try {
             const el = document.querySelector(href);
             if (el) {

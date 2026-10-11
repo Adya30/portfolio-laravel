@@ -3,10 +3,10 @@
 @section('content')
     <x-page-background />
 
-    <section class="relative z-20 pt-16 pb-8 sm:pt-20 sm:pb-10 md:pt-24">
+    <section class="relative z-20 pt-[calc(5.5rem+env(safe-area-inset-top,0px))] pb-8 sm:pt-20 sm:pb-10 md:pt-24">
         <div class="w-[calc(100%-2.5rem)] max-w-6xl mx-auto space-y-3 sm:space-y-4">
 
-            <div class="rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#12121a]/95 overflow-hidden shadow-none"
+            <div class="rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#0f172a]/95 overflow-hidden shadow-none"
                 data-aos="fade-up" data-aos-duration="700">
                 <div
                     class="grid lg:grid-cols-[1fr_320px] items-stretch divide-y lg:divide-y-0 lg:divide-x divide-slate-200/90 dark:divide-white/10">
@@ -17,7 +17,7 @@
                                 <div class="flex items-start gap-3 sm:gap-3.5">
                                     @if ($experience->gambar)
                                         <img src="{{ img_url($experience->gambar) }}" alt="{{ $experience->company }}"
-                                            class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl object-contain p-1 border border-slate-200/80 dark:border-white/10 bg-slate-100/70 dark:bg-[#181824] shrink-0"
+                                            class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl object-contain p-1 border border-slate-200/80 dark:border-white/10 bg-slate-100/70 dark:bg-[#1e293b] shrink-0"
                                             loading="lazy">
                                     @else
                                         <span
@@ -148,7 +148,7 @@
             <div class="flex items-stretch justify-between gap-2.5 sm:gap-3 pt-0.5">
                 @if ($prev)
                     <a href="{{ route('experience.show', $prev) }}"
-                        class="rounded-2xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#12121a]/95 hover:border-orange-500/60 dark:hover:border-orange-500/60 group flex-1 min-w-0 p-3 sm:p-3.5 transition-all">
+                        class="rounded-2xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#0f172a]/95 hover:border-orange-500/60 dark:hover:border-orange-500/60 group flex-1 min-w-0 p-3 sm:p-3.5 transition-all">
                         <span
                             class="block text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-0.5"><i
                                 class="ri-arrow-left-s-line mr-0.5" aria-hidden="true"></i><span
@@ -162,7 +162,7 @@
 
                 @if ($next)
                     <a href="{{ route('experience.show', $next) }}"
-                        class="rounded-2xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#12121a]/95 hover:border-orange-500/60 dark:hover:border-orange-500/60 group flex-1 min-w-0 text-right p-3 sm:p-3.5 transition-all">
+                        class="rounded-2xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#0f172a]/95 hover:border-orange-500/60 dark:hover:border-orange-500/60 group flex-1 min-w-0 text-right p-3 sm:p-3.5 transition-all">
                         <span
                             class="block text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-0.5"><span
                                 x-text="t('next')">Next</span><i class="ri-arrow-right-s-line ml-0.5"

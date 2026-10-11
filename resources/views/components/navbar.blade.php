@@ -43,13 +43,13 @@
 
 <div class="fixed top-4 md:top-5 left-0 right-0 z-50 hidden md:block" x-cloak>
     <nav
-        class="mx-auto w-[calc(100%-2.5rem)] max-w-6xl transition-all duration-300 rounded-2xl sm:rounded-3xl border border-slate-200/80 dark:border-white/10 bg-white/95 dark:bg-[#12121a]/95 backdrop-blur-md shadow-[0_10px_30px_-8px_rgba(0,0,0,0.08)] dark:shadow-[0_10px_30px_-8px_rgba(0,0,0,0.65)] py-2.5 px-6 lg:px-8">
+        class="mx-auto w-[calc(100%-2.5rem)] max-w-6xl transition-all duration-300 rounded-2xl sm:rounded-3xl border border-slate-200/80 dark:border-white/10 bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-md shadow-[0_10px_30px_-8px_rgba(0,0,0,0.08)] dark:shadow-[0_10px_30px_-8px_rgba(0,0,0,0.65)] py-2.5 px-6 lg:px-8">
         <div class="flex items-center justify-between gap-4">
 
             <a href="#beranda" @click.prevent="scrollToSection($event, '#beranda')"
                 class="flex items-center font-poppins font-bold text-lg lg:text-xl tracking-tight select-none shrink-0 group transition-transform active:scale-95">
                 <span class="text-orange-500">Adya</span>
-                <span class="text-slate-900 dark:text-white">’s Portoflio</span>
+                <span class="text-slate-900 dark:text-white">’s Portfolio</span>
             </a>
 
             <div class="flex items-center gap-1 lg:gap-2 xl:gap-3 overflow-x-auto scrollbar-none">
@@ -110,13 +110,16 @@
 
 <nav class="fixed top-[calc(0.75rem+env(safe-area-inset-top,0px))] left-3 right-3 z-50 md:hidden max-w-full" x-cloak>
     <div
-        class="relative rounded-2xl sm:rounded-3xl border border-slate-200/80 dark:border-white/10 bg-white/95 dark:bg-[#12121a]/95 backdrop-blur-md shadow-[0_10px_25px_-5px_rgba(0,0,0,0.08)] dark:shadow-[0_10px_25px_-5px_rgba(0,0,0,0.7)] px-3 py-2 flex items-center justify-between gap-2">
+        class="relative rounded-2xl sm:rounded-3xl border border-slate-200/80 dark:border-white/10 bg-white/95 dark:bg-[#0f172a]/95 backdrop-blur-md shadow-[0_10px_25px_-5px_rgba(0,0,0,0.08)] dark:shadow-[0_10px_25px_-5px_rgba(0,0,0,0.7)] px-3 py-2 flex items-center justify-between gap-2">
 
-        <div class="flex-1 min-w-0 overflow-x-auto scrollbar-none py-0.5 scroll-smooth pr-1">
+        <div data-mobile-nav-scroll
+            x-init="$watch('active', val => $nextTick(() => scrollActiveNavIntoView(val)))"
+            class="flex-1 min-w-0 overflow-x-auto scrollbar-none py-0.5 scroll-smooth pr-1">
             <div class="w-full min-w-max flex items-center justify-between gap-1 sm:gap-1.5">
                 @foreach ($menuItems as $item)
                     @if (!empty($item['external']))
                         <a href="{{ $item['href'] }}"
+                            data-nav-id="{{ $item['id'] }}"
                             :title="t('{{ $item['tKey'] }}')"
                             :aria-label="t('{{ $item['tKey'] }}')"
                             class="flex items-center justify-center shrink-0 transition-all duration-300 active:scale-95 select-none"
@@ -134,7 +137,9 @@
                             </span>
                         </a>
                     @else
-                        <a href="{{ $item['href'] }}" @click.prevent="active = '{{ $item['id'] }}'; scrollToSection($event, '{{ $item['href'] }}')"
+                        <a href="{{ $item['href'] }}"
+                            data-nav-id="{{ $item['id'] }}"
+                            @click.prevent="active = '{{ $item['id'] }}'; scrollToSection($event, '{{ $item['href'] }}')"
                             :title="t('{{ $item['tKey'] }}')"
                             :aria-label="t('{{ $item['tKey'] }}')"
                             class="flex items-center justify-center shrink-0 transition-all duration-300 active:scale-95 select-none cursor-pointer"
