@@ -29,7 +29,7 @@
                         </header>
 
                         <div class="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-slate-100/70 dark:bg-[#1e293b] p-1.5 sm:p-2 overflow-hidden">
-                            <img src="{{ img_url($project->gambar) }}" alt="{{ $project->nama }}" class="w-full h-auto object-cover rounded-xl" loading="lazy">
+                            <img src="{{ img_url($project->gambar) }}" alt="Preview Proyek {{ $project->nama }} - Portofolio Adya Handika Putra AP" title="{{ $project->nama }}" class="w-full h-auto object-cover rounded-xl" loading="lazy" decoding="async">
                         </div>
 
                         <div>
@@ -55,7 +55,41 @@
                                     </template>
                                 </div>
                             </div>
-                        </template>
+                        @if (!empty($project->konten) && is_array($project->konten) && count($project->konten) > 0)
+                            <div class="pt-3.5 sm:pt-4 border-t border-slate-200/90 dark:border-white/10 space-y-4">
+                                @foreach ($project->konten as $block)
+                                    @if (($block['type'] ?? '') === 'paragraf' && !empty($block['teks']))
+                                        <p class="prose-measure text-sm sm:text-[15px] text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+                                            {{ $block['teks'] }}
+                                        </p>
+                                    @elseif (($block['type'] ?? '') === 'gambar' && !empty($block['url']))
+                                        @php
+                                            $ukuran = $block['ukuran'] ?? 'penuh';
+                                            $sizeClass = match ($ukuran) {
+                                                'kecil' => 'max-w-xs',
+                                                'sedang' => 'max-w-md',
+                                                'besar' => 'max-w-2xl',
+                                                default => 'max-w-full',
+                                            };
+                                        @endphp
+                                        <figure class="my-3 text-center">
+                                            <div class="inline-block rounded-2xl overflow-hidden border border-slate-200/90 dark:border-white/10 bg-slate-100/70 dark:bg-[#1e293b] p-1.5 sm:p-2 mx-auto {{ $sizeClass }} w-full shadow-2xs">
+                                                <img src="{{ img_url($block['url']) }}"
+                                                     alt="{{ $block['caption'] ?? ('Screenshot Proyek '.$project->nama) }}"
+                                                     title="{{ $block['caption'] ?? $project->nama }}"
+                                                     class="w-full h-auto object-cover rounded-xl"
+                                                     loading="lazy" decoding="async">
+                                            </div>
+                                            @if (!empty($block['caption']))
+                                                <figcaption class="mt-1.5 text-center text-xs text-slate-500 dark:text-slate-400">
+                                                    {{ $block['caption'] }}
+                                                </figcaption>
+                                            @endif
+                                        </figure>
+                                    @endif
+                                @endforeach
+                            </div>
+                        @endif
                     </div>
 
                     <div class="pt-4 mt-4 sm:pt-5 sm:mt-5 border-t border-slate-200/90 dark:border-white/10 flex flex-wrap items-center gap-2.5">

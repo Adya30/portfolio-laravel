@@ -44,6 +44,7 @@ class ProjectController extends Controller
             'fitur' => $this->linesToArray($data['fitur'] ?? null),
             'fitur_idn' => $this->linesToArray($data['fitur_idn'] ?? null),
             'gambar' => $this->resolveImage($request, 'projects'),
+            'konten' => $this->parseBlocks($data['konten'] ?? null),
             'category_id' => $data['category_id'] ?? null,
             'sort_order' => $data['sort_order'] ?? 0,
         ]);
@@ -76,6 +77,7 @@ class ProjectController extends Controller
             'fitur' => $this->linesToArray($data['fitur'] ?? null),
             'fitur_idn' => $this->linesToArray($data['fitur_idn'] ?? null),
             'gambar' => $this->resolveImage($request, 'projects', $project->gambar),
+            'konten' => $this->parseBlocks($data['konten'] ?? null),
             'category_id' => $data['category_id'] ?? null,
             'sort_order' => $data['sort_order'] ?? $project->sort_order,
         ]);
@@ -104,6 +106,39 @@ class ProjectController extends Controller
         return response()->json(['ok' => true]);
     }
 
+    public function uploadBlockImage(Request $request): JsonResponse
+    {
+        $request->validate([
+            'gambar' => ['required', 'image:allow_svg', 'mimes:svg,png,jpg,jpeg,webp', 'max:2048'],
+        ], $this->validationMessages(), [
+            'gambar' => 'Gambar blok',
+        ]);
+
+        try {
+            $url = $this->uploadImage($request->file('gambar'), 'projects');
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json(['error' => 'Upload gambar gagal.'], 422);
+        }
+
+        return response()->json(['url' => $url]);
+    }
+
+    private function parseBlocks(mixed $konten): array
+    {
+        if (empty($konten)) {
+            return [];
+        }
+        if (is_string($konten)) {
+            $decoded = json_decode($konten, true);
+
+            return is_array($decoded) ? $decoded : [];
+        }
+
+        return is_array($konten) ? $konten : [];
+    }
+
     private function validateData(Request $request): array
     {
         return $request->validate([
@@ -120,6 +155,7 @@ class ProjectController extends Controller
             'fitur_idn' => ['nullable', 'string'],
             'gambar' => ['nullable', 'image:allow_svg', 'mimes:svg,png,jpg,jpeg,webp', 'max:2048'],
             'gambar_url' => ['nullable', 'url'],
+            'konten' => ['nullable'],
             'category_id' => ['nullable', 'integer', 'exists:categories,id'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
         ], $this->validationMessages(), [
@@ -135,6 +171,7 @@ class ProjectController extends Controller
             'fitur_idn' => 'Fitur utama (Indonesia)',
             'gambar' => 'Gambar',
             'gambar_url' => 'URL gambar',
+            'konten' => 'Konten blok',
             'category_id' => 'Kategori',
             'sort_order' => 'Urutan',
         ]);

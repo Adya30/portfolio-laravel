@@ -10,18 +10,26 @@
 
         $seoTitle = $seo['title'] ?? 'Adya Handika Putra AP | Web Developer & UI Designer Portfolio';
         $seoDescription = $seo['description']
-            ?? 'Portfolio of Adya Handika Putra AP — a Full Stack Developer and UI Designer. Explore projects, certificates, tools, and experiences in web development.';
+            ?? 'Portfolio resmi Adya Handika Putra AP — Full Stack Web Developer & UI Designer. Menampilkan karya proyek web modern, sertifikasi, tech stack, dan course materi pemrograman.';
         $seoKeywords = $seo['keywords']
-            ?? 'Adya Handika Putra AP, Web Developer, UI Designer, Full Stack Developer, Portfolio, Laravel, JavaScript, Web Design';
+            ?? 'adya, adya handika, portfolio, portfolio adya, adya komputer, Adya Handika Putra AP, Adya AP, Web Developer, Full Stack Developer, UI UX Designer, Portfolio Laravel, Tailwind CSS, JavaScript, Programmer Jember, Pemrograman Web';
         $seoType = $seo['type'] ?? 'website';
         $seoUrl = $seo['url'] ?? url()->current();
+
         $seoImage = null;
         if (! empty($seo['image'])) {
             $seoImage = img_url($seo['image']);
+        } elseif (! empty(profile()?->hero_image)) {
+            $seoImage = img_url(profile()->hero_image);
+        }
+        if ($seoImage) {
             if (str_starts_with($seoImage, '//')) {
                 $seoImage = 'https:'.$seoImage;
+            } elseif (! str_starts_with($seoImage, 'http://') && ! str_starts_with($seoImage, 'https://')) {
+                $seoImage = url($seoImage);
             }
         }
+
         $seoJsonLd = $seo['jsonld'] ?? [];
     @endphp
 
@@ -35,9 +43,8 @@
     @endif
     <link rel="canonical" href="{{ $seoUrl }}">
 
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon.png') }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ asset('favicon.ico') }}">
 
     <meta property="og:site_name" content="Adya Handika Putra AP | Portfolio">
     <meta property="og:title" content="{{ $seoTitle }}">
@@ -48,17 +55,16 @@
     <meta property="og:locale:alternate" content="en_US">
     @if ($seoImage)
         <meta property="og:image" content="{{ $seoImage }}">
+        <meta property="og:image:secure_url" content="{{ $seoImage }}">
         <meta property="og:image:alt" content="{{ $seoTitle }}">
-        <meta property="og:image:width" content="1200">
-        <meta property="og:image:height" content="630">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:image" content="{{ $seoImage }}">
+        <meta name="twitter:image:alt" content="{{ $seoTitle }}">
+    @else
+        <meta name="twitter:card" content="summary">
     @endif
-
-    <meta name="twitter:card" content="{{ $seoImage ? 'summary_large_image' : 'summary' }}">
     <meta name="twitter:title" content="{{ $seoTitle }}">
     <meta name="twitter:description" content="{{ $seoDescription }}">
-    @if ($seoImage)
-        <meta name="twitter:image" content="{{ $seoImage }}">
-    @endif
 
     <link rel="alternate" hreflang="en" href="{{ $seoUrl }}">
     <link rel="alternate" hreflang="id" href="{{ $seoUrl }}">
@@ -72,7 +78,7 @@
         (function () {
             try {
                 var t = localStorage.getItem('theme');
-                var dark = t ? t === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var dark = t === 'dark';
                 document.documentElement.classList.toggle('dark', dark);
 
                 var themeColor = document.querySelector('meta[name="theme-color"]');
@@ -87,6 +93,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">

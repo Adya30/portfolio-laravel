@@ -14,10 +14,10 @@
     <input type="hidden" name="konten" x-ref="kontenInput" value="{{ json_encode($blocksValue) }}">
     <div x-effect="$refs.kontenInput.value = JSON.stringify(blocks)"></div>
 
-    <div class="bg-white shadow-xl p-6 sm:p-8 max-w-4xl mx-auto relative">
-        <div class="border-b border-slate-200 pb-3 flex items-center justify-between text-xs text-slate-400 font-mono select-none">
+    <div class="bg-white dark:bg-[#162032] p-6 sm:p-8 w-full relative">
+        <div class="border-b border-slate-200 dark:border-white/10 pb-3 flex items-center justify-between text-xs text-slate-400 font-mono select-none">
             <div class="flex items-center gap-3">
-                <span class="font-semibold text-slate-600">Halaman Materi</span>
+                <span class="font-semibold text-slate-600 dark:text-slate-300">Halaman Materi</span>
                 <span class="text-slate-300">|</span>
                 <div class="flex items-center gap-1 font-sans">
                     <button type="button" @click="undo()" :disabled="!canUndo()"
@@ -52,8 +52,6 @@
         <div class="min-h-[400px]">
             <template x-for="(block, i) in blocks" :key="i">
                 <div>
-                    <div class="border-t border-slate-200/70 my-0"></div>
-
                     <div :id="'blok-' + i"
                          :draggable="!(i === 0 && block.type === 'subbab')"
                          @dragstart="dragStart(i, $event)"
@@ -107,8 +105,6 @@
                             </div>
                         </template>
 
-                        {{-- Sub Heading 3 is indented here too, so the writer sees the
-                             same hierarchy the reader will. --}}
                         <template x-if="block.type === 'subheading' || block.type === 'subheading3'">
                             <div :class="block.type === 'subheading3' && 'ml-4 border-l-2 border-blue-200 pl-3 sm:ml-6'">
                                 <label :for="'subheading_teks_' + i" class="sr-only"
@@ -121,7 +117,7 @@
 
                         <template x-if="block.type === 'paragraf'">
                             <div x-data="quillParagraphEditor(block, i)" class="space-y-1">
-                                <div x-ref="quillBox" class="bg-white"></div>
+                                <div x-ref="quillBox" class="bg-white dark:bg-[#0c1322] rounded-xl overflow-hidden"></div>
                             </div>
                         </template>
 
@@ -150,7 +146,7 @@
                                         <label :for="'gambar_file_' + i" class="sr-only">File Gambar</label>
                                         <input :id="'gambar_file_' + i" type="file" accept=".svg,.png,.jpg,.jpeg,.webp,image/svg+xml,image/png,image/jpeg,image/webp"
                                                @change="uploadImage(i, $event.target.files[0])"
-                                               class="block w-full text-xs text-slate-600 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-accent/10 file:text-xs file:font-bold file:text-accent hover:file:bg-accent/20 cursor-pointer">
+                                               class="block w-full text-xs text-slate-600 dark:text-slate-300 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-blue-600 file:text-xs file:font-bold file:text-white hover:file:bg-blue-700 cursor-pointer">
                                         <p x-show="uploadingIndex === i" x-cloak class="text-xs text-accent font-semibold">
                                             <i class="ri-loader-4-line animate-spin"></i> Mengunggah...
                                         </p>
@@ -315,8 +311,6 @@
                                                                           @input="$el.style.height = 'auto'; $el.style.height = $el.scrollHeight + 'px'"
                                                                           class="w-full rounded-lg border border-slate-200 px-2 py-1.5 text-xs text-slate-800 bg-white outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all resize-none font-mono leading-relaxed"></textarea>
 
-                                                                {{-- The code toggle sits under the field instead of
-                                                                     overlapping the text it applies to. --}}
                                                                 <button type="button"
                                                                         @click="wrapCellWithCode(i, rIdx, cIdx, $el.previousElementSibling)"
                                                                         :aria-pressed="isCellCode(i, rIdx, cIdx)"
@@ -341,8 +335,6 @@
                                     </table>
                                 </div>
 
-                                {{-- Preview uses the reader's own surface, so a code
-                                     chip inside it stays readable. --}}
                                 <div x-show="tableMode === 'preview'" class="overflow-x-auto rounded-xl border border-slate-300 shadow-sm bg-white p-3">
                                     <table class="w-full text-left text-xs sm:text-sm text-slate-700 border-collapse">
                                         <thead class="bg-slate-100 font-semibold text-slate-900">
@@ -373,18 +365,14 @@
                         </template>
                     </div>
 
-                    {{-- The palette unfolds in place rather than floating above the
-                         page, so opening it never hides the block below. --}}
                     <div class="relative z-20" x-data="{ insertOpen: false }" @click.outside="insertOpen = false">
-                        <div class="flex items-center gap-3 py-3">
-                            <span class="h-px flex-1 bg-slate-200/70" aria-hidden="true"></span>
+                        <div class="flex items-center justify-center py-2.5">
                             <button type="button" @click="insertOpen = !insertOpen" :aria-expanded="insertOpen"
-                                    :class="insertOpen && 'border-accent/50 bg-accent/5 text-accent'"
-                                    class="focus-ring inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-semibold text-slate-600 transition-colors hover:border-accent/50 hover:text-accent">
+                                    :class="insertOpen ? 'border-orange-500/50 bg-orange-500/10 text-orange-500' : 'border-slate-200 dark:border-white/10 bg-white dark:bg-[#162032] text-slate-600 dark:text-slate-300 hover:border-orange-500/50 hover:text-orange-500 dark:hover:text-orange-400'"
+                                    class="focus-ring inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-[11px] font-semibold transition-colors shadow-2xs cursor-pointer">
                                 <i class="ri-add-line text-sm transition-transform" :class="insertOpen && 'rotate-45'" aria-hidden="true"></i>
                                 <span x-text="insertOpen ? 'Tutup' : 'Sisipkan blok'"></span>
                             </button>
-                            <span class="h-px flex-1 bg-slate-200/70" aria-hidden="true"></span>
                         </div>
 
                         <div x-show="insertOpen" x-cloak x-collapse class="pb-3">
@@ -400,7 +388,6 @@
                 </div>
             </template>
 
-            {{-- An empty sheet has no insert rows yet, so it carries its own way in. --}}
             <div x-show="blocks.length === 0" x-cloak class="border-2 border-dashed border-slate-200 rounded-xl p-8 text-center mt-3">
                 <div class="w-12 h-12 mx-auto rounded-xl bg-accent/10 text-accent flex items-center justify-center text-xl">
                     <i class="ri-file-text-line" aria-hidden="true"></i>

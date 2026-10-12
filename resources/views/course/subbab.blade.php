@@ -262,9 +262,10 @@
                                 <div
                                     class="inline-block rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-800 mx-auto {{ $sizeClass }}">
                                     <img src="{{ img_url($block['url'] ?? '') }}"
-                                        alt="{{ $block['caption'] ?? $course->nama }}"
+                                        alt="{{ $block['caption'] ?? ('Ilustrasi '.$course->nama) }}"
+                                        title="{{ $block['caption'] ?? $course->nama }}"
                                         class="w-full h-auto object-contain max-h-30 sm:max-h-50 md:max-h-100"
-                                        loading="lazy">
+                                        loading="lazy" decoding="async">
                                 </div>
                                 @if (!empty($block['caption']))
                                     <figcaption class="mt-2 text-center text-xs text-slate-500 dark:text-slate-400">

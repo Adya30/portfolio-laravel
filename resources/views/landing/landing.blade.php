@@ -200,8 +200,8 @@
 
                 <div class="flex lg:hidden flex-col items-center relative mb-6 w-full">
                     <div class="relative flex justify-center items-end">
-                        <img src="{{ $heroImage }}" alt="{{ $profileName }}" width="750" height="auto"
-                            fetchpriority="high"
+                        <img src="{{ $heroImage }}" alt="{{ $profileName }} - Full Stack Web Developer & UI Designer Portfolio" title="{{ $profileName }}" width="750" height="auto"
+                            fetchpriority="high" decoding="async"
                             class="w-auto h-52 sm:h-64 max-w-[260px] sm:max-w-[300px] object-contain object-bottom drop-shadow-md">
                     </div>
 
@@ -276,8 +276,8 @@
                         class="hidden lg:flex items-end justify-end gap-3 sm:gap-4 lg:gap-6 self-end z-10 w-full lg:w-auto">
 
                         <div class="relative flex justify-center items-end self-end">
-                            <img src="{{ $heroImage }}" alt="{{ $profileName }}" width="750" height="auto"
-                                fetchpriority="high"
+                            <img src="{{ $heroImage }}" alt="{{ $profileName }} - Full Stack Web Developer & UI Designer Portfolio" title="{{ $profileName }}" width="750" height="auto"
+                                fetchpriority="high" decoding="async"
                                 class="w-auto h-auto max-h-[360px] lg:max-h-[430px] xl:max-h-[460px] object-contain object-bottom drop-shadow-md origin-bottom block -mb-px">
                         </div>
 
@@ -327,8 +327,8 @@
                             class="bg-white dark:bg-[#1e293b] border border-slate-200/90 dark:border-white/10 px-5 py-3 sm:px-6 sm:py-3.5 rounded-2xl flex items-center gap-3.5 sm:gap-4 shrink-0 min-w-[190px] sm:min-w-[220px] shadow-none hover:border-slate-300 dark:hover:border-white/20 transition-all select-none">
                             <div
                                 class="surface-muted w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center shrink-0">
-                                <img src="{{ img_url($tool['gambar'] ?? '') }}" alt="{{ $tool['nama'] }}"
-                                    class="w-7 h-7 sm:w-8 sm:h-8 object-contain" loading="lazy">
+                                <img src="{{ img_url($tool['gambar'] ?? '') }}" alt="Keahlian {{ $tool['nama'] }} - Tech Stack" title="{{ $tool['nama'] }}"
+                                    class="w-7 h-7 sm:w-8 sm:h-8 object-contain" loading="lazy" decoding="async">
                             </div>
                             <div class="min-w-0">
                                 <h4
@@ -349,8 +349,8 @@
                             class="bg-white dark:bg-[#1e293b] border border-slate-200/90 dark:border-white/10 px-5 py-3 sm:px-6 sm:py-3.5 rounded-2xl flex items-center gap-3.5 sm:gap-4 shrink-0 min-w-[190px] sm:min-w-[220px] shadow-none hover:border-slate-300 dark:hover:border-white/20 transition-all select-none">
                             <div
                                 class="surface-muted w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center shrink-0">
-                                <img src="{{ img_url($tool['gambar'] ?? '') }}" alt="{{ $tool['nama'] }}"
-                                    class="w-7 h-7 sm:w-8 sm:h-8 object-contain" loading="lazy">
+                                <img src="{{ img_url($tool['gambar'] ?? '') }}" alt="Keahlian {{ $tool['nama'] }} - Tech Stack" title="{{ $tool['nama'] }}"
+                                    class="w-7 h-7 sm:w-8 sm:h-8 object-contain" loading="lazy" decoding="async">
                             </div>
                             <div class="min-w-0">
                                 <h4
@@ -535,9 +535,9 @@
                         <a :href="p.url"
                             class="border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#1e293b] rounded-2xl overflow-hidden flex flex-col group snap-start w-full min-w-0 transition-all hover:border-slate-300 dark:hover:border-white/25 shadow-none">
                             <div class="relative overflow-hidden aspect-[16/10] bg-slate-100 dark:bg-white/5">
-                                <img x-show="p.img" :src="p.img" :alt="p.nama"
+                                <img x-show="p.img" :src="p.img" :alt="'Proyek ' + p.nama + ' - Adya Portfolio'" :title="p.nama"
                                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                    loading="lazy">
+                                    loading="lazy" decoding="async">
                                 <template x-if="!p.img">
                                     <div class="w-full h-full flex items-center justify-center text-5xl font-bold text-slate-300 dark:text-white/20"
                                         x-text="(p.nama || 'P').charAt(0).toUpperCase()"></div>
@@ -823,9 +823,9 @@
                                 class="border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#1e293b] rounded-2xl overflow-hidden flex flex-col group snap-start w-full min-w-0 transition-all hover:border-slate-300 dark:hover:border-white/25 shadow-none">
                                 <div
                                     class="relative h-44 sm:h-52 w-full shrink-0 border-b border-slate-200/80 dark:border-white/10 overflow-hidden bg-slate-50 dark:bg-white/[0.03]">
-                                    <img :src="c.img" :alt="c.nama"
+                                    <img :src="c.img" :alt="'Sertifikat ' + c.nama + ' - ' + (c.penerbit || 'Adya Portfolio')" :title="c.nama"
                                         class="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-105"
-                                        loading="lazy">
+                                        loading="lazy" decoding="async">
                                     <div
                                         class="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
                                         <span

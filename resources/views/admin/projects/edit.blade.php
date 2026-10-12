@@ -81,7 +81,11 @@
             </div>
 
             <div class="sm:col-span-2">
-                <x-admin.image-input name="gambar" label="Gambar Project" :current="$project->gambar" />
+                <x-admin.image-input name="gambar" label="Gambar Utama Project (Thumbnail)" :current="$project->gambar" />
+            </div>
+
+            <div class="sm:col-span-2 pt-2">
+                <x-admin.content-blocks-editor name="konten" :value="$project->konten" :upload-url="route('admin.projects.upload-image')" />
             </div>
 
             <div class="sm:col-span-2 flex items-center gap-3 pt-2 border-t border-slate-100">

@@ -18,8 +18,8 @@
                         </header>
 
                         <div class="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-slate-100/70 dark:bg-[#1e293b] p-1.5 sm:p-2 overflow-hidden">
-                            <img src="{{ img_url($certificate->gambar) }}" alt="{{ $certificate->nama }}"
-                                 class="w-full h-auto object-contain rounded-xl bg-white dark:bg-black/30" loading="lazy">
+                            <img src="{{ img_url($certificate->gambar) }}" alt="Sertifikat {{ $certificate->nama }} - {{ $certificate->penerbit ?? 'Adya Portfolio' }}" title="{{ $certificate->nama }}"
+                                 class="w-full h-auto object-contain rounded-xl bg-white dark:bg-black/30" loading="lazy" decoding="async">
                         </div>
 
                         @if ($certificate->desk)

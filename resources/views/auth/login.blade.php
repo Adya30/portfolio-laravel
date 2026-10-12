@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="id" class="dark">
+<html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,77 +8,126 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
     <title>Login - Adya Portfolio</title>
+
+    <script>
+        (function() {
+            try {
+                var t = localStorage.getItem('theme');
+                var dark = t === 'dark';
+                document.documentElement.classList.toggle('dark', dark);
+            } catch (e) {}
+        })();
+    </script>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="admin-body bg-[#0a0a0f] text-white min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
 
-    <div class="fixed inset-0 pointer-events-none overflow-hidden">
-        <div class="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.04)_1px,transparent_1px)] bg-size-[48px_48px]"></div>
-        <div class="absolute rounded-full blur-[120px] opacity-25"
-             style="width: 400px; height: 400px; left: -10%; top: 10%; background: radial-gradient(circle, #3b82f6 0%, #8b5cf6 70%);"></div>
-        <div class="absolute rounded-full blur-[120px] opacity-25"
-             style="width: 450px; height: 450px; left: 60%; top: 45%; background: radial-gradient(circle, #8b5cf6 0%, #06b6d4 70%);"></div>
-    </div>
+<body x-data="{
+    dark: localStorage.getItem('theme') === 'dark',
+    toggleTheme() {
+        this.dark = !this.dark;
+        localStorage.setItem('theme', this.dark ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', this.dark);
+    }
+}"
+    class="min-h-screen bg-canvas dark:bg-canvas-dark text-slate-800 dark:text-white flex items-center justify-center p-3.5 sm:p-6 font-sans relative overflow-x-hidden antialiased transition-colors duration-300">
 
-    <div class="relative z-10 w-full max-w-md">
-        <div class="text-center mb-8">
-            <div class="inline-flex items-center gap-1">
-                <span class="font-poppins font-bold text-2xl text-amber-500">Adya</span>
-                <span class="font-poppins font-bold text-2xl text-white">'s Portfolio</span>
+    <!-- THEME-AWARE PAGE BACKDROP (GRID + SOFT GLOW) -->
+    <x-page-background />
+
+    <!-- MAIN CARD CONTAINER -->
+    <div
+        class="relative z-10 w-full max-w-[768px] bg-white dark:bg-[#0f172a] rounded-[28px] sm:rounded-[32px] shadow-[0_20px_50px_rgba(249,115,22,0.12),0_10px_25px_rgba(0,0,0,0.05)] dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col md:flex-row transition-all duration-300 border border-slate-200/80 dark:border-white/10">
+
+        <!-- THEME TOGGLE BUTTON (FUSED INSIDE TOP-RIGHT OF CARD) -->
+        <button @click="toggleTheme" type="button"
+            class="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 z-30 w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-white/20 hover:bg-white/30 border border-white/30 backdrop-blur-md flex items-center justify-center text-white shadow-sm transition-all active:scale-95 cursor-pointer"
+            :aria-label="dark ? 'Ganti ke tema terang' : 'Ganti ke tema gelap'"
+            :title="dark ? 'Ganti ke tema terang' : 'Ganti ke tema gelap'">
+            <i class="text-base sm:text-lg leading-none"
+                :class="dark ? 'ri-sun-line text-amber-300' : 'ri-moon-line text-white'" aria-hidden="true"></i>
+        </button>
+
+        <!-- ORANGE PANEL (TOP ON MOBILE, RIGHT ON DESKTOP) -->
+        <div
+            class="order-1 md:order-2 w-full md:w-1/2 bg-gradient-to-br from-orange-500 to-amber-500 dark:from-orange-500 dark:to-amber-500 text-white p-7 pt-10 sm:p-10 md:p-11 flex flex-col items-center justify-center text-center relative overflow-hidden rounded-t-[28px] sm:rounded-t-[32px] rounded-b-[36px] sm:rounded-b-[44px] md:rounded-t-none md:rounded-b-none md:rounded-l-[50px] lg:md:rounded-l-[65px] md:rounded-r-[32px] transition-all duration-300">
+
+            <!-- FOTO HERO IMAGE PROFIL (RAPAT DENGAN LINGKARAN & BACKGROUND PUTIH) -->
+            <div class="flex flex-col items-center justify-center mb-5 sm:mb-6 md:mb-7">
+                <div
+                    class="relative w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full bg-white border-2 sm:border-3 border-white/90 shadow-2xl overflow-hidden flex items-center justify-center shrink-0">
+                    @php
+                        $heroImg = profile()?->hero_image ? img_url(profile()->hero_image) : null;
+                    @endphp
+                    @if ($heroImg)
+                        <img src="{{ $heroImg }}" alt="{{ profile()?->name ?? 'Hero Image' }}"
+                            class="w-full h-full object-cover object-top select-none">
+                    @else
+                        <i class="ri-user-smile-line text-5xl md:text-6xl text-orange-500"></i>
+                    @endif
+                </div>
+
+                @if (!empty(profile()?->name))
+                    <h2 class="text-base sm:text-lg font-bold text-white mt-3 text-center tracking-tight">
+                        {{ profile()->name }}
+                    </h2>
+                @endif
+                @if (!empty(profile()?->role_title))
+                    <p class="text-xs text-white/90 dark:text-amber-100 font-medium text-center mt-0.5">
+                        {{ profile()->role_title }}
+                    </p>
+                @endif
             </div>
+
+            <!-- TOMBOL KEMBALI KE HALAMAN PROFILE -->
+            <a href="{{ route('landing') }}"
+                class="bg-white text-orange-600 hover:text-orange-700 hover:bg-slate-50 dark:bg-white dark:text-orange-600 dark:hover:bg-slate-100 text-xs font-bold uppercase tracking-wider px-7 sm:px-9 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl hover:shadow-lg hover:shadow-orange-950/20 active:scale-95 transition-all duration-200 inline-block shadow-md cursor-pointer">
+                KEMBALI KE PROFILE
+            </a>
+
         </div>
 
-        <div class="bg-[#1a1a2e] rounded-2xl border border-white/10 shadow-2xl p-8">
-            <form method="POST" action="{{ route('login.attempt') }}" class="space-y-5">
+        <!-- SIGN IN FORM (BOTTOM ON MOBILE, LEFT ON DESKTOP) -->
+        <div class="order-2 md:order-1 w-full md:w-1/2 p-6 sm:p-9 md:p-12 flex flex-col justify-center">
+
+            <h1
+                class="text-2xl sm:text-3xl font-extrabold text-slate-800 dark:text-white text-center tracking-tight mb-5 md:mb-6">
+                Hello Adya!
+            </h1>
+
+            @if (isset($errors) && $errors->any())
+                <div
+                    class="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-xs font-medium text-center">
+                    {{ $errors->first() }}
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('login.attempt') }}" class="w-full space-y-3 sm:space-y-3.5">
                 @csrf
 
-                @if ($errors->any())
-                    <div class="flex items-start gap-2 bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-medium px-4 py-3 rounded-xl">
-                        <i class="ri-error-warning-line text-lg mt-0.5 shrink-0"></i>
-                        <span>{{ $errors->first() }}</span>
-                    </div>
-                @endif
-
-                <div class="space-y-1.5">
-                    <label for="email" class="block text-sm font-semibold text-slate-300">Email</label>
-                    <div class="relative">
-                        <i class="ri-mail-line absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base"></i>
-                        <input type="email" name="email" id="email" value="{{ old('email') }}" required autofocus
-                               autocomplete="email"
-                               placeholder="admin@adyahan.my.id"
-                               class="w-full rounded-xl border border-white/10 bg-white/5 pl-10 pr-3.5 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none focus:border-accent focus:ring-4 focus:ring-accent/20 transition-all">
-                    </div>
+                <div>
+                    <input type="email" name="email" id="email" required autofocus value="{{ old('email') }}"
+                        placeholder="Email" autocomplete="email"
+                        class="w-full bg-[#f1f3f6] dark:bg-white/5 text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 text-sm px-4 py-3 rounded-xl border border-transparent dark:border-white/10 outline-none focus:ring-2 focus:ring-orange-500/30 dark:focus:ring-orange-500/40 focus:bg-white dark:focus:bg-white/10 transition">
                 </div>
 
-                <div class="space-y-1.5">
-                    <label for="password" class="block text-sm font-semibold text-slate-300">Password</label>
-                    <div class="relative">
-                        <i class="ri-lock-line absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-base"></i>
-                        <input type="password" name="password" id="password" required
-                               autocomplete="current-password" placeholder="••••••••"
-                               class="w-full rounded-xl border border-white/10 bg-white/5 pl-10 pr-3.5 py-2.5 text-sm text-white placeholder:text-slate-500 outline-none focus:border-accent focus:ring-4 focus:ring-accent/20 transition-all">
-                    </div>
+                <div>
+                    <input type="password" name="password" id="password" required placeholder="Password"
+                        autocomplete="current-password"
+                        class="w-full bg-[#f1f3f6] dark:bg-white/5 text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 text-sm px-4 py-3 rounded-xl border border-transparent dark:border-white/10 outline-none focus:ring-2 focus:ring-orange-500/30 dark:focus:ring-orange-500/40 focus:bg-white dark:focus:bg-white/10 transition">
                 </div>
 
-                <label class="flex items-center gap-2 text-sm text-slate-400 cursor-pointer select-none">
-                    <input type="checkbox" name="remember"
-                           class="w-4 h-4 rounded border-slate-600 bg-white/5 text-accent focus:ring-accent/30">
-                    Ingat saya
-                </label>
-
-                <button type="submit"
-                        class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-accent text-white text-sm font-semibold hover:bg-blue-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/30 transition-all">
-                    <i class="ri-login-box-line"></i>Masuk
-                </button>
+                <div class="text-center pt-2">
+                    <button type="submit"
+                        class="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 dark:bg-orange-500 dark:hover:bg-orange-600 text-white text-xs font-bold uppercase tracking-wider px-12 py-3.5 rounded-xl hover:shadow-lg hover:shadow-orange-500/25 dark:shadow-orange-950/40 active:scale-95 transition-all duration-200 inline-block shadow-md cursor-pointer">
+                        Login
+                    </button>
+                </div>
             </form>
         </div>
 
-        <p class="text-center mt-6">
-            <a href="{{ route('landing') }}"
-               class="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors">
-                <i class="ri-arrow-left-line"></i>Kembali ke Website
-            </a>
-        </p>
     </div>
+
 </body>
+
 </html>

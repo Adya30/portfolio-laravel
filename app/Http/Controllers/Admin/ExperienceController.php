@@ -38,6 +38,7 @@ class ExperienceController extends Controller
             'practicum_desc' => $data['practicum_desc'] ?? null,
             'practicum_desc_idn' => $data['practicum_desc_idn'] ?? null,
             'gambar' => $this->resolveImage($request, 'experiences'),
+            'konten' => $this->parseBlocks($data['konten'] ?? null),
             'responsibilities' => $this->linesToArray($data['responsibilities'] ?? null),
             'responsibilities_idn' => $this->linesToArray($data['responsibilities_idn'] ?? null),
             'skills' => $this->linesToArray($data['skills'] ?? null),
@@ -67,6 +68,7 @@ class ExperienceController extends Controller
             'practicum_desc' => $data['practicum_desc'] ?? null,
             'practicum_desc_idn' => $data['practicum_desc_idn'] ?? null,
             'gambar' => $this->resolveImage($request, 'experiences', $experience->gambar),
+            'konten' => $this->parseBlocks($data['konten'] ?? null),
             'responsibilities' => $this->linesToArray($data['responsibilities'] ?? null),
             'responsibilities_idn' => $this->linesToArray($data['responsibilities_idn'] ?? null),
             'skills' => $this->linesToArray($data['skills'] ?? null),
@@ -97,6 +99,39 @@ class ExperienceController extends Controller
         return response()->json(['ok' => true]);
     }
 
+    public function uploadBlockImage(Request $request): JsonResponse
+    {
+        $request->validate([
+            'gambar' => ['required', 'image:allow_svg', 'mimes:svg,png,jpg,jpeg,webp', 'max:2048'],
+        ], $this->validationMessages(), [
+            'gambar' => 'Gambar blok',
+        ]);
+
+        try {
+            $url = $this->uploadImage($request->file('gambar'), 'experiences');
+        } catch (\Throwable $e) {
+            report($e);
+
+            return response()->json(['error' => 'Upload gambar gagal.'], 422);
+        }
+
+        return response()->json(['url' => $url]);
+    }
+
+    private function parseBlocks(mixed $konten): array
+    {
+        if (empty($konten)) {
+            return [];
+        }
+        if (is_string($konten)) {
+            $decoded = json_decode($konten, true);
+
+            return is_array($decoded) ? $decoded : [];
+        }
+
+        return is_array($konten) ? $konten : [];
+    }
+
     private function validateData(Request $request): array
     {
         return $request->validate([
@@ -111,6 +146,7 @@ class ExperienceController extends Controller
             'practicum_desc_idn' => ['nullable', 'string'],
             'gambar' => ['nullable', 'image:allow_svg', 'mimes:svg,png,jpg,jpeg,webp', 'max:2048'],
             'gambar_url' => ['nullable', 'url'],
+            'konten' => ['nullable'],
             'responsibilities' => ['nullable', 'string'],
             'responsibilities_idn' => ['nullable', 'string'],
             'skills' => ['nullable', 'string'],
@@ -127,6 +163,7 @@ class ExperienceController extends Controller
             'practicum_desc_idn' => 'Deskripsi praktikum (Indonesia)',
             'gambar' => 'Logo / Foto',
             'gambar_url' => 'URL logo / foto',
+            'konten' => 'Konten blok',
             'responsibilities' => 'Tanggung jawab utama',
             'responsibilities_idn' => 'Tanggung jawab utama (Indonesia)',
             'skills' => 'Skill',

@@ -42,7 +42,7 @@
         <div class="flex-1 min-w-0 space-y-2.5">
             <input type="file" x-ref="fileInput" name="{{ $name }}"
                    accept=".svg,.png,.jpg,.jpeg,.webp,image/svg+xml,image/png,image/jpeg,image/webp"
-                   class="block w-full text-sm text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-slate-100 file:text-sm file:font-semibold file:text-slate-600 hover:file:bg-slate-200">
+                   class="block w-full text-sm text-slate-600 dark:text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-600 file:text-sm file:font-semibold file:text-white hover:file:bg-blue-700 file:cursor-pointer cursor-pointer transition-colors">
 
             <p x-show="errorMsg" x-cloak x-transition.opacity.duration.150ms
                class="text-xs text-red-500 font-medium">

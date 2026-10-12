@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingController::class, 'index'])->name('landing');
 
-// SEO: sitemap & robots (dinamis, mengikuti APP_URL)
 Route::get('/sitemap.xml', [LandingController::class, 'sitemap'])->name('sitemap');
 Route::get('/robots.txt', function () {
     $content = "User-agent: *\n"
@@ -58,11 +57,12 @@ Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->
 Route::middleware(['auth', EnsureMateriRoleAccess::class, 'throttle:120,1'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Drag & drop row ordering (kept before the resource routes).
     Route::post('projects/reorder', [ProjectController::class, 'reorder'])->name('projects.reorder');
+    Route::post('projects/upload-image', [ProjectController::class, 'uploadBlockImage'])->name('projects.upload-image');
     Route::post('tools/reorder', [ToolController::class, 'reorder'])->name('tools.reorder');
     Route::post('certificates/reorder', [CertificateController::class, 'reorder'])->name('certificates.reorder');
     Route::post('experiences/reorder', [ExperienceController::class, 'reorder'])->name('experiences.reorder');
+    Route::post('experiences/upload-image', [ExperienceController::class, 'uploadBlockImage'])->name('experiences.upload-image');
     Route::post('courses/reorder', [CourseController::class, 'reorder'])->name('courses.reorder');
     Route::post('courses/upload-image', [CourseController::class, 'uploadBlockImage'])->name('courses.upload-image');
     Route::post('courses/{course}/subbab/reorder', [CourseController::class, 'reorderSubbab'])->name('courses.subbab.reorder');
@@ -82,7 +82,6 @@ Route::middleware(['auth', EnsureMateriRoleAccess::class, 'throttle:120,1'])->pr
     Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
 
-    // Two-Factor Authentication
     Route::get('profile/2fa/setup', [ProfileController::class, 'showTwoFactorSetup'])->name('profile.2fa.setup');
     Route::post('profile/2fa/enable', [ProfileController::class, 'enableTwoFactor'])->name('profile.2fa.enable');
     Route::post('profile/2fa/disable', [ProfileController::class, 'disableTwoFactor'])->name('profile.2fa.disable');

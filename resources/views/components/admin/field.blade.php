@@ -12,14 +12,14 @@
 
 @php
     $hasError = $errors->has($name);
-    $classes = 'w-full rounded-xl border bg-white px-3.5 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 outline-none transition-all ' . ($hasError
-        ? 'border-red-300 focus:border-red-400 focus:ring-4 focus:ring-red-100'
-        : 'border-slate-200 focus:border-accent focus:ring-4 focus:ring-accent/20');
+    $classes = 'w-full rounded-xl border bg-white dark:bg-[#162032] px-3.5 py-2.5 text-sm text-slate-800 dark:text-white placeholder:text-slate-400 outline-none transition-all ' . ($hasError
+        ? 'border-red-300 dark:border-red-500 focus:border-red-400 focus:ring-4 focus:ring-red-100 dark:focus:ring-red-900/30'
+        : 'border-slate-200 dark:border-white/10 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/20');
 @endphp
 
 <div class="space-y-1.5">
     @if ($label)
-        <label for="{{ $name }}" class="block text-sm font-semibold text-slate-700">
+        <label for="{{ $name }}" class="block text-sm font-semibold text-slate-700 dark:text-slate-200">
             {{ $label }} @if ($required)<span class="text-red-500">*</span>@endif
         </label>
     @endif

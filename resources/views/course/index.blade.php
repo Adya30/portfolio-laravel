@@ -76,8 +76,8 @@
 
                             <div class="relative aspect-16/10 overflow-hidden bg-slate-100 dark:bg-slate-800">
                                 @if ($course->gambar)
-                                    <img src="{{ img_url($course->gambar) }}" alt="{{ $course->nama }}"
-                                         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+                                    <img src="{{ img_url($course->gambar) }}" alt="Materi Kursus {{ $course->nama }} - Pemrograman Web" title="{{ $course->nama }}"
+                                         class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" decoding="async">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center bg-linear-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900">
                                         <i class="ri-book-2-line text-5xl text-slate-300 dark:text-slate-600"></i>

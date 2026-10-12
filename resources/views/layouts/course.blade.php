@@ -4,38 +4,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0a0a0f" media="(prefers-color-scheme: dark)">
-    <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#f8fafc">
 
     @php
         $seo = $seo ?? [];
 
-        $seoTitle = $seo['title'] ?? 'Course | Course Programming';
+        $seoTitle = $seo['title'] ?? 'Course Programming | Adya Handika Putra AP';
         $seoDescription =
             $seo['description'] ??
-            'Collection of Course Programming covering web development, programming, and UI design.';
+            'Kumpulan materi belajar programming dan web development oleh Adya Handika Putra AP. Tutorial Laravel, PHP, JavaScript, dan UI Design.';
         $seoType = $seo['type'] ?? 'website';
         $seoUrl = $seo['url'] ?? url()->current();
+
         $seoImage = null;
         if (!empty($seo['image'])) {
             $seoImage = img_url($seo['image']);
+        } elseif (!empty(profile()?->hero_image)) {
+            $seoImage = img_url(profile()->hero_image);
+        }
+        if ($seoImage) {
             if (str_starts_with($seoImage, '//')) {
                 $seoImage = 'https:' . $seoImage;
+            } elseif (! str_starts_with($seoImage, 'http://') && ! str_starts_with($seoImage, 'https://')) {
+                $seoImage = url($seoImage);
             }
         }
+
         $seoJsonLd = $seo['jsonld'] ?? [];
     @endphp
 
     <title>{{ $seoTitle }}</title>
     <meta name="description" content="{{ $seoDescription }}">
-    <meta name="keywords" content="{{ $seo['keywords'] ?? 'Web Developer, Programming, Course, Tutorial, Laravel, JavaScript, UI Design, Portfolio' }}">
+    <meta name="keywords" content="{{ $seo['keywords'] ?? 'adya, adya handika, portfolio, portfolio adya, adya komputer, Adya Handika Putra AP, Web Developer, Programming, Course, Tutorial, Laravel, JavaScript, UI Design' }}">
     <meta name="author" content="Adya Handika Putra AP">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <link rel="canonical" href="{{ $seoUrl }}">
 
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon.png') }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ asset('favicon.ico') }}">
 
     <meta property="og:site_name" content="Adya Handika Putra AP | Portfolio">
     <meta property="og:title" content="{{ $seoTitle }}">
@@ -46,17 +52,16 @@
     <meta property="og:locale:alternate" content="en_US">
     @if ($seoImage)
         <meta property="og:image" content="{{ $seoImage }}">
+        <meta property="og:image:secure_url" content="{{ $seoImage }}">
         <meta property="og:image:alt" content="{{ $seoTitle }}">
-        <meta property="og:image:width" content="1200">
-        <meta property="og:image:height" content="630">
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:image" content="{{ $seoImage }}">
+        <meta name="twitter:image:alt" content="{{ $seoTitle }}">
+    @else
+        <meta name="twitter:card" content="summary">
     @endif
-
-    <meta name="twitter:card" content="{{ $seoImage ? 'summary_large_image' : 'summary' }}">
     <meta name="twitter:title" content="{{ $seoTitle }}">
     <meta name="twitter:description" content="{{ $seoDescription }}">
-    @if ($seoImage)
-        <meta name="twitter:image" content="{{ $seoImage }}">
-    @endif
 
     <link rel="alternate" hreflang="en" href="{{ $seoUrl }}">
     <link rel="alternate" hreflang="id" href="{{ $seoUrl }}">
@@ -70,8 +75,11 @@
         (function() {
             try {
                 var t = localStorage.getItem('theme');
-                var dark = t ? t === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var dark = t === 'dark';
                 document.documentElement.classList.toggle('dark', dark);
+
+                var themeColor = document.querySelector('meta[name="theme-color"]');
+                if (themeColor) themeColor.setAttribute('content', dark ? '#0a0a0f' : '#f8fafc');
 
                 var lang = localStorage.getItem('lang') || 'en';
                 document.documentElement.setAttribute('lang', lang);
@@ -82,6 +90,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
 

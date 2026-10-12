@@ -316,7 +316,8 @@ Alpine.data('app', () => ({
 
     init() {
         const stored = localStorage.getItem('theme');
-        this.dark = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        // Default tema terang: aktif dark hanya jika tersimpan 'dark' di localStorage
+        this.dark = stored === 'dark';
         document.documentElement.classList.toggle('dark', this.dark);
 
         
@@ -727,6 +728,95 @@ function convertHtmlToMarkdown(html) {
         return '';
     }
 }
+
+Alpine.data('contentBlocksEditor', (initialBlocks = [], uploadUrl = '') => ({
+    blocks: Array.isArray(initialBlocks) ? initialBlocks : [],
+    uploadUrl,
+    uploadingIndex: null,
+    uploadError: '',
+
+    addParagraph(index = null) {
+        const block = { type: 'paragraf', teks: '' };
+        if (index === null || index === undefined) {
+            this.blocks.push(block);
+        } else {
+            this.blocks.splice(index + 1, 0, block);
+        }
+        this.$nextTick(() => {
+            const idx = index === null ? this.blocks.length - 1 : index + 1;
+            const el = this.$el.querySelector(`#content-block-${idx} textarea`);
+            if (el) el.focus();
+        });
+    },
+
+    addImage(index = null) {
+        const block = { type: 'gambar', url: '', caption: '', ukuran: 'penuh' };
+        if (index === null || index === undefined) {
+            this.blocks.push(block);
+        } else {
+            this.blocks.splice(index + 1, 0, block);
+        }
+        this.$nextTick(() => {
+            const idx = index === null ? this.blocks.length - 1 : index + 1;
+            const el = this.$el.querySelector(`#content-block-${idx} input[type="file"]`);
+            if (el) el.focus();
+        });
+    },
+
+    moveBlock(index, direction) {
+        const newIndex = index + direction;
+        if (newIndex < 0 || newIndex >= this.blocks.length) return;
+        const [moved] = this.blocks.splice(index, 1);
+        this.blocks.splice(newIndex, 0, moved);
+    },
+
+    removeBlock(index) {
+        this.blocks.splice(index, 1);
+    },
+
+    async uploadImage(index, file) {
+        if (!file) return;
+
+        const name = (file.name || '').toLowerCase();
+        const isPng = file.type === 'image/png' || name.endsWith('.png');
+        const isJpg = file.type === 'image/jpeg' || name.endsWith('.jpg') || name.endsWith('.jpeg');
+        const isWebp = file.type === 'image/webp' || name.endsWith('.webp');
+        const isSvg = file.type === 'image/svg+xml' || name.endsWith('.svg');
+
+        if (!isPng && !isJpg && !isWebp && !isSvg) {
+            this.uploadError = 'Format gambar tidak didukung! Gunakan PNG, JPG, JPEG, WebP, atau SVG.';
+            return;
+        }
+
+        this.uploadError = '';
+        this.uploadingIndex = index;
+
+        try {
+            const formData = new FormData();
+            formData.append('gambar', file);
+
+            const res = await fetch(this.uploadUrl, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '',
+                    'Accept': 'application/json',
+                },
+                body: formData,
+            });
+
+            const data = await res.json();
+            if (!res.ok || !data.url) {
+                throw new Error(data.error || 'Upload gagal');
+            }
+
+            this.blocks[index].url = data.url;
+        } catch (err) {
+            this.uploadError = err.message || 'Upload gambar gagal.';
+        } finally {
+            this.uploadingIndex = null;
+        }
+    }
+}));
 
 Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '', autosaveKey = '') => ({
     blocks: Array.isArray(initialBlocks) ? initialBlocks : [],

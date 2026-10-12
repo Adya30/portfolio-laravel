@@ -16,9 +16,9 @@
                             <header>
                                 <div class="flex items-start gap-3 sm:gap-3.5">
                                     @if ($experience->gambar)
-                                        <img src="{{ img_url($experience->gambar) }}" alt="{{ $experience->company }}"
+                                        <img src="{{ img_url($experience->gambar) }}" alt="{{ $experience->company }} - {{ $experience->role }}" title="{{ $experience->company }}"
                                             class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl object-contain p-1 border border-slate-200/80 dark:border-white/10 bg-slate-100/70 dark:bg-[#1e293b] shrink-0"
-                                            loading="lazy">
+                                            loading="lazy" decoding="async">
                                     @else
                                         <span
                                             class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl shrink-0 flex items-center justify-center font-poppins font-bold text-base sm:text-lg text-orange-500 border border-slate-200/80 dark:border-white/10 bg-orange-500/10">
@@ -76,6 +76,42 @@
                                             </li>
                                         </template>
                                     </ul>
+                                </div>
+                            @endif
+
+                            @if (!empty($experience->konten) && is_array($experience->konten) && count($experience->konten) > 0)
+                                <div class="pt-3.5 sm:pt-4 border-t border-slate-200/90 dark:border-white/10 space-y-4">
+                                    @foreach ($experience->konten as $block)
+                                        @if (($block['type'] ?? '') === 'paragraf' && !empty($block['teks']))
+                                            <p class="prose-measure text-sm sm:text-[15px] text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+                                                {{ $block['teks'] }}
+                                            </p>
+                                        @elseif (($block['type'] ?? '') === 'gambar' && !empty($block['url']))
+                                            @php
+                                                $ukuran = $block['ukuran'] ?? 'penuh';
+                                                $sizeClass = match ($ukuran) {
+                                                    'kecil' => 'max-w-xs',
+                                                    'sedang' => 'max-w-md',
+                                                    'besar' => 'max-w-2xl',
+                                                    default => 'max-w-full',
+                                                };
+                                            @endphp
+                                            <figure class="my-3 text-center">
+                                                <div class="inline-block rounded-2xl overflow-hidden border border-slate-200/90 dark:border-white/10 bg-slate-100/70 dark:bg-[#1e293b] p-1.5 sm:p-2 mx-auto {{ $sizeClass }} w-full shadow-2xs">
+                                                    <img src="{{ img_url($block['url']) }}"
+                                                         alt="{{ $block['caption'] ?? ($experience->company.' - '.$experience->role) }}"
+                                                         title="{{ $block['caption'] ?? $experience->company }}"
+                                                         class="w-full h-auto object-cover rounded-xl"
+                                                         loading="lazy" decoding="async">
+                                                </div>
+                                                @if (!empty($block['caption']))
+                                                    <figcaption class="mt-1.5 text-center text-xs text-slate-500 dark:text-slate-400">
+                                                        {{ $block['caption'] }}
+                                                    </figcaption>
+                                                @endif
+                                            </figure>
+                                        @endif
+                                    @endforeach
                                 </div>
                             @endif
                         </div>

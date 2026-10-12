@@ -82,6 +82,10 @@
                                help="Satu skill per baris. Contoh: Python, Git & Version Control." />
             </div>
 
+            <div class="sm:col-span-2 pt-2">
+                <x-admin.content-blocks-editor name="konten" :value="$experience->konten" :upload-url="route('admin.experiences.upload-image')" />
+            </div>
+
             <div class="sm:col-span-2 flex items-center gap-3 pt-2 border-t border-slate-100">
                 <button type="submit"
                         class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-white text-sm font-semibold hover:bg-blue-600 transition-colors">

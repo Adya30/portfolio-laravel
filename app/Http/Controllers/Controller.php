@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Cloudinary\Cloudinary;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Validation\ValidationException;
 use RuntimeException;
 
 abstract class Controller
@@ -31,6 +32,10 @@ abstract class Controller
             'url' => [
                 'secure' => config('cloudinary.secure', true),
             ],
+            'api' => [
+                'connection_timeout' => 60,
+                'timeout' => 120,
+            ],
         ]);
 
         $options = [
@@ -40,17 +45,34 @@ abstract class Controller
             'overwrite' => false,
         ];
 
-        if ($isSvg) {
-            $result = $cloudinary->uploadApi()->upload(
-                'data:image/svg+xml;base64,'.base64_encode($svgContent),
-                $options
-            );
-        } else {
+        $payload = $isSvg
+            ? 'data:image/svg+xml;base64,'.base64_encode($svgContent)
+            : $file->getRealPath();
+
+        if (! $isSvg) {
             $options['format'] = 'webp';
-            $result = $cloudinary->uploadApi()->upload($file->getRealPath(), $options);
         }
 
-        return $result['secure_url'] ?? $result['url'];
+        $maxRetries = 3;
+        $lastException = null;
+
+        for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
+            try {
+                $result = $cloudinary->uploadApi()->upload($payload, $options);
+
+                return $result['secure_url'] ?? $result['url'];
+            } catch (\Throwable $e) {
+                $lastException = $e;
+                report($e);
+                if ($attempt < $maxRetries) {
+                    usleep(500000 * $attempt);
+                }
+            }
+        }
+
+        throw ValidationException::withMessages([
+            'gambar' => 'Upload ke Cloudinary gagal karena gangguan koneksi jaringan ('.$lastException?->getMessage().'). Silakan coba unggah kembali atau gunakan URL gambar.',
+        ]);
     }
 
     private function compressSvg(string $svg): string
