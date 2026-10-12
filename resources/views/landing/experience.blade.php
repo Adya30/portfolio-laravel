@@ -60,7 +60,7 @@
                                 </div>
                             @endif
 
-                            @if (!empty($experience->responsibilities))
+                            @if (!empty($experience->responsibilities) || !empty($experience->responsibilities_idn))
                                 <div class="pt-3.5 sm:pt-4 border-t border-slate-200/90 dark:border-white/10">
                                     <h2 class="font-poppins text-sm sm:text-base font-bold tracking-tight text-slate-900 dark:text-white mb-2"
                                         x-text="t('keyResponsibilities')">

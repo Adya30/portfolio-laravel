@@ -55,6 +55,7 @@
                                     </template>
                                 </div>
                             </div>
+                        </template>
                         @if (!empty($project->konten) && is_array($project->konten) && count($project->konten) > 0)
                             <div class="pt-3.5 sm:pt-4 border-t border-slate-200/90 dark:border-white/10 space-y-4">
                                 @foreach ($project->konten as $block)
