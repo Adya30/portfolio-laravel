@@ -368,7 +368,7 @@
 
     <section class="pt-2 sm:pt-3 pb-2 sm:pb-3 scroll-mt-24 sm:scroll-mt-28 relative z-10" id="tentang"
         data-aos="fade-up">
-        <div class="w-[calc(100%-2.5rem)] max-w-6xl mx-auto">
+        <div class="w-[calc(100%-2.5rem)] max-w-6xl mx-auto flex flex-col gap-4 sm:gap-5">
             <div
                 class="rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#0f172a]/95 p-6 sm:p-10 lg:p-14 shadow-none">
                 <div class="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
@@ -401,15 +401,10 @@
 
                 </div>
             </div>
-        </div>
-    </section>
-
-
-    <section class="pt-2 sm:pt-3 pb-2 sm:pb-3 relative z-10 scroll-mt-24 sm:scroll-mt-28" id="github-activity">
-        <div class="w-[calc(100%-2.5rem)] max-w-6xl mx-auto" data-aos="fade-up" x-data="githubCalendar()">
 
             <div
-                class="rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#0f172a] p-4 sm:p-6 lg:p-7 relative shadow-none">
+                class="rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#0f172a] p-4 sm:p-6 lg:p-7 relative shadow-none"
+                id="github-activity" data-aos="fade-up" x-data="githubCalendar()">
 
                 <div class="mb-4 sm:mb-5 select-none pb-3 border-b border-slate-200/80 dark:border-white/10">
                     <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-tight">
