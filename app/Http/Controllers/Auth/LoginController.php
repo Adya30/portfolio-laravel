@@ -21,7 +21,10 @@ class LoginController extends Controller
     public function showLoginForm(): View|RedirectResponse
     {
         if (Auth::check()) {
-            return redirect()->route('admin.dashboard');
+            /** @var \App\Models\User|null $user */
+            $user = Auth::user();
+
+            return redirect()->route($user?->isMateriOnly() ? 'admin.courses.index' : 'admin.dashboard');
         }
 
         return view('auth.login');
@@ -64,7 +67,7 @@ class LoginController extends Controller
 
             $request->session()->regenerate();
 
-            return redirect()->route('admin.dashboard');
+            return redirect()->route($user->isMateriOnly() ? 'admin.courses.index' : 'admin.dashboard');
         }
 
         $attempts = RateLimiter::attempts($throttleKey);

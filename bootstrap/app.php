@@ -5,6 +5,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,17 +74,23 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustProxies(at: '*');
+
         // Pengguna yang belum login diarahkan ke halaman login,
         // dan pengguna yang sudah login dijauhkan dari form login.
         $middleware->redirectGuestsTo(fn () => route('login'));
-        $middleware->redirectUsersTo(fn () => auth()->user()?->isMateriOnly() ? route('admin.courses.index') : route('admin.dashboard'));
+        $middleware->redirectUsersTo(function () {
+            /** @var \App\Models\User|null $user */
+            $user = Auth::user();
+
+            return $user?->isMateriOnly() ? route('admin.courses.index') : route('admin.dashboard');
+        });
 
         // Keamanan dasar: header keamanan + batas permintaan per IP
-        // per menit (120) untuk semua halaman web sebagai mitigasi
-        // dasar serangan brute-force / DDoS di level aplikasi.
+        // per menit (600) untuk mendukung banyak pengunjung bersamaan (misal 50+ orang dalam 1 jaringan/WiFi)
         $middleware->web(append: [
             SecurityHeaders::class,
-            'throttle:120,1',
+            'throttle:600,1',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

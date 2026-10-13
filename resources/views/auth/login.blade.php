@@ -92,7 +92,7 @@
 
             <h1
                 class="text-2xl sm:text-3xl font-extrabold text-slate-800 dark:text-white text-center tracking-tight mb-5 md:mb-6">
-                Hello Adya!
+                Welcome!
             </h1>
 
             @if (isset($errors) && $errors->any())

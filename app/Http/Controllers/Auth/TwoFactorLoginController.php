@@ -93,7 +93,9 @@ class TwoFactorLoginController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('admin.dashboard'));
+        $targetRoute = $user->isMateriOnly() ? 'admin.courses.index' : 'admin.dashboard';
+
+        return redirect()->intended(route($targetRoute));
     }
 
     /**
