@@ -1293,11 +1293,10 @@ Alpine.data('quillParagraphEditor', (block, index) => ({
 Alpine.data('tocSpy', () => ({
     active: '',
     _observer: null,
+    _isManualScroll: false,
+    _scrollTimeout: null,
 
     init() {
-        
-        
-        
         this.$el.addEventListener('click', (e) => {
             const link = e.target.closest('a[href^="#"]');
             if (!link) return;
@@ -1305,15 +1304,22 @@ Alpine.data('tocSpy', () => ({
             const target = document.getElementById(id);
             if (target) {
                 e.preventDefault();
+                this.active = id;
+                this._isManualScroll = true;
+                clearTimeout(this._scrollTimeout);
+
                 target.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 history.replaceState(null, '', '#' + id);
+
+                this._scrollTimeout = setTimeout(() => {
+                    this._isManualScroll = false;
+                }, 800);
             }
         });
 
         this._observe();
     },
 
-    
     _observe() {
         if (this._observer) { this._observer.disconnect(); this._observer = null; }
 
@@ -1322,16 +1328,26 @@ Alpine.data('tocSpy', () => ({
         const sections = ids.map((id) => document.getElementById(id)).filter(Boolean);
         if (!sections.length || typeof IntersectionObserver === 'undefined') return;
 
+        const hash = window.location.hash.slice(1);
+        if (hash && ids.includes(hash)) {
+            this.active = hash;
+        } else if (sections.length && window.scrollY < 120) {
+            this.active = sections[0].id;
+        }
+
         this._observer = new IntersectionObserver(
             (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) this.active = entry.target.id;
-                });
+                if (this._isManualScroll) return;
+
+                const intersecting = entries.filter((e) => e.isIntersecting);
+                if (intersecting.length > 0) {
+                    intersecting.sort((a, b) => {
+                        return Math.abs(a.boundingClientRect.top - 100) - Math.abs(b.boundingClientRect.top - 100);
+                    });
+                    this.active = intersecting[0].target.id;
+                }
             },
-            
-            
-            
-            { rootMargin: '-80px 0px -75% 0px', threshold: 0 }
+            { rootMargin: '-70px 0px -65% 0px', threshold: [0, 0.5] }
         );
         sections.forEach((s) => this._observer.observe(s));
     },

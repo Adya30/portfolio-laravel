@@ -50,10 +50,21 @@ if (! function_exists('render_markdown')) {
 
         $html = strip_tags($html, $allowed);
 
-        $html = preg_replace_callback('/<h([1-6])>(.*?)<\/h\1>/', function ($m) {
+        $usedSlugs = [];
+        $html = preg_replace_callback('/<h([1-6])>(.*?)<\/h\1>/', function ($m) use (&$usedSlugs) {
             $level = $m[1];
             $inner = $m[2];
-            $slug = Str::slug(strip_tags($inner));
+            $baseSlug = Str::slug(strip_tags($inner));
+            if ($baseSlug === '') {
+                $baseSlug = 'heading';
+            }
+            $slug = $baseSlug;
+            $count = 1;
+            while (isset($usedSlugs[$slug])) {
+                $slug = $baseSlug.'-'.$count;
+                $count++;
+            }
+            $usedSlugs[$slug] = true;
 
             return '<h'.$level.' id="'.$slug.'">'.$inner.'</h'.$level.'>';
         }, $html);

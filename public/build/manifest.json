@@ -92,7 +92,7 @@
     "src": "node_modules/cropperjs/dist/cropper.css"
   },
   "node_modules/cropperjs/dist/cropper.js": {
-    "file": "assets/cropper-DfsC9nAK.js",
+    "file": "assets/cropper-C7-tXASR.js",
     "name": "cropper",
     "src": "node_modules/cropperjs/dist/cropper.js",
     "isDynamicEntry": true,
@@ -154,7 +154,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-C9zxkZ8i.js",
+    "file": "assets/app-dBkUjxoL.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,

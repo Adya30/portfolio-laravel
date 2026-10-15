@@ -36,12 +36,30 @@
         ];
 
         $tocItems = [];
+        $usedHeadingSlugs = [];
+
+        $generateUniqueHeadingSlug = function ($title) use (&$usedHeadingSlugs) {
+            $base = Str::slug($title);
+            if ($base === '') {
+                $base = 'section';
+            }
+            $slug = $base;
+            $count = 1;
+            while (isset($usedHeadingSlugs[$slug])) {
+                $slug = $base . '-' . $count;
+                $count++;
+            }
+            $usedHeadingSlugs[$slug] = true;
+            return $slug;
+        };
 
         foreach ($subbabBlocks as $bIdx => $block) {
             $type = $block['type'] ?? '';
             if (in_array($type, ['subheading', 'subheading3'], true) && !empty($block['teks'])) {
+                $headingId = $generateUniqueHeadingSlug($block['teks']);
+                $subbabBlocks[$bIdx]['heading_id'] = $headingId;
                 $tocItems[] = [
-                    'id' => Str::slug($block['teks']),
+                    'id' => $headingId,
                     'judul' => $block['teks'],
                     'level' => $type === 'subheading3' ? 3 : 2,
                 ];
@@ -49,8 +67,9 @@
                 $rendered = render_markdown($block['teks']);
                 preg_match_all('/<h([1-6]) id="([^"]+)">(.*?)<\/h\1>/', $rendered, $m);
                 foreach ($m[2] as $i => $slug) {
+                    $headingId = $generateUniqueHeadingSlug($slug);
                     $tocItems[] = [
-                        'id' => $slug,
+                        'id' => $headingId,
                         'judul' => strip_tags($m[3][$i]),
                         'level' => (int) ($m[1][$i] ?? 2),
                     ];
@@ -234,13 +253,13 @@
                             @php $type = $block['type'] ?? 'paragraf'; @endphp
 
                             @if ($type === 'subheading')
-                                @php $slug = Str::slug($block['teks'] ?? ''); @endphp
+                                @php $slug = $block['heading_id'] ?? Str::slug($block['teks'] ?? ''); @endphp
                                 <h2 id="{{ $slug }}"
                                     class="scroll-mt-24 pt-4 sm:pt-5 font-poppins text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white leading-snug">
                                     {{ $block['teks'] ?? '' }}
                                 </h2>
                             @elseif ($type === 'subheading3')
-                                @php $slug = Str::slug($block['teks'] ?? ''); @endphp
+                                @php $slug = $block['heading_id'] ?? Str::slug($block['teks'] ?? ''); @endphp
                                 <h3 id="{{ $slug }}"
                                     class="scroll-mt-24 pt-3 font-poppins text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white leading-snug">
                                     {{ $block['teks'] ?? '' }}
