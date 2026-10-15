@@ -267,7 +267,7 @@
                                         'kecil' => ['max-w-[120px] sm:max-w-[140px] md:max-w-[160px]', 'max-h-24 sm:max-h-28 md:max-h-32'],
                                         'sedang' => ['max-w-[180px] sm:max-w-[210px] md:max-w-[240px]', 'max-h-36 sm:max-h-40 md:max-h-44'],
                                         'besar' => ['max-w-[260px] sm:max-w-[300px] md:max-w-[340px]', 'max-h-48 sm:max-h-52 md:max-h-56'],
-                                        default => ['w-full max-w-full sm:max-w-sm md:max-w-md', 'max-h-[50vh] sm:max-h-64 md:max-h-[290px]'],
+                                        default => ['w-full max-w-full sm:max-w-md md:max-w-lg lg:max-w-xl', 'max-h-[60vh] sm:max-h-80 md:max-h-[380px]'],
                                     };
                                 @endphp
                                 <figure class="my-3 sm:my-4 text-center {{ $isPenuh ? '-mx-4 sm:mx-0' : '' }}">
