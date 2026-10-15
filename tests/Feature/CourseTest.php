@@ -102,7 +102,7 @@ test('course subbab reader separates both heading levels without numbers', funct
         ->assertOk()
         ->assertSee('<h2 id="deklarasi"', false)
         ->assertSee('<h3 id="dengan-const"', false)
-        ->assertSee('border-l-2 border-blue-200', false)
+        ->assertDontSee('border-l-2 border-blue-200', false)
         ->assertDontSee('>1.1', false)
         ->assertSee('Dengan const');
 });
@@ -239,3 +239,18 @@ test('admin can store and update subbab and it appears in course show', function
         ->assertOk()
         ->assertSee('Pengenalan HTML');
 });
+
+test('admin subbab GET request redirects to edit page to prevent 405 error', function () {
+    $user = User::factory()->create();
+    $course = Course::create([
+        'nama' => 'Pemrograman Berbasis Objek',
+        'konten' => [
+            ['type' => 'subbab', 'judul' => 'Pengenalan OOP'],
+        ],
+    ]);
+
+    $this->actingAs($user)
+        ->get(route('admin.courses.subbab.show', [$course, 0]))
+        ->assertRedirect(route('admin.courses.subbab.edit', [$course, 0]));
+});
+

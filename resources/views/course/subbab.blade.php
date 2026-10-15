@@ -155,10 +155,10 @@
                 <nav class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-1">
                     @foreach ($tocItems as $toc)
                         <a href="#{{ $toc['id'] }}"
-                            class="focus-ring block px-3 py-2 rounded-lg text-sm leading-snug transition-all duration-200 border {{ ($toc['level'] ?? 2) >= 3 ? 'ml-3' : '' }}"
+                            class="focus-ring block px-3 py-2 rounded-lg text-sm leading-snug transition-all duration-200 border {{ ($toc['level'] ?? 2) >= 3 ? 'ml-4 pl-3 border-l-2 border-slate-200 dark:border-white/10 text-xs text-slate-500 dark:text-slate-400' : '' }}"
                             :class="isActive('{{ $toc['id'] }}') ?
                                 'text-blue-700 dark:text-blue-400 font-semibold bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' :
-                                'text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 border-transparent'">
+                                '{{ ($toc['level'] ?? 2) >= 3 ? 'text-slate-500 dark:text-slate-400' : 'text-slate-600 dark:text-slate-400' }} hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 border-transparent'">
                             {{ $toc['judul'] }}
                         </a>
                     @endforeach
@@ -190,7 +190,7 @@
                          @foreach ($tocItems as $toc)
                         <a href="#{{ $toc['id'] }}"
                             class="focus-ring block px-3 py-2 rounded-lg text-sm leading-snug transition-all duration-200 border
-                                  text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 border-transparent {{ ($toc['level'] ?? 2) >= 3 ? 'ml-3' : '' }}">
+                                  hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 border-transparent {{ ($toc['level'] ?? 2) >= 3 ? 'ml-4 pl-3 border-l-2 border-slate-200 dark:border-white/10 text-xs text-slate-500 dark:text-slate-400' : 'text-slate-600 dark:text-slate-400' }}">
                             {{ $toc['judul'] }}
                         </a>
         @endforeach
@@ -199,9 +199,10 @@
     </div>
     @endif
 
-    <main class="flex-1 w-full transition-all duration-300 ease-in-out xl:pr-[19rem]"
-        :class="sidebarOpen ? 'lg:pl-[22rem]' : 'lg:pl-[5.5rem]'">
-        <section class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+    <main class="flex-1 w-full transition-all duration-300 ease-in-out {{ $hasToc ? 'xl:pr-[19rem]' : '' }}"
+        :class="sidebarOpen ? 'lg:pl-[22rem]' : 'lg:pl-[5.25rem]'">
+        <section class="mx-auto pb-12 transition-all duration-300 ease-in-out"
+            :class="sidebarOpen ? 'max-w-3xl px-4 sm:px-6 lg:px-8' : 'max-w-5xl xl:max-w-6xl 2xl:max-w-7xl px-4 sm:px-6 lg:px-8'">
 
             <header class="pt-16 sm:pt-14 lg:pt-2">
                 <span
@@ -223,15 +224,13 @@
                         @if ($type === 'subheading')
                             @php $slug = Str::slug($block['teks'] ?? ''); @endphp
                             <h2 id="{{ $slug }}"
-                                class="prose-measure scroll-mt-24 pt-5 font-poppins text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+                                class="scroll-mt-24 pt-4 sm:pt-5 font-poppins text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white leading-snug">
                                 {{ $block['teks'] ?? '' }}
                             </h2>
                         @elseif ($type === 'subheading3')
-                            {{-- One notch down from a section: indented behind a rule,
-                                 smaller and softer, with no outline number. --}}
                             @php $slug = Str::slug($block['teks'] ?? ''); @endphp
                             <h3 id="{{ $slug }}"
-                                class="prose-measure scroll-mt-24 ml-4 border-l-2 border-blue-200 pt-3 pl-3 font-poppins text-base font-bold tracking-tight text-slate-800 sm:ml-6 sm:pl-4 sm:text-lg dark:border-blue-900/60 dark:text-slate-100">
+                                class="scroll-mt-24 pt-3 font-poppins text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white leading-snug">
                                 {{ $block['teks'] ?? '' }}
                             </h3>
                         @elseif ($type === 'paragraf')
@@ -245,12 +244,13 @@
                                 };
                             @endphp
                             <div
-                                class="prose-measure text-[15px] leading-[1.75] sm:text-base sm:leading-[1.8] text-slate-700 dark:text-slate-200 markdown-content {{ $alignClass }}">
+                                class="text-[15px] leading-[1.75] sm:text-base sm:leading-[1.8] text-slate-700 dark:text-slate-200 markdown-content {{ $alignClass }}">
                                 {!! render_markdown($block['teks'] ?? '') !!}
                             </div>
                         @elseif ($type === 'gambar')
                             @php
                                 $ukuran = $block['ukuran'] ?? 'penuh';
+                                $isPenuh = ($ukuran === 'penuh');
                                 $sizeClass = match ($ukuran) {
                                     'kecil' => 'max-w-xs',
                                     'sedang' => 'max-w-md',
@@ -258,17 +258,17 @@
                                     default => 'max-w-full',
                                 };
                             @endphp
-                            <figure class="my-2 text-center">
+                            <figure class="my-3 text-center {{ $isPenuh ? '-mx-4 sm:mx-0' : '' }}">
                                 <div
-                                    class="inline-block rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-800 mx-auto {{ $sizeClass }}">
+                                    class="inline-block overflow-hidden mx-auto {{ $sizeClass }} {{ $isPenuh ? 'w-full rounded-none sm:rounded-xl border-y sm:border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-800' : 'rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-800' }}">
                                     <img src="{{ img_url($block['url'] ?? '') }}"
                                         alt="{{ $block['caption'] ?? ('Ilustrasi '.$course->nama) }}"
                                         title="{{ $block['caption'] ?? $course->nama }}"
-                                        class="w-full h-auto object-contain max-h-30 sm:max-h-50 md:max-h-100"
+                                        class="w-full h-auto object-contain max-h-[85vh] sm:max-h-120 md:max-h-150"
                                         loading="lazy" decoding="async">
                                 </div>
                                 @if (!empty($block['caption']))
-                                    <figcaption class="mt-2 text-center text-xs text-slate-500 dark:text-slate-400">
+                                    <figcaption class="mt-2 text-center text-xs text-slate-500 dark:text-slate-400 {{ $isPenuh ? 'px-4 sm:px-0' : '' }}">
                                         {{ $block['caption'] }}
                                     </figcaption>
                                 @endif

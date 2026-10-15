@@ -92,6 +92,11 @@ class CourseController extends Controller
         return redirect()->route('admin.courses.show', $course)->with('success', 'Materi berhasil diperbarui.');
     }
 
+    public function showSubbabRedirect(Course $course, int $blockIndex): RedirectResponse
+    {
+        return redirect()->route('admin.courses.subbab.edit', [$course, $blockIndex]);
+    }
+
     public function editSubbab(Course $course, int $blockIndex): View
     {
         $allBlocks = $course->konten ?? [];

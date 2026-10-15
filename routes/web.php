@@ -66,6 +66,7 @@ Route::middleware(['auth', EnsureMateriRoleAccess::class, 'throttle:120,1'])->pr
     Route::post('courses/reorder', [CourseController::class, 'reorder'])->name('courses.reorder');
     Route::post('courses/upload-image', [CourseController::class, 'uploadBlockImage'])->name('courses.upload-image');
     Route::post('courses/{course}/subbab/reorder', [CourseController::class, 'reorderSubbab'])->name('courses.subbab.reorder');
+    Route::get('courses/{course}/subbab/{blockIndex}', [CourseController::class, 'showSubbabRedirect'])->name('courses.subbab.show');
     Route::get('courses/{course}/subbab/{blockIndex}/edit', [CourseController::class, 'editSubbab'])->name('courses.subbab.edit');
     Route::put('courses/{course}/subbab/{blockIndex}', [CourseController::class, 'updateSubbab'])->name('courses.subbab.update');
     Route::post('courses/{course}/subbab', [CourseController::class, 'storeSubbab'])->name('courses.subbab.store');
