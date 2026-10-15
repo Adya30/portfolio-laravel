@@ -154,11 +154,19 @@
                 </div>
                 <nav class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-1">
                     @foreach ($tocItems as $toc)
+                        @php $isLevel3 = ($toc['level'] ?? 2) >= 3; @endphp
                         <a href="#{{ $toc['id'] }}"
-                            class="focus-ring block px-3 py-2 rounded-lg text-sm leading-snug transition-all duration-200 border {{ ($toc['level'] ?? 2) >= 3 ? 'ml-4 pl-3 border-l-2 border-slate-200 dark:border-white/10 text-xs text-slate-500 dark:text-slate-400' : '' }}"
-                            :class="isActive('{{ $toc['id'] }}') ?
-                                'text-blue-700 dark:text-blue-400 font-semibold bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' :
-                                '{{ ($toc['level'] ?? 2) >= 3 ? 'text-slate-500 dark:text-slate-400' : 'text-slate-600 dark:text-slate-400' }} hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 border-transparent'">
+                            @if ($isLevel3)
+                                class="focus-ring block ml-3 pl-3 py-1 text-xs leading-normal transition-colors"
+                                :class="isActive('{{ $toc['id'] }}') ?
+                                    'text-blue-600 dark:text-blue-400 font-semibold' :
+                                    'text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400'"
+                            @else
+                                class="focus-ring block px-3 py-1.5 rounded-lg text-sm font-medium leading-snug transition-colors"
+                                :class="isActive('{{ $toc['id'] }}') ?
+                                    'text-blue-600 dark:text-blue-400 font-bold bg-blue-50/70 dark:bg-blue-900/20' :
+                                    'text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-white/5'"
+                            @endif>
                             {{ $toc['judul'] }}
                         </a>
                     @endforeach
@@ -188,91 +196,94 @@
                         }
                     " class="p-3 space-y-1 overflow-y-auto custom-scrollbar">
                          @foreach ($tocItems as $toc)
-                        <a href="#{{ $toc['id'] }}"
-                            class="focus-ring block px-3 py-2 rounded-lg text-sm leading-snug transition-all duration-200 border
-                                  hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 border-transparent {{ ($toc['level'] ?? 2) >= 3 ? 'ml-4 pl-3 border-l-2 border-slate-200 dark:border-white/10 text-xs text-slate-500 dark:text-slate-400' : 'text-slate-600 dark:text-slate-400' }}">
-                            {{ $toc['judul'] }}
-                        </a>
-        @endforeach
-        </nav>
-    </div>
-    </div>
-    @endif
+                            @php $isLevel3 = ($toc['level'] ?? 2) >= 3; @endphp
+                            <a href="#{{ $toc['id'] }}"
+                                @if ($isLevel3)
+                                    class="focus-ring block ml-3 pl-3 py-1 text-xs leading-normal transition-colors text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400"
+                                @else
+                                    class="focus-ring block px-3 py-1.5 rounded-lg text-sm font-medium leading-snug transition-colors text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-white/5"
+                                @endif>
+                                {{ $toc['judul'] }}
+                            </a>
+                        @endforeach
+                    </nav>
+                </div>
+            </div>
+        @endif
 
-    <main class="flex-1 w-full transition-all duration-300 ease-in-out {{ $hasToc ? 'xl:pr-[19rem]' : '' }}"
-        :class="sidebarOpen ? 'lg:pl-[22rem]' : 'lg:pl-[5.25rem]'">
-        <section class="mx-auto pb-12 transition-all duration-300 ease-in-out"
-            :class="sidebarOpen ? 'max-w-3xl px-4 sm:px-6 lg:px-8' : 'max-w-5xl xl:max-w-6xl 2xl:max-w-7xl px-4 sm:px-6 lg:px-8'">
+        <main class="flex-1 w-full transition-all duration-300 ease-in-out {{ $hasToc ? 'xl:pr-[19rem]' : '' }}"
+            :class="sidebarOpen ? 'lg:pl-[22rem]' : 'lg:pl-[5.25rem]'">
+            <section class="mx-auto pb-12 transition-all duration-300 ease-in-out"
+                :class="sidebarOpen ? 'max-w-3xl px-4 sm:px-6 lg:px-8' : 'max-w-5xl xl:max-w-6xl 2xl:max-w-7xl px-4 sm:px-6 lg:px-8'">
 
-            <header class="pt-16 sm:pt-14 lg:pt-2">
-                <span
-                    class="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 dark:bg-blue-900/20 rounded-full text-xs font-medium text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
-                    <i class="ri-book-open-line" aria-hidden="true"></i>
-                    <span x-text="t('subchapter')">Subbab</span> {{ $currentSubbabPos + 1 }} / {{ count($subbabs) }}
-                </span>
-                <h1
-                    class="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-slate-900 dark:text-white leading-tight mt-2">
-                    {{ $subbabs[$currentSubbabPos]['judul'] ?? 'Subbab ' . ($currentSubbabPos + 1) }}
-                </h1>
-            </header>
+                <header class="pt-16 sm:pt-14 lg:pt-2">
+                    <span
+                        class="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 dark:bg-blue-900/20 rounded-full text-xs font-medium text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
+                        <i class="ri-book-open-line" aria-hidden="true"></i>
+                        <span x-text="t('subchapter')">Subbab</span> {{ $currentSubbabPos + 1 }} / {{ count($subbabs) }}
+                    </span>
+                    <h1
+                        class="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-slate-900 dark:text-white leading-tight mt-2">
+                        {{ $subbabs[$currentSubbabPos]['judul'] ?? 'Subbab ' . ($currentSubbabPos + 1) }}
+                    </h1>
+                </header>
 
-            @if (count($subbabBlocks))
-                <article class="min-h-75 mt-2 sm:mt-3 space-y-3">
-                    @foreach ($subbabBlocks as $block)
-                        @php $type = $block['type'] ?? 'paragraf'; @endphp
+                @if (count($subbabBlocks))
+                    <article class="min-h-75 mt-2 sm:mt-3 space-y-3">
+                        @foreach ($subbabBlocks as $block)
+                            @php $type = $block['type'] ?? 'paragraf'; @endphp
 
-                        @if ($type === 'subheading')
-                            @php $slug = Str::slug($block['teks'] ?? ''); @endphp
-                            <h2 id="{{ $slug }}"
-                                class="scroll-mt-24 pt-4 sm:pt-5 font-poppins text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white leading-snug">
-                                {{ $block['teks'] ?? '' }}
-                            </h2>
-                        @elseif ($type === 'subheading3')
-                            @php $slug = Str::slug($block['teks'] ?? ''); @endphp
-                            <h3 id="{{ $slug }}"
-                                class="scroll-mt-24 pt-3 font-poppins text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white leading-snug">
-                                {{ $block['teks'] ?? '' }}
-                            </h3>
-                        @elseif ($type === 'paragraf')
-                            @php
-                                $align = $block['align'] ?? 'kiri';
-                                $alignClass = match ($align) {
-                                    'tengah' => 'text-center',
-                                    'kanan' => 'text-right',
-                                    'justify' => 'text-justify',
-                                    default => 'text-left',
-                                };
-                            @endphp
-                            <div
-                                class="text-[15px] leading-[1.75] sm:text-base sm:leading-[1.8] text-slate-700 dark:text-slate-200 markdown-content {{ $alignClass }}">
-                                {!! render_markdown($block['teks'] ?? '') !!}
-                            </div>
-                        @elseif ($type === 'gambar')
-                            @php
-                                $ukuran = $block['ukuran'] ?? 'penuh';
-                                $isPenuh = ($ukuran === 'penuh');
-                                $sizeClass = match ($ukuran) {
-                                    'kecil' => 'max-w-xs',
-                                    'sedang' => 'max-w-md',
-                                    'besar' => 'max-w-2xl',
-                                    default => 'max-w-full',
-                                };
-                            @endphp
-                            <figure class="my-3 text-center {{ $isPenuh ? '-mx-4 sm:mx-0' : '' }}">
+                            @if ($type === 'subheading')
+                                @php $slug = Str::slug($block['teks'] ?? ''); @endphp
+                                <h2 id="{{ $slug }}"
+                                    class="scroll-mt-24 pt-4 sm:pt-5 font-poppins text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white leading-snug">
+                                    {{ $block['teks'] ?? '' }}
+                                </h2>
+                            @elseif ($type === 'subheading3')
+                                @php $slug = Str::slug($block['teks'] ?? ''); @endphp
+                                <h3 id="{{ $slug }}"
+                                    class="scroll-mt-24 pt-3 font-poppins text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white leading-snug">
+                                    {{ $block['teks'] ?? '' }}
+                                </h3>
+                            @elseif ($type === 'paragraf')
+                                @php
+                                    $align = $block['align'] ?? 'kiri';
+                                    $alignClass = match ($align) {
+                                        'tengah' => 'text-center',
+                                        'kanan' => 'text-right',
+                                        'justify' => 'text-justify',
+                                        default => 'text-left',
+                                    };
+                                @endphp
                                 <div
-                                    class="inline-block overflow-hidden mx-auto {{ $sizeClass }} {{ $isPenuh ? 'w-full rounded-none sm:rounded-xl border-y sm:border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-800' : 'rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-800' }}">
-                                    <img src="{{ img_url($block['url'] ?? '') }}"
-                                        alt="{{ $block['caption'] ?? ('Ilustrasi '.$course->nama) }}"
-                                        title="{{ $block['caption'] ?? $course->nama }}"
-                                        class="w-full h-auto object-contain max-h-[85vh] sm:max-h-120 md:max-h-150"
-                                        loading="lazy" decoding="async">
+                                    class="text-[15px] leading-[1.75] sm:text-base sm:leading-[1.8] text-slate-700 dark:text-slate-200 markdown-content {{ $alignClass }}">
+                                    {!! render_markdown($block['teks'] ?? '') !!}
                                 </div>
-                                @if (!empty($block['caption']))
-                                    <figcaption class="mt-2 text-center text-xs text-slate-500 dark:text-slate-400 {{ $isPenuh ? 'px-4 sm:px-0' : '' }}">
-                                        {{ $block['caption'] }}
-                                    </figcaption>
-                                @endif
-                            </figure>
+                            @elseif ($type === 'gambar')
+                                @php
+                                    $ukuran = $block['ukuran'] ?? 'penuh';
+                                    $isPenuh = ($ukuran === 'penuh');
+                                    $sizeClass = match ($ukuran) {
+                                        'kecil' => 'max-w-xs sm:max-w-sm',
+                                        'sedang' => 'max-w-md sm:max-w-lg',
+                                        'besar' => 'max-w-2xl lg:max-w-3xl',
+                                        default => 'max-w-full w-full',
+                                    };
+                                @endphp
+                                <figure class="my-4 text-center {{ $isPenuh ? '-mx-4 sm:mx-0' : '' }}">
+                                    <div class="inline-block mx-auto {{ $sizeClass }}">
+                                        <img src="{{ img_url($block['url'] ?? '') }}"
+                                            alt="{{ $block['caption'] ?? ('Ilustrasi '.$course->nama) }}"
+                                            title="{{ $block['caption'] ?? $course->nama }}"
+                                            class="mx-auto h-auto object-contain {{ $isPenuh ? 'w-full rounded-none sm:rounded-xl' : 'max-w-full rounded-lg sm:rounded-xl shadow-xs' }} max-h-[85vh] sm:max-h-120 md:max-h-150"
+                                            loading="lazy" decoding="async">
+                                    </div>
+                                    @if (!empty($block['caption']))
+                                        <figcaption class="mt-2 text-center text-xs text-slate-500 dark:text-slate-400 {{ $isPenuh ? 'px-4 sm:px-0' : '' }}">
+                                            {{ $block['caption'] }}
+                                        </figcaption>
+                                    @endif
+                                </figure>
                         @elseif ($type === 'kode')
                             @php
                                 $lang = in_array($block['bahasa'] ?? '', $codeLangs, true)
