@@ -240,6 +240,36 @@ test('admin can store and update subbab and it appears in course show', function
         ->assertSee('Pengenalan HTML');
 });
 
+test('course subbab TOC and content disambiguates duplicate subheading names under different parents', function () {
+    $course = Course::create([
+        'nama' => 'Pemrograman Berorientasi Objek',
+        'konten' => [
+            ['type' => 'subbab', 'judul' => 'Relasi Kelas', 'judul_idn' => null],
+            ['type' => 'subheading', 'teks' => '1. Association'],
+            ['type' => 'subheading3', 'teks' => 'Pengertian'],
+            ['type' => 'subheading3', 'teks' => 'Implementasi'],
+            ['type' => 'subheading', 'teks' => '2. Aggregation'],
+            ['type' => 'subheading3', 'teks' => 'Pengertian'],
+            ['type' => 'subheading3', 'teks' => 'Implementasi'],
+        ],
+    ]);
+
+    $this->get(route('course.subbab', [$course, 'relasi-kelas']))
+        ->assertOk()
+        ->assertSee('href="#1-association"', false)
+        ->assertSee('<h2 id="1-association"', false)
+        ->assertSee('href="#1-association-pengertian"', false)
+        ->assertSee('<h3 id="1-association-pengertian"', false)
+        ->assertSee('href="#1-association-implementasi"', false)
+        ->assertSee('<h3 id="1-association-implementasi"', false)
+        ->assertSee('href="#2-aggregation"', false)
+        ->assertSee('<h2 id="2-aggregation"', false)
+        ->assertSee('href="#2-aggregation-pengertian"', false)
+        ->assertSee('<h3 id="2-aggregation-pengertian"', false)
+        ->assertSee('href="#2-aggregation-implementasi"', false)
+        ->assertSee('<h3 id="2-aggregation-implementasi"', false);
+});
+
 test('admin subbab GET request redirects to edit page to prevent 405 error', function () {
     $user = User::factory()->create();
     $course = Course::create([
@@ -253,4 +283,6 @@ test('admin subbab GET request redirects to edit page to prevent 405 error', fun
         ->get(route('admin.courses.subbab.show', [$course, 0]))
         ->assertRedirect(route('admin.courses.subbab.edit', [$course, 0]));
 });
+
+
 

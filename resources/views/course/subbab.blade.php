@@ -37,41 +37,64 @@
 
         $tocItems = [];
         $usedHeadingSlugs = [];
+        $currentParentHeadingSlug = '';
 
-        $generateUniqueHeadingSlug = function ($title) use (&$usedHeadingSlugs) {
+        $headingSlugCounts = [];
+        foreach ($subbabBlocks as $b) {
+            if (in_array($b['type'] ?? '', ['subheading', 'subheading3'], true) && !empty($b['teks'])) {
+                $base = Str::slug($b['teks']);
+                $headingSlugCounts[$base] = ($headingSlugCounts[$base] ?? 0) + 1;
+            }
+        }
+
+        $generateHierarchicalHeadingSlug = function ($title, $isLevel3) use (&$usedHeadingSlugs, &$currentParentHeadingSlug, $headingSlugCounts) {
             $base = Str::slug($title);
             if ($base === '') {
                 $base = 'section';
             }
-            $slug = $base;
+
+            if (!$isLevel3) {
+                $currentParentHeadingSlug = $base;
+                $slug = $base;
+            } else {
+                if (($headingSlugCounts[$base] ?? 0) > 1 && $currentParentHeadingSlug) {
+                    $slug = $currentParentHeadingSlug . '-' . $base;
+                } else {
+                    $slug = $base;
+                }
+            }
+
+            $finalSlug = $slug;
             $count = 1;
-            while (isset($usedHeadingSlugs[$slug])) {
-                $slug = $base . '-' . $count;
+            while (isset($usedHeadingSlugs[$finalSlug])) {
+                $finalSlug = $slug . '-' . $count;
                 $count++;
             }
-            $usedHeadingSlugs[$slug] = true;
-            return $slug;
+            $usedHeadingSlugs[$finalSlug] = true;
+            return $finalSlug;
         };
 
         foreach ($subbabBlocks as $bIdx => $block) {
             $type = $block['type'] ?? '';
             if (in_array($type, ['subheading', 'subheading3'], true) && !empty($block['teks'])) {
-                $headingId = $generateUniqueHeadingSlug($block['teks']);
+                $isLevel3 = ($type === 'subheading3');
+                $headingId = $generateHierarchicalHeadingSlug($block['teks'], $isLevel3);
                 $subbabBlocks[$bIdx]['heading_id'] = $headingId;
                 $tocItems[] = [
                     'id' => $headingId,
                     'judul' => $block['teks'],
-                    'level' => $type === 'subheading3' ? 3 : 2,
+                    'level' => $isLevel3 ? 3 : 2,
                 ];
             } elseif ($type === 'paragraf' && !empty($block['teks'])) {
                 $rendered = render_markdown($block['teks']);
                 preg_match_all('/<h([1-6]) id="([^"]+)">(.*?)<\/h\1>/', $rendered, $m);
                 foreach ($m[2] as $i => $slug) {
-                    $headingId = $generateUniqueHeadingSlug($slug);
+                    $lvl = (int) ($m[1][$i] ?? 2);
+                    $headingId = $generateHierarchicalHeadingSlug($slug, $lvl >= 3);
                     $tocItems[] = [
                         'id' => $headingId,
                         'judul' => strip_tags($m[3][$i]),
-                        'level' => (int) ($m[1][$i] ?? 2),
+                        'level' => $lvl,
                     ];
                 }
             }
@@ -206,11 +229,14 @@
                         if (link) {
                             $event.preventDefault();
                             tocOpen = false;
-                            const id = link.getAttribute('href').slice(1);
-                            const target = document.getElementById(id);
+                            const rawId = link.getAttribute('href').slice(1);
+                            const id = decodeURIComponent(rawId);
+                            const target = document.getElementById(id) || document.getElementById(rawId);
                             if (target) {
-                                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                                history.replaceState(null, '', '#' + id);
+                                const rect = target.getBoundingClientRect();
+                                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                                window.scrollTo({ top: Math.max(0, rect.top + scrollTop - 90), behavior: 'smooth' });
+                                history.replaceState(null, '', '#' + rawId);
                             }
                         }
                     " class="p-3 space-y-1 overflow-y-auto custom-scrollbar">
@@ -249,17 +275,27 @@
 
                 @if (count($subbabBlocks))
                     <article class="min-h-75 mt-2 sm:mt-3 space-y-3">
+                        @php $currentParentContentSlug = ''; @endphp
                         @foreach ($subbabBlocks as $block)
                             @php $type = $block['type'] ?? 'paragraf'; @endphp
 
                             @if ($type === 'subheading')
-                                @php $slug = $block['heading_id'] ?? Str::slug($block['teks'] ?? ''); @endphp
+                                @php
+                                    $baseSlug = Str::slug($block['teks'] ?? '');
+                                    $currentParentContentSlug = $baseSlug;
+                                    $slug = $block['heading_id'] ?? $baseSlug;
+                                @endphp
                                 <h2 id="{{ $slug }}"
                                     class="scroll-mt-24 pt-4 sm:pt-5 font-poppins text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white leading-snug">
                                     {{ $block['teks'] ?? '' }}
                                 </h2>
                             @elseif ($type === 'subheading3')
-                                @php $slug = $block['heading_id'] ?? Str::slug($block['teks'] ?? ''); @endphp
+                                @php
+                                    $childBase = Str::slug($block['teks'] ?? '');
+                                    $shouldPrefix = (($headingSlugCounts[$childBase] ?? 0) > 1 && $currentParentContentSlug);
+                                    $fallback = $shouldPrefix ? ($currentParentContentSlug . '-' . $childBase) : $childBase;
+                                    $slug = $block['heading_id'] ?? $fallback;
+                                @endphp
                                 <h3 id="{{ $slug }}"
                                     class="scroll-mt-24 pt-3 font-poppins text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white leading-snug">
                                     {{ $block['teks'] ?? '' }}

@@ -1300,16 +1300,26 @@ Alpine.data('tocSpy', () => ({
         this.$el.addEventListener('click', (e) => {
             const link = e.target.closest('a[href^="#"]');
             if (!link) return;
-            const id = link.getAttribute('href').slice(1);
-            const target = document.getElementById(id);
+            const rawId = link.getAttribute('href').slice(1);
+            const id = decodeURIComponent(rawId);
+            const target = document.getElementById(id) || document.getElementById(rawId);
             if (target) {
                 e.preventDefault();
                 this.active = id;
                 this._isManualScroll = true;
                 clearTimeout(this._scrollTimeout);
 
-                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                history.replaceState(null, '', '#' + id);
+                const rect = target.getBoundingClientRect();
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                const topbarOffset = 90;
+                const targetY = rect.top + scrollTop - topbarOffset;
+
+                window.scrollTo({
+                    top: Math.max(0, targetY),
+                    behavior: 'smooth'
+                });
+
+                history.replaceState(null, '', '#' + rawId);
 
                 this._scrollTimeout = setTimeout(() => {
                     this._isManualScroll = false;
