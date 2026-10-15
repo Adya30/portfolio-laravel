@@ -264,22 +264,22 @@
                                     $ukuran = $block['ukuran'] ?? 'penuh';
                                     $isPenuh = ($ukuran === 'penuh');
                                     [$sizeClass, $maxHClass] = match ($ukuran) {
-                                        'kecil' => ['max-w-[260px] md:max-w-[280px]', 'max-h-60 md:max-h-72'],
-                                        'sedang' => ['max-w-sm md:max-w-md lg:max-w-lg', 'max-h-80 md:max-h-96'],
-                                        'besar' => ['max-w-xl md:max-w-2xl', 'max-h-[70vh] md:max-h-120'],
-                                        default => ['w-full max-w-full lg:max-w-4xl', 'max-h-[80vh] md:max-h-[580px]'],
+                                        'kecil' => ['max-w-[120px] sm:max-w-[140px] md:max-w-[160px]', 'max-h-24 sm:max-h-28 md:max-h-32'],
+                                        'sedang' => ['max-w-[180px] sm:max-w-[210px] md:max-w-[240px]', 'max-h-36 sm:max-h-40 md:max-h-44'],
+                                        'besar' => ['max-w-[260px] sm:max-w-[300px] md:max-w-[340px]', 'max-h-48 sm:max-h-52 md:max-h-56'],
+                                        default => ['w-full max-w-full sm:max-w-sm md:max-w-md', 'max-h-[50vh] sm:max-h-64 md:max-h-[290px]'],
                                     };
                                 @endphp
-                                <figure class="my-4 text-center {{ $isPenuh ? '-mx-4 sm:mx-0' : '' }}">
+                                <figure class="my-3 sm:my-4 text-center {{ $isPenuh ? '-mx-4 sm:mx-0' : '' }}">
                                     <div class="inline-block mx-auto {{ $sizeClass }}">
                                         <img src="{{ img_url($block['url'] ?? '') }}"
                                             alt="{{ $block['caption'] ?? ('Ilustrasi '.$course->nama) }}"
                                             title="{{ $block['caption'] ?? $course->nama }}"
-                                            class="mx-auto h-auto object-contain {{ $isPenuh ? 'w-full rounded-none sm:rounded-xl' : 'max-w-full rounded-lg sm:rounded-xl shadow-xs' }} {{ $maxHClass }}"
+                                            class="mx-auto h-auto object-contain {{ $isPenuh ? 'w-full sm:w-auto max-w-full rounded-none sm:rounded-xl' : 'max-w-full rounded-lg sm:rounded-xl' }} {{ $maxHClass }}"
                                             loading="lazy" decoding="async">
                                     </div>
                                     @if (!empty($block['caption']))
-                                        <figcaption class="mt-2 text-center text-xs text-slate-500 dark:text-slate-400 {{ $isPenuh ? 'px-4 sm:px-0' : '' }}">
+                                        <figcaption class="mt-1.5 text-center text-xs text-slate-500 dark:text-slate-400 {{ $isPenuh ? 'px-4 sm:px-0' : '' }}">
                                             {{ $block['caption'] }}
                                         </figcaption>
                                     @endif
