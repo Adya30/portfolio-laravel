@@ -263,11 +263,11 @@
                                 @php
                                     $ukuran = $block['ukuran'] ?? 'penuh';
                                     $isPenuh = ($ukuran === 'penuh');
-                                    $sizeClass = match ($ukuran) {
-                                        'kecil' => 'max-w-xs sm:max-w-sm',
-                                        'sedang' => 'max-w-md sm:max-w-lg',
-                                        'besar' => 'max-w-2xl lg:max-w-3xl',
-                                        default => 'max-w-full w-full',
+                                    [$sizeClass, $maxHClass] = match ($ukuran) {
+                                        'kecil' => ['max-w-[260px] md:max-w-[280px]', 'max-h-60 md:max-h-72'],
+                                        'sedang' => ['max-w-sm md:max-w-md lg:max-w-lg', 'max-h-80 md:max-h-96'],
+                                        'besar' => ['max-w-xl md:max-w-2xl', 'max-h-[70vh] md:max-h-120'],
+                                        default => ['w-full max-w-full lg:max-w-4xl', 'max-h-[80vh] md:max-h-[580px]'],
                                     };
                                 @endphp
                                 <figure class="my-4 text-center {{ $isPenuh ? '-mx-4 sm:mx-0' : '' }}">
@@ -275,7 +275,7 @@
                                         <img src="{{ img_url($block['url'] ?? '') }}"
                                             alt="{{ $block['caption'] ?? ('Ilustrasi '.$course->nama) }}"
                                             title="{{ $block['caption'] ?? $course->nama }}"
-                                            class="mx-auto h-auto object-contain {{ $isPenuh ? 'w-full rounded-none sm:rounded-xl' : 'max-w-full rounded-lg sm:rounded-xl shadow-xs' }} max-h-[85vh] sm:max-h-120 md:max-h-150"
+                                            class="mx-auto h-auto object-contain {{ $isPenuh ? 'w-full rounded-none sm:rounded-xl' : 'max-w-full rounded-lg sm:rounded-xl shadow-xs' }} {{ $maxHClass }}"
                                             loading="lazy" decoding="async">
                                     </div>
                                     @if (!empty($block['caption']))
