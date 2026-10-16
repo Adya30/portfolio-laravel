@@ -1292,7 +1292,7 @@ Alpine.data('quillParagraphEditor', (block, index) => ({
 
 Alpine.data('tocSpy', () => ({
     active: '',
-    _observer: null,
+    _scrollHandler: null,
     _isManualScroll: false,
     _scrollTimeout: null,
 
@@ -1328,20 +1328,30 @@ Alpine.data('tocSpy', () => ({
 
                 this._scrollTimeout = setTimeout(() => {
                     this._isManualScroll = false;
-                }, 800);
+                }, 1000);
             }
         });
 
         this._observe();
     },
 
+    destroy() {
+        if (this._scrollHandler) {
+            window.removeEventListener('scroll', this._scrollHandler);
+            this._scrollHandler = null;
+        }
+    },
+
     _observe() {
-        if (this._observer) { this._observer.disconnect(); this._observer = null; }
+        if (this._scrollHandler) {
+            window.removeEventListener('scroll', this._scrollHandler);
+            this._scrollHandler = null;
+        }
 
         const ids = Array.from(this.$el.querySelectorAll('a[href^="#"]'))
             .map((a) => a.getAttribute('href').slice(1));
         const sections = ids.map((id) => document.getElementById(id)).filter(Boolean);
-        if (!sections.length || typeof IntersectionObserver === 'undefined') return;
+        if (!sections.length) return;
 
         const hash = window.location.hash.slice(1);
         if (hash && ids.includes(hash)) {
@@ -1350,21 +1360,47 @@ Alpine.data('tocSpy', () => ({
             this.active = sections[0].id;
         }
 
-        this._observer = new IntersectionObserver(
-            (entries) => {
-                if (this._isManualScroll) return;
+        const updateActive = () => {
+            if (this._isManualScroll) return;
 
-                const intersecting = entries.filter((e) => e.isIntersecting);
-                if (intersecting.length > 0) {
-                    intersecting.sort((a, b) => {
-                        return Math.abs(a.boundingClientRect.top - 100) - Math.abs(b.boundingClientRect.top - 100);
-                    });
-                    this.active = intersecting[0].target.id;
+            const isBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 50);
+            if (isBottom) {
+                this.active = sections[sections.length - 1].id;
+                return;
+            }
+
+            if (window.scrollY < 80) {
+                this.active = sections[0].id;
+                return;
+            }
+
+            const scrollPos = window.scrollY + 120;
+            let current = sections[0].id;
+            for (let i = 0; i < sections.length; i++) {
+                const rect = sections[i].getBoundingClientRect();
+                const top = rect.top + window.scrollY;
+                if (top <= scrollPos) {
+                    current = sections[i].id;
+                } else {
+                    break;
                 }
-            },
-            { rootMargin: '-70px 0px -65% 0px', threshold: [0, 0.5] }
-        );
-        sections.forEach((s) => this._observer.observe(s));
+            }
+            this.active = current;
+        };
+
+        let ticking = false;
+        this._scrollHandler = () => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    updateActive();
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        };
+
+        window.addEventListener('scroll', this._scrollHandler, { passive: true });
+        updateActive();
     },
 
     isActive(id) {

@@ -41,19 +41,32 @@
 
         $headingSlugCounts = [];
         foreach ($subbabBlocks as $b) {
-            if (in_array($b['type'] ?? '', ['subheading', 'subheading3'], true) && !empty($b['teks'])) {
-                $base = Str::slug($b['teks']);
-                $headingSlugCounts[$base] = ($headingSlugCounts[$base] ?? 0) + 1;
+            $type = $b['type'] ?? '';
+            if (in_array($type, ['subheading', 'subheading3'], true) && !empty($b['teks'])) {
+                $base = Str::slug(strip_tags($b['teks']));
+                if ($base !== '') {
+                    $headingSlugCounts[$base] = ($headingSlugCounts[$base] ?? 0) + 1;
+                }
+            } elseif ($type === 'paragraf' && !empty($b['teks'])) {
+                $rendered = render_markdown($b['teks']);
+                if (preg_match_all('/<h([1-6])(?:\s+[^>]*)?>(.*?)<\/h\1>/i', $rendered, $m)) {
+                    foreach ($m[2] as $inner) {
+                        $base = Str::slug(strip_tags($inner));
+                        if ($base !== '') {
+                            $headingSlugCounts[$base] = ($headingSlugCounts[$base] ?? 0) + 1;
+                        }
+                    }
+                }
             }
         }
 
-        $generateHierarchicalHeadingSlug = function ($title, $isLevel3) use (&$usedHeadingSlugs, &$currentParentHeadingSlug, $headingSlugCounts) {
+        $getHierarchicalHeadingSlug = function ($title, $level) use (&$usedHeadingSlugs, &$currentParentHeadingSlug, $headingSlugCounts) {
             $base = Str::slug($title);
             if ($base === '') {
                 $base = 'section';
             }
 
-            if (!$isLevel3) {
+            if ($level <= 2) {
                 $currentParentHeadingSlug = $base;
                 $slug = $base;
             } else {
@@ -74,29 +87,37 @@
             return $finalSlug;
         };
 
+        // Pass 2: Assign unique IDs and build TOC items + rendered paragraph HTML
         foreach ($subbabBlocks as $bIdx => $block) {
             $type = $block['type'] ?? '';
             if (in_array($type, ['subheading', 'subheading3'], true) && !empty($block['teks'])) {
-                $isLevel3 = ($type === 'subheading3');
-                $headingId = $generateHierarchicalHeadingSlug($block['teks'], $isLevel3);
+                $lvl = ($type === 'subheading3') ? 3 : 2;
+                $title = strip_tags($block['teks']);
+                $headingId = $getHierarchicalHeadingSlug($title, $lvl);
                 $subbabBlocks[$bIdx]['heading_id'] = $headingId;
                 $tocItems[] = [
                     'id' => $headingId,
                     'judul' => $block['teks'],
-                    'level' => $isLevel3 ? 3 : 2,
+                    'level' => $lvl,
                 ];
             } elseif ($type === 'paragraf' && !empty($block['teks'])) {
                 $rendered = render_markdown($block['teks']);
-                preg_match_all('/<h([1-6]) id="([^"]+)">(.*?)<\/h\1>/', $rendered, $m);
-                foreach ($m[2] as $i => $slug) {
-                    $lvl = (int) ($m[1][$i] ?? 2);
-                    $headingId = $generateHierarchicalHeadingSlug($slug, $lvl >= 3);
+                $rendered = preg_replace_callback('/<h([1-6])(?:\s+[^>]*)?>(.*?)<\/h\1>/i', function ($m) use (&$tocItems, $getHierarchicalHeadingSlug) {
+                    $lvl = (int) $m[1];
+                    $inner = $m[2];
+                    $title = trim(strip_tags($inner));
+                    if ($title === '') {
+                        return $m[0];
+                    }
+                    $headingId = $getHierarchicalHeadingSlug($title, $lvl);
                     $tocItems[] = [
                         'id' => $headingId,
-                        'judul' => strip_tags($m[3][$i]),
+                        'judul' => $title,
                         'level' => $lvl,
                     ];
-                }
+                    return '<h' . $lvl . ' id="' . $headingId . '" class="scroll-mt-24">' . $inner . '</h' . $lvl . '>';
+                }, $rendered);
+                $subbabBlocks[$bIdx]['rendered_html'] = $rendered;
             }
         }
 
@@ -312,7 +333,7 @@
                                 @endphp
                                 <div
                                     class="text-[15px] leading-[1.75] sm:text-base sm:leading-[1.8] text-slate-700 dark:text-slate-200 markdown-content {{ $alignClass }}">
-                                    {!! render_markdown($block['teks'] ?? '') !!}
+                                    {!! $block['rendered_html'] ?? render_markdown($block['teks'] ?? '') !!}
                                 </div>
                             @elseif ($type === 'gambar')
                                 @php
