@@ -86,4 +86,12 @@ Route::middleware(['auth', EnsureMateriRoleAccess::class, 'throttle:120,1'])->pr
     Route::get('profile/2fa/setup', [ProfileController::class, 'showTwoFactorSetup'])->name('profile.2fa.setup');
     Route::post('profile/2fa/enable', [ProfileController::class, 'enableTwoFactor'])->name('profile.2fa.enable');
     Route::post('profile/2fa/disable', [ProfileController::class, 'disableTwoFactor'])->name('profile.2fa.disable');
+
+    Route::get('clear-cache', function () {
+        \Illuminate\Support\Facades\Artisan::call('view:clear');
+        \Illuminate\Support\Facades\Artisan::call('cache:clear');
+        \Illuminate\Support\Facades\Artisan::call('route:clear');
+        \Illuminate\Support\Facades\Artisan::call('config:clear');
+        return redirect()->route('admin.dashboard')->with('success', 'Semua cache (View, Route, Config) berhasil dibersihkan!');
+    })->name('clear-cache');
 });

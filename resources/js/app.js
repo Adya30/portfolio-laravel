@@ -1302,7 +1302,12 @@ Alpine.data('tocSpy', () => ({
             if (!link) return;
             const rawId = link.getAttribute('href').slice(1);
             const id = decodeURIComponent(rawId);
-            const target = document.getElementById(id) || document.getElementById(rawId);
+            let target = document.getElementById(id) || document.getElementById(rawId);
+            if (!target) {
+                try {
+                    target = document.querySelector(`[id="${CSS.escape(id)}"]`) || document.querySelector(`[id="${CSS.escape(rawId)}"]`);
+                } catch (err) {}
+            }
             if (target) {
                 e.preventDefault();
                 this.active = id;

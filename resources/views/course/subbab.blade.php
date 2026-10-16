@@ -199,12 +199,12 @@
                         @php $isLevel3 = ($toc['level'] ?? 2) >= 3; @endphp
                         <a href="#{{ $toc['id'] }}"
                             @if ($isLevel3)
-                                class="focus-ring block ml-3 pl-3 py-1 text-xs leading-normal transition-colors"
+                                class="focus-ring block ml-3 pl-3 py-1 text-xs leading-normal transition-colors cursor-pointer"
                                 :class="isActive('{{ $toc['id'] }}') ?
                                     'text-blue-600 dark:text-blue-400 font-semibold' :
                                     'text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400'"
                             @else
-                                class="focus-ring block px-3 py-1.5 rounded-lg text-sm font-medium leading-snug transition-colors"
+                                class="focus-ring block px-3 py-1.5 rounded-lg text-sm font-medium leading-snug transition-colors cursor-pointer"
                                 :class="isActive('{{ $toc['id'] }}') ?
                                     'text-blue-600 dark:text-blue-400 font-bold bg-blue-50/70 dark:bg-blue-900/20' :
                                     'text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-white/5'"
