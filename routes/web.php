@@ -13,6 +13,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\TwoFactorLoginController;
 use App\Http\Controllers\LandingController;
 use App\Http\Middleware\EnsureMateriRoleAccess;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingController::class, 'index'])->name('landing');
@@ -54,7 +55,7 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
 
-Route::middleware(['auth', EnsureMateriRoleAccess::class, 'throttle:120,1'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', EnsureMateriRoleAccess::class, 'prevent-back-history', 'throttle:120,1'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::post('projects/reorder', [ProjectController::class, 'reorder'])->name('projects.reorder');
@@ -88,10 +89,11 @@ Route::middleware(['auth', EnsureMateriRoleAccess::class, 'throttle:120,1'])->pr
     Route::post('profile/2fa/disable', [ProfileController::class, 'disableTwoFactor'])->name('profile.2fa.disable');
 
     Route::get('clear-cache', function () {
-        \Illuminate\Support\Facades\Artisan::call('view:clear');
-        \Illuminate\Support\Facades\Artisan::call('cache:clear');
-        \Illuminate\Support\Facades\Artisan::call('route:clear');
-        \Illuminate\Support\Facades\Artisan::call('config:clear');
+        Artisan::call('view:clear');
+        Artisan::call('cache:clear');
+        Artisan::call('route:clear');
+        Artisan::call('config:clear');
+
         return redirect()->route('admin.dashboard')->with('success', 'Semua cache (View, Route, Config) berhasil dibersihkan!');
     })->name('clear-cache');
 });

@@ -12,7 +12,15 @@ class EnsureMateriRoleAccess
     {
         $user = $request->user();
 
-        if ($user && $user->isMateriOnly()) {
+        if (! $user) {
+            if ($request->expectsJson()) {
+                abort(401, 'Sesi Anda telah berakhir. Silakan login kembali.');
+            }
+
+            return redirect()->route('login')->with('error', 'Sesi Anda telah berakhir. Silakan login kembali.');
+        }
+
+        if ($user->isMateriOnly()) {
             $routeName = $request->route()?->getName();
 
             if ($routeName && (str_starts_with($routeName, 'admin.courses.') || $routeName === 'logout')) {
@@ -23,7 +31,7 @@ class EnsureMateriRoleAccess
                 ->with('error', 'Akun Anda hanya memiliki akses untuk mengelola menu Materi.');
         }
 
-        if ($user && ! $user->isAdmin()) {
+        if (! $user->isAdmin()) {
             abort(403, 'Akses ditolak.');
         }
 

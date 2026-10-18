@@ -245,9 +245,9 @@
                     <span class="sidebar-text {{ $isSidebarCollapsed ? 'hidden' : '' }}" x-show="!sidebarCollapsed">Lihat Website</span>
                 </a>
 
-                <form method="POST" action="{{ route('logout') }}" class="w-full m-0">
+                <form method="POST" action="{{ route('logout') }}" class="w-full m-0" onsubmit="handleLogoutSubmit(this)">
                     @csrf
-                    <button type="submit"
+                    <button type="submit" id="btn-admin-logout"
                             title="Logout"
                             class="sidebar-link w-full bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-bold text-sm rounded-xl flex items-center justify-center shadow-sm shadow-red-600/30 transition-colors cursor-pointer
                                    {{ $isSidebarCollapsed ? 'p-3' : 'gap-2 py-2.5 px-3' }}"
@@ -316,5 +316,14 @@
 
     </div>
 
+<script>
+function handleLogoutSubmit(form) {
+    const btn = form.querySelector('#btn-admin-logout') || form.querySelector('button[type="submit"]');
+    if (btn) {
+        btn.disabled = true;
+        btn.classList.add('opacity-75', 'cursor-not-allowed', 'pointer-events-none');
+    }
+}
+</script>
 </body>
 </html>

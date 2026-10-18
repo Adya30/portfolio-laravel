@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Middleware\PreventBackHistory;
 use App\Http\Middleware\SecurityHeaders;
+use App\Models\User;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -80,7 +82,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // dan pengguna yang sudah login dijauhkan dari form login.
         $middleware->redirectGuestsTo(fn () => route('login'));
         $middleware->redirectUsersTo(function () {
-            /** @var \App\Models\User|null $user */
+            /** @var User|null $user */
             $user = Auth::user();
 
             return $user?->isMateriOnly() ? route('admin.courses.index') : route('admin.dashboard');
@@ -91,6 +93,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             SecurityHeaders::class,
             'throttle:600,1',
+        ]);
+
+        $middleware->alias([
+            'prevent-back-history' => PreventBackHistory::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
