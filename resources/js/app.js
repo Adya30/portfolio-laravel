@@ -1692,12 +1692,18 @@ Alpine.data('githubCalendar', (config = {}) => ({
             ? (lang === 'id' ? `Tidak ada kontribusi pada ${formattedDate}` : `No contributions on ${formattedDate}`)
             : (lang === 'id' ? `${day.count} kontribusi pada ${formattedDate}` : `${day.count} contribution${day.count > 1 ? 's' : ''} on ${formattedDate}`);
 
-        const rect = e.target.getBoundingClientRect();
+        const card = this.$el;
+        const cardRect = card.getBoundingClientRect();
+        const cellRect = e.target.getBoundingClientRect();
+
+        const rawX = cellRect.left - cardRect.left + (cellRect.width / 2);
+        const clampedX = Math.max(90, Math.min(cardRect.width - 90, rawX));
+
         this.tooltip = {
             show: true,
             text: countText,
-            x: rect.left + rect.width / 2,
-            y: rect.top,
+            x: clampedX,
+            y: cellRect.top - cardRect.top,
         };
     },
 

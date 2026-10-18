@@ -404,7 +404,7 @@
 
             <div
                 class="rounded-2xl sm:rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#0f172a] p-4 sm:p-6 lg:p-7 relative shadow-none"
-                id="github-activity" data-aos="fade-up" x-data="githubCalendar()">
+                id="github-activity" data-aos="fade-up" @scroll.window.passive="hideCellTooltip()" x-data="githubCalendar()">
 
                 <div class="mb-4 sm:mb-5 select-none pb-3 border-b border-slate-200/80 dark:border-white/10">
                     <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-tight">
@@ -413,7 +413,7 @@
                     </h3>
                 </div>
 
-                <div x-ref="calendarScroll" class="overflow-x-auto scrollbar-none pb-2 pt-1 scroll-smooth w-full">
+                <div x-ref="calendarScroll" @scroll.passive="hideCellTooltip()" class="overflow-x-auto scrollbar-none pb-2 pt-1 scroll-smooth w-full">
                     <div class="w-full min-w-[700px]">
                         <div
                             class="flex text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1.5 select-none relative h-4">
@@ -476,9 +476,10 @@
                 </div>
 
                 <div x-show="tooltip.show" x-cloak
-                    class="fixed z-[999] pointer-events-none px-2.5 py-1.5 rounded-lg bg-slate-900/95 dark:bg-black/95 text-white text-xs font-medium shadow-xl border border-white/10 backdrop-blur -translate-x-1/2 -translate-y-full mb-2 transition-all duration-75 whitespace-nowrap"
+                    class="absolute z-50 pointer-events-none px-2.5 py-1.5 rounded-lg bg-slate-900/95 dark:bg-black/95 text-white text-xs font-medium shadow-xl border border-white/10 backdrop-blur -translate-x-1/2 -translate-y-full transition-all duration-75 whitespace-nowrap"
                     :style="`top: ${tooltip.y - 8}px; left: ${tooltip.x}px;`">
                     <span x-text="tooltip.text"></span>
+                    <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-900/95 dark:bg-black/95 rotate-45 border-r border-b border-white/10"></div>
                 </div>
 
             </div>
