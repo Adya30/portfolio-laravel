@@ -57,10 +57,6 @@
                 </button>
             </div>
 
-            <div class="flex items-center gap-2 text-xs text-slate-400">
-                <span class="border-t border-slate-200 flex-1"></span> atau URL gambar
-            </div>
-
             <input type="url" name="{{ $name }}_url" placeholder="https://contoh.com/gambar.png"
                    class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm text-slate-800 placeholder:text-slate-400 outline-none focus:border-accent focus:ring-4 focus:ring-accent/20 transition-all">
         </div>

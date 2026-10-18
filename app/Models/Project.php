@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['slug', 'nama', 'desk', 'desk_idn', 'full_desk', 'full_desk_idn', 'link', 'link_live', 'tools', 'fitur', 'fitur_idn', 'gambar', 'konten', 'category_id', 'sort_order'])]
+#[Fillable(['slug', 'nama', 'desk', 'desk_idn', 'full_desk', 'full_desk_idn', 'link', 'link_live', 'tools', 'fitur', 'fitur_idn', 'gambar', 'konten', 'konten_idn', 'category_id', 'sort_order'])]
 class Project extends Model
 {
     use HasSlugRouteKey;
@@ -19,6 +19,7 @@ class Project extends Model
             'fitur' => 'array',
             'fitur_idn' => 'array',
             'konten' => 'array',
+            'konten_idn' => 'array',
         ];
     }
 

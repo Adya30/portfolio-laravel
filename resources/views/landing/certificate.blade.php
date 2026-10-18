@@ -34,13 +34,27 @@
                         @endif
                     </div>
 
-                    <div class="pt-4 mt-4 sm:pt-5 sm:mt-5 border-t border-slate-200/90 dark:border-white/10 flex flex-wrap items-center gap-2.5">
-                        <a href="{{ route('landing') }}#certificates"
-                           class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-slate-300 dark:border-white/20 bg-white dark:bg-white/5 hover:border-orange-500 hover:text-orange-500 text-slate-800 dark:text-slate-200 font-semibold text-xs sm:text-sm active:scale-95 transition-all">
-                            <i class="ri-arrow-left-line text-base" aria-hidden="true"></i>
-                            <span x-text="t('backToCertificates')">Back to Certificates</span>
-                        </a>
-                    </div>
+                    @if ($prev || $next)
+                        <div class="pt-4 mt-4 sm:pt-5 sm:mt-5 border-t border-slate-200/90 dark:border-white/10 flex items-center justify-between gap-3">
+                            @if ($prev)
+                                <a href="{{ route('certificate.show', $prev) }}"
+                                   class="group inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full border border-slate-300 dark:border-white/20 bg-white dark:bg-white/5 hover:border-orange-500 hover:text-orange-500 text-slate-800 dark:text-slate-200 font-semibold text-xs sm:text-sm active:scale-95 transition-all">
+                                    <i class="ri-arrow-left-line text-base shrink-0 group-hover:-translate-x-0.5 transition-transform" aria-hidden="true"></i>
+                                    <span x-text="t('previousCertificate')">Prev Certificate</span>
+                                </a>
+                            @else
+                                <span></span>
+                            @endif
+
+                            @if ($next)
+                                <a href="{{ route('certificate.show', $next) }}"
+                                   class="group inline-flex items-center justify-end gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full border border-slate-300 dark:border-white/20 bg-white dark:bg-white/5 hover:border-orange-500 hover:text-orange-500 text-slate-800 dark:text-slate-200 font-semibold text-xs sm:text-sm active:scale-95 transition-all ml-auto">
+                                    <span x-text="t('nextCertificate')">Next Certificate</span>
+                                    <i class="ri-arrow-right-line text-base shrink-0 group-hover:translate-x-0.5 transition-transform" aria-hidden="true"></i>
+                                </a>
+                            @endif
+                        </div>
+                    @endif
                 </div>
 
                 <aside class="bg-slate-50/70 dark:bg-white/[0.02] p-4 sm:p-6 lg:p-7 flex flex-col justify-between">
@@ -78,28 +92,6 @@
                     </div>
                 </aside>
             </div>
-        </div>
-
-        <div class="flex items-stretch justify-between gap-2.5 sm:gap-3 pt-0.5">
-            @if ($prev)
-                <a href="{{ route('certificate.show', $prev) }}"
-                   class="rounded-2xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#0f172a]/95 hover:border-orange-500/60 dark:hover:border-orange-500/60 group flex-1 min-w-0 p-3 sm:p-3.5 transition-all">
-                    <span class="block text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-0.5"><i class="ri-arrow-left-s-line mr-0.5" aria-hidden="true"></i><span x-text="t('previous')">Previous</span></span>
-                    <span class="block font-bold text-xs sm:text-sm text-slate-900 dark:text-white truncate group-hover:text-orange-500 transition-colors">{{ $prev->nama }}</span>
-                </a>
-            @else
-                <span class="flex-1"></span>
-            @endif
-
-            @if ($next)
-                <a href="{{ route('certificate.show', $next) }}"
-                   class="rounded-2xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#0f172a]/95 hover:border-orange-500/60 dark:hover:border-orange-500/60 group flex-1 min-w-0 text-right p-3 sm:p-3.5 transition-all">
-                    <span class="block text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-0.5"><span x-text="t('next')">Next</span><i class="ri-arrow-right-s-line ml-0.5" aria-hidden="true"></i></span>
-                    <span class="block font-bold text-xs sm:text-sm text-slate-900 dark:text-white truncate group-hover:text-orange-500 transition-colors">{{ $next->nama }}</span>
-                </a>
-            @else
-                <span class="flex-1"></span>
-            @endif
         </div>
     </div>
 </section>

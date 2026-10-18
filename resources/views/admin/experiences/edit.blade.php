@@ -4,97 +4,158 @@
 @section('page_title', 'Edit Pengalaman')
 
 @section('content')
-    <x-admin.page-title/>
+    <div class="w-full space-y-6">
+        {{-- Breadcrumb Navigasi --}}
+        <nav class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs" aria-label="Breadcrumb">
+            <a href="{{ route('admin.experiences.index') }}"
+                class="font-semibold text-slate-500 dark:text-slate-400 hover:text-accent transition-colors">Kelola
+                Pengalaman</a>
+            <i class="ri-arrow-right-s-line text-slate-300 dark:text-slate-600" aria-hidden="true"></i>
+            <span class="text-slate-400">Edit Pengalaman</span>
+            <i class="ri-arrow-right-s-line text-slate-300 dark:text-slate-600" aria-hidden="true"></i>
+            <span class="text-slate-600 dark:text-slate-300 font-semibold">{{ $experience->role }} ({{ $experience->company }})</span>
+        </nav>
 
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 max-w-4xl">
-        <form method="POST" action="{{ route('admin.experiences.update', $experience) }}" enctype="multipart/form-data" class="grid sm:grid-cols-2 gap-5">
+        <form method="POST" action="{{ route('admin.experiences.update', $experience) }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
-            <div>
-                <x-admin.field name="role" label="Posisi" :value="$experience->role" required />
-            </div>
+            <div class="grid lg:grid-cols-12 gap-6 items-start">
+                {{-- Kolom Kiri: Informasi Utama & Blok Isi Konten --}}
+                <div class="lg:col-span-8 space-y-6">
+                    {{-- Informasi Dasar Pengalaman --}}
+                    <div class="bg-white dark:bg-[#162032] rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs p-6 space-y-4">
+                        <div class="border-b border-slate-100 dark:border-white/10 pb-3">
+                            <h3 class="font-poppins font-bold text-slate-800 dark:text-white text-sm flex items-center gap-2">
+                                <i class="ri-briefcase-line text-accent"></i>Informasi Posisi & Perusahaan
+                            </h3>
+                        </div>
 
-            <div>
-                <x-admin.field name="company" label="Perusahaan / Organisasi" :value="$experience->company" required />
-            </div>
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <x-admin.field name="role" label="Posisi / Jabatan (English)" :value="$experience->role" required autofocus />
+                            </div>
+                            <div>
+                                <x-admin.field name="role_idn" label="Posisi / Jabatan (Indonesia)" :value="$experience->role_idn" placeholder="Contoh: Pengembang Web" />
+                            </div>
+                        </div>
 
-            <div>
-                <x-admin.field name="duration" label="Periode" :value="$experience->duration" />
-            </div>
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div class="sm:col-span-2">
+                                <x-admin.field name="company" label="Perusahaan / Organisasi" :value="$experience->company" required placeholder="Contoh: PT Maju Jaya / BEM FASILKOM UNEJ" />
+                            </div>
+                            <div>
+                                <x-admin.field name="duration" label="Periode" :value="$experience->duration" placeholder="Contoh: Dec 2025 - Present" />
+                            </div>
+                            <div>
+                                <x-admin.field name="location" label="Lokasi" :value="$experience->location" placeholder="Contoh: Banyuwangi / Remote" />
+                            </div>
+                        </div>
+                    </div>
 
-            <div>
-                <x-admin.field name="location" label="Lokasi" :value="$experience->location" />
-            </div>
+                    {{-- Bagian Isi Konten Experience (Mode Blok seperti Project) --}}
+                    <div x-data="{ langTab: 'en' }"
+                        class="bg-white dark:bg-[#162032] rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs overflow-hidden">
+                        <div
+                            class="px-6 py-4 border-b border-slate-100 dark:border-white/10 bg-slate-50/50 dark:bg-white/5 flex flex-wrap items-center justify-between gap-3">
+                            <div>
+                                <h3
+                                    class="font-poppins font-bold text-slate-800 dark:text-white text-sm flex items-center gap-2">
+                                    <i class="ri-stack-line text-accent"></i>Bagian Isi Konten Pengalaman (Mode Blok)
+                                </h3>
+                            </div>
 
-            <div class="sm:col-span-2">
-                <x-admin.field name="desk" label="Deskripsi (English)" type="textarea" rows="4" :value="$experience->desk" required
-                               help="Deskripsi singkat tentang peran dan tanggung jawab." />
-            </div>
+                            {{-- Tab Switcher English / Indonesia --}}
+                            <div
+                                class="inline-flex items-center p-0.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-xs font-semibold">
+                                <button type="button"
+                                    @click="langTab = 'en'; $nextTick(() => window.dispatchEvent(new Event('resize')))"
+                                    :class="langTab === 'en' ?
+                                        'bg-white dark:bg-[#162032] text-accent shadow-2xs font-bold' :
+                                        'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'"
+                                    class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg transition-all cursor-pointer">
+                                    <span class="w-2 h-2 rounded-full"
+                                        :class="langTab === 'en' ? 'bg-accent' : 'bg-slate-300 dark:bg-slate-600'"></span>
+                                    <span>English</span>
+                                </button>
+                                <button type="button"
+                                    @click="langTab = 'id'; $nextTick(() => window.dispatchEvent(new Event('resize')))"
+                                    :class="langTab === 'id' ?
+                                        'bg-white dark:bg-[#162032] text-accent shadow-2xs font-bold' :
+                                        'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'"
+                                    class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg transition-all cursor-pointer">
+                                    <span class="w-2 h-2 rounded-full"
+                                        :class="langTab === 'id' ? 'bg-accent' : 'bg-slate-300 dark:bg-slate-600'"></span>
+                                    <span>Indonesia</span>
+                                </button>
+                            </div>
+                        </div>
 
-            <div class="sm:col-span-2 pt-4 border-t border-dashed border-slate-200">
-                <p class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
-                    <i class="ri-translate-2 text-accent"></i>Versi Bahasa Indonesia (opsional)
-                </p>
-                <p class="text-xs text-slate-400 mt-1">Kosongkan jika belum tersedia — pengunjung akan melihat versi Inggris.</p>
-            </div>
+                        {{-- Editor Blok Konten (Sinkron English & Indonesia) --}}
+                        <div>
+                            @include('admin.projects._blocks-editor', [
+                                'blocksValue' => old('blocks_data') ? json_decode(old('blocks_data'), true) : ($blocksValue ?? []),
+                                'uploadUrl' => route('admin.experiences.upload-image'),
+                                'autosaveKey' => 'autosave_experience_' . $experience->id,
+                            ])
+                        </div>
+                    </div>
+                </div>
 
-            <div class="sm:col-span-2">
-                <x-admin.field name="role_idn" label="Posisi (Indonesia)" :value="$experience->role_idn"
-                               placeholder="Contoh: Staf Hubungan Eksternal" />
-            </div>
+                {{-- Kolom Kanan: Logo / Foto, Skills, dan Aksi Simpan --}}
+                <div class="lg:col-span-4 space-y-6 lg:sticky lg:top-4">
+                    {{-- Logo / Foto Perusahaan --}}
+                    <div class="bg-white dark:bg-[#162032] rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs p-6 space-y-4">
+                        <div class="border-b border-slate-100 dark:border-white/10 pb-3">
+                            <h3 class="font-poppins font-bold text-slate-800 dark:text-white text-sm flex items-center gap-2">
+                                <i class="ri-image-line text-accent"></i>Logo / Foto Perusahaan
+                            </h3>
+                        </div>
+                        <x-admin.image-input name="gambar" label="Logo / Foto" :current="$experience->gambar" ratio="1"
+                            help="Kosongkan untuk memakai inisial nama perusahaan otomatis." />
+                    </div>
 
-            <div class="sm:col-span-2">
-                <x-admin.field name="desk_idn" label="Deskripsi (Indonesia)" type="textarea" rows="4" :value="$experience->desk_idn"
-                               placeholder="Deskripsi dalam bahasa Indonesia" />
-            </div>
+                    {{-- Keahlian / Skills Digunakan --}}
+                    @php
+                        $skillsRaw = old('skills', $experience->skills ?? []);
+                        $skillsText = is_array($skillsRaw) ? implode("\n", $skillsRaw) : ($skillsRaw ?? '');
+                    @endphp
+                    <div class="bg-white dark:bg-[#162032] rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs p-6 space-y-4">
+                        <div class="border-b border-slate-100 dark:border-white/10 pb-3">
+                            <h3 class="font-poppins font-bold text-slate-800 dark:text-white text-sm flex items-center gap-2">
+                                <i class="ri-tools-line text-accent"></i>Keahlian (Skills)
+                            </h3>
+                        </div>
+                        <x-admin.field name="skills" label="Skill Digunakan" type="textarea" rows="4"
+                            :value="$skillsText"
+                            help="Satu skill per baris. Contoh: Python, Git, Tailwind CSS." />
+                    </div>
 
-            <div class="sm:col-span-2">
-                <x-admin.field name="practicum_desc_idn" label="Deskripsi Praktikum (Indonesia)" type="textarea" rows="3" :value="$experience->practicum_desc_idn"
-                               placeholder="Deskripsi praktikum dalam bahasa Indonesia" />
-            </div>
+                    {{-- Pengaturan Tambahan --}}
+                    <div class="bg-white dark:bg-[#162032] rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs p-6 space-y-4">
+                        <div class="border-b border-slate-100 dark:border-white/10 pb-3">
+                            <h3 class="font-poppins font-bold text-slate-800 dark:text-white text-sm flex items-center gap-2">
+                                <i class="ri-settings-3-line text-accent"></i>Pengaturan Tambahan
+                            </h3>
+                        </div>
+                        <x-admin.field name="sort_order" label="Urutan Tampil" type="number" min="0" :value="$experience->sort_order"
+                            help="Angka lebih kecil tampil lebih awal." />
+                    </div>
 
-            <div class="sm:col-span-2">
-                <x-admin.field name="responsibilities_idn" label="Tanggung Jawab Utama (Indonesia)" type="textarea" rows="4"
-                               :value="implode(PHP_EOL, $experience->responsibilities_idn ?? [])"
-                               help="Satu tanggung jawab per baris. Kosongkan untuk memakai versi Inggris." />
-            </div>
-
-            <div class="sm:col-span-2">
-                <x-admin.field name="practicum_desc" label="Deskripsi Praktikum (opsional)" type="textarea" rows="3" :value="$experience->practicum_desc"
-                               help="Khusus untuk posisi asisten praktikum. Kosongkan jika tidak ada." />
-            </div>
-
-            <div class="sm:col-span-2">
-                <x-admin.image-input name="gambar" label="Logo / Foto Perusahaan" :current="$experience->gambar" ratio="1"
-                                     help="Kosongkan untuk memakai inisial perusahaan otomatis." />
-            </div>
-
-            <div class="sm:col-span-2">
-                <x-admin.field name="responsibilities" label="Tanggung Jawab Utama" type="textarea" rows="4"
-                               :value="implode(PHP_EOL, $experience->responsibilities ?? [])"
-                               help="Satu tanggung jawab per baris." />
-            </div>
-
-            <div class="sm:col-span-2">
-                <x-admin.field name="skills" label="Skill" type="textarea" rows="3"
-                               :value="implode(PHP_EOL, $experience->skills ?? [])"
-                               help="Satu skill per baris. Contoh: Python, Git & Version Control." />
-            </div>
-
-            <div class="sm:col-span-2 pt-2">
-                <x-admin.content-blocks-editor name="konten" :value="$experience->konten" :upload-url="route('admin.experiences.upload-image')" />
-            </div>
-
-            <div class="sm:col-span-2 flex items-center gap-3 pt-2 border-t border-slate-100">
-                <button type="submit"
-                        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-white text-sm font-semibold hover:bg-blue-600 transition-colors">
-                    <i class="ri-save-line"></i>Simpan Perubahan
-                </button>
-                <a href="{{ route('admin.experiences.index') }}"
-                   class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-sm font-semibold hover:bg-slate-50 transition-colors">
-                    Batal
-                </a>
+                    {{-- Tombol Aksi Simpan --}}
+                    <div class="bg-white dark:bg-[#162032] rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs p-5">
+                        <div class="flex items-center gap-3">
+                            <button type="submit"
+                                class="flex-1 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-accent text-white font-bold text-sm hover:bg-blue-600 transition-all shadow-sm cursor-pointer">
+                                <i class="ri-save-line text-base"></i>Simpan Perubahan
+                            </button>
+                            <a href="{{ route('admin.experiences.index') }}"
+                                class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 font-semibold text-sm hover:bg-slate-100 dark:hover:bg-white/5 transition-all text-center">
+                                Batal
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </form>
     </div>

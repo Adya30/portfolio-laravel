@@ -36,6 +36,29 @@
                                 </div>
                             </header>
 
+                        @php
+                            $blocksEn = is_array($experience->konten) ? $experience->konten : [];
+                            $blocksIdn = is_array($experience->konten_idn) ? $experience->konten_idn : [];
+                            $hasBlocksEn = count($blocksEn) > 0;
+                            $hasBlocksIdn = count($blocksIdn) > 0;
+                            $hasBlocks = $hasBlocksEn || $hasBlocksIdn;
+                        @endphp
+
+                        @if ($hasBlocks)
+                            {{-- Tampilan Konten Berbasis Blok (seperti Project) --}}
+                            <div class="space-y-4 pt-1">
+                                @if ($hasBlocksIdn)
+                                    <div x-show="$store.lang.current === 'id'" x-cloak>
+                                        @include('landing._project-blocks', ['blocks' => $blocksIdn, 'experience' => $experience])
+                                    </div>
+                                @endif
+
+                                <div x-show="{{ $hasBlocksIdn ? '$store.lang.current !== \'id\'' : 'true' }}">
+                                    @include('landing._project-blocks', ['blocks' => $hasBlocksEn ? $blocksEn : $blocksIdn, 'experience' => $experience])
+                                </div>
+                            </div>
+                        @else
+                            {{-- Fallback jika konten blok belum diisi (legacy experience) --}}
                             <div>
                                 <h2 class="font-poppins text-sm sm:text-base font-bold tracking-tight text-slate-900 dark:text-white mb-1.5"
                                     x-text="t('overview')">
@@ -78,52 +101,30 @@
                                     </ul>
                                 </div>
                             @endif
-
-                            @if (!empty($experience->konten) && is_array($experience->konten) && count($experience->konten) > 0)
-                                <div class="pt-3.5 sm:pt-4 border-t border-slate-200/90 dark:border-white/10 space-y-4">
-                                    @foreach ($experience->konten as $block)
-                                        @if (($block['type'] ?? '') === 'paragraf' && !empty($block['teks']))
-                                            <p class="prose-measure text-sm sm:text-[15px] text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
-                                                {{ $block['teks'] }}
-                                            </p>
-                                        @elseif (($block['type'] ?? '') === 'gambar' && !empty($block['url']))
-                                            @php
-                                                $ukuran = $block['ukuran'] ?? 'penuh';
-                                                $sizeClass = match ($ukuran) {
-                                                    'kecil' => 'max-w-xs',
-                                                    'sedang' => 'max-w-md',
-                                                    'besar' => 'max-w-2xl',
-                                                    default => 'max-w-full',
-                                                };
-                                            @endphp
-                                            <figure class="my-3 text-center">
-                                                <div class="inline-block rounded-2xl overflow-hidden border border-slate-200/90 dark:border-white/10 bg-slate-100/70 dark:bg-[#1e293b] p-1.5 sm:p-2 mx-auto {{ $sizeClass }} w-full shadow-2xs">
-                                                    <img src="{{ img_url($block['url']) }}"
-                                                         alt="{{ $block['caption'] ?? ($experience->company.' - '.$experience->role) }}"
-                                                         title="{{ $block['caption'] ?? $experience->company }}"
-                                                         class="w-full h-auto object-cover rounded-xl"
-                                                         loading="lazy" decoding="async">
-                                                </div>
-                                                @if (!empty($block['caption']))
-                                                    <figcaption class="mt-1.5 text-center text-xs text-slate-500 dark:text-slate-400">
-                                                        {{ $block['caption'] }}
-                                                    </figcaption>
-                                                @endif
-                                            </figure>
-                                        @endif
-                                    @endforeach
-                                </div>
-                            @endif
+                        @endif
                         </div>
 
-                        <div
-                            class="pt-4 mt-4 sm:pt-5 sm:mt-5 border-t border-slate-200/90 dark:border-white/10 flex flex-wrap items-center gap-2.5">
-                            <a href="{{ route('landing') }}#experiences"
-                                class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-slate-300 dark:border-white/20 bg-white dark:bg-white/5 hover:border-orange-500 hover:text-orange-500 text-slate-800 dark:text-slate-200 font-semibold text-xs sm:text-sm active:scale-95 transition-all">
-                                <i class="ri-arrow-left-line text-base" aria-hidden="true"></i>
-                                <span x-text="t('backToExperiences')">Back to Experiences</span>
-                            </a>
-                        </div>
+                        @if ($prev || $next)
+                            <div class="pt-4 mt-4 sm:pt-5 sm:mt-5 border-t border-slate-200/90 dark:border-white/10 flex items-center justify-between gap-3">
+                                @if ($prev)
+                                    <a href="{{ route('experience.show', $prev) }}"
+                                        class="group inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full border border-slate-300 dark:border-white/20 bg-white dark:bg-white/5 hover:border-orange-500 hover:text-orange-500 text-slate-800 dark:text-slate-200 font-semibold text-xs sm:text-sm active:scale-95 transition-all">
+                                        <i class="ri-arrow-left-line text-base shrink-0 group-hover:-translate-x-0.5 transition-transform" aria-hidden="true"></i>
+                                        <span x-text="t('previousExperience')">Prev Experience</span>
+                                    </a>
+                                @else
+                                    <span></span>
+                                @endif
+
+                                @if ($next)
+                                    <a href="{{ route('experience.show', $next) }}"
+                                        class="group inline-flex items-center justify-end gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full border border-slate-300 dark:border-white/20 bg-white dark:bg-white/5 hover:border-orange-500 hover:text-orange-500 text-slate-800 dark:text-slate-200 font-semibold text-xs sm:text-sm active:scale-95 transition-all ml-auto">
+                                        <span x-text="t('nextExperience')">Next Experience</span>
+                                        <i class="ri-arrow-right-line text-base shrink-0 group-hover:translate-x-0.5 transition-transform" aria-hidden="true"></i>
+                                    </a>
+                                @endif
+                            </div>
+                        @endif
                     </div>
 
                     <aside class="bg-slate-50/70 dark:bg-white/[0.02] p-4 sm:p-6 lg:p-7 flex flex-col justify-between">
@@ -179,36 +180,6 @@
                         </div>
                     </aside>
                 </div>
-            </div>
-
-            <div class="flex items-stretch justify-between gap-2.5 sm:gap-3 pt-0.5">
-                @if ($prev)
-                    <a href="{{ route('experience.show', $prev) }}"
-                        class="rounded-2xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#0f172a]/95 hover:border-orange-500/60 dark:hover:border-orange-500/60 group flex-1 min-w-0 p-3 sm:p-3.5 transition-all">
-                        <span
-                            class="block text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-0.5"><i
-                                class="ri-arrow-left-s-line mr-0.5" aria-hidden="true"></i><span
-                                x-text="t('previous')">Previous</span></span>
-                        <span
-                            class="block font-bold text-xs sm:text-sm text-slate-900 dark:text-white truncate group-hover:text-orange-500 transition-colors">{{ $prev->role }}</span>
-                    </a>
-                @else
-                    <span class="flex-1"></span>
-                @endif
-
-                @if ($next)
-                    <a href="{{ route('experience.show', $next) }}"
-                        class="rounded-2xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#0f172a]/95 hover:border-orange-500/60 dark:hover:border-orange-500/60 group flex-1 min-w-0 text-right p-3 sm:p-3.5 transition-all">
-                        <span
-                            class="block text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-0.5"><span
-                                x-text="t('next')">Next</span><i class="ri-arrow-right-s-line ml-0.5"
-                                aria-hidden="true"></i></span>
-                        <span
-                            class="block font-bold text-xs sm:text-sm text-slate-900 dark:text-white truncate group-hover:text-orange-500 transition-colors">{{ $next->role }}</span>
-                    </a>
-                @else
-                    <span class="flex-1"></span>
-                @endif
             </div>
         </div>
     </section>

@@ -114,8 +114,12 @@ const i18n = {
         projectNumber: 'Project Number',
         toolsUsed: 'Tools Used',
         noToolsYet: 'No tools are listed for this project yet.',
-        previousProject: 'Previous Project',
+        previousProject: 'Prev Project',
         nextProject: 'Next Project',
+        previousCertificate: 'Prev Certificate',
+        nextCertificate: 'Next Certificate',
+        previousExperience: 'Prev Experience',
+        nextExperience: 'Next Experience',
         overview: 'Overview',
         backToExperiences: 'Back to Experiences',
         skillsUsed: 'Skills Used',
@@ -228,6 +232,10 @@ const i18n = {
         noToolsYet: 'Belum ada tools yang terdaftar untuk proyek ini.',
         previousProject: 'Proyek Sebelumnya',
         nextProject: 'Proyek Berikutnya',
+        previousCertificate: 'Sertifikat Sebelumnya',
+        nextCertificate: 'Sertifikat Berikutnya',
+        previousExperience: 'Pengalaman Sebelumnya',
+        nextExperience: 'Pengalaman Berikutnya',
         overview: 'Gambaran Umum',
         backToExperiences: 'Kembali ke Pengalaman',
         skillsUsed: 'Keahlian yang Digunakan',
@@ -981,10 +989,12 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '', autosave
             base.teks = '';
         } else if (type === 'paragraf') {
             base.teks = '';
+            base.teks_idn = '';
             base.align = 'kiri';
         } else if (type === 'gambar') {
             base.url = '';
             base.caption = '';
+            base.caption_idn = '';
             base.ukuran = 'penuh';
         } else if (type === 'kode') {
             base.bahasa = 'php';
@@ -992,7 +1002,9 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '', autosave
         } else if (type === 'link') {
             base.href = '';
             base.label = '';
+            base.label_idn = '';
             base.desc = '';
+            base.desc_idn = '';
         } else if (type === 'pembatas') {
             base.style = 'garis';
         } else if (type === 'tabel') {
@@ -1208,12 +1220,64 @@ Alpine.data('courseContentEditor', (initialBlocks = [], uploadUrl = '', autosave
             this.blocks[blockIndex].rows[rIdx][cIdx] = '`kode`';
         }
     },
+
+    copyTeksFromEn(block, i) {
+        if (!block || !block.teks) return;
+        this.pushHistory();
+        block.teks_idn = block.teks;
+    },
+
+    serializeEnBlocks(blocks) {
+        if (!Array.isArray(blocks)) return '[]';
+        return JSON.stringify(blocks.map(b => {
+            const item = { type: b.type };
+            if (b.type === 'paragraf') {
+                item.teks = b.teks || '';
+                item.align = b.align || 'kiri';
+            } else if (b.type === 'gambar') {
+                item.url = b.url || '';
+                item.ukuran = b.ukuran || 'penuh';
+                item.caption = b.caption || '';
+            } else if (b.type === 'kode') {
+                item.bahasa = b.bahasa || 'php';
+                item.kode = b.kode || '';
+            } else if (b.type === 'link') {
+                item.href = b.href || '';
+                item.label = b.label || '';
+                item.desc = b.desc || '';
+            }
+            return item;
+        }));
+    },
+
+    serializeIdnBlocks(blocks) {
+        if (!Array.isArray(blocks)) return '[]';
+        return JSON.stringify(blocks.map(b => {
+            const item = { type: b.type };
+            if (b.type === 'paragraf') {
+                item.teks = (b.teks_idn !== undefined && b.teks_idn !== '') ? b.teks_idn : (b.teks || '');
+                item.align = b.align || 'kiri';
+            } else if (b.type === 'gambar') {
+                item.url = b.url || '';
+                item.ukuran = b.ukuran || 'penuh';
+                item.caption = (b.caption_idn !== undefined && b.caption_idn !== '') ? b.caption_idn : (b.caption || '');
+            } else if (b.type === 'kode') {
+                item.bahasa = b.bahasa || 'php';
+                item.kode = b.kode || '';
+            } else if (b.type === 'link') {
+                item.href = b.href || '';
+                item.label = (b.label_idn !== undefined && b.label_idn !== '') ? b.label_idn : (b.label || '');
+                item.desc = (b.desc_idn !== undefined && b.desc_idn !== '') ? b.desc_idn : (b.desc || '');
+            }
+            return item;
+        }));
+    },
 }));
 
 /* ============================================================
    Quill Rich Text Paragraph Editor Component
    ============================================================ */
-Alpine.data('quillParagraphEditor', (block, index) => ({
+Alpine.data('quillParagraphEditor', (block, index, field = 'teks') => ({
     quill: null,
     _internalChange: false,
 
@@ -1233,7 +1297,7 @@ Alpine.data('quillParagraphEditor', (block, index) => ({
 
             this.quill = new Quill(box, {
                 theme: 'snow',
-                placeholder: 'Tulis isi paragraf di sini...',
+                placeholder: field === 'teks_idn' ? 'Tulis isi paragraf (Indonesia) di sini...' : 'Tulis isi paragraf (English) di sini...',
                 modules: {
                     toolbar: toolbarOptions,
                 }
@@ -1246,21 +1310,22 @@ Alpine.data('quillParagraphEditor', (block, index) => ({
             }
 
             // Set initial content
-            if (block.teks) {
-                if (!block.teks.includes('<') && block.teks.includes('\n')) {
-                    this.quill.root.innerHTML = block.teks.split('\n').map(p => p.trim() ? `<p>${p}</p>` : '<p><br></p>').join('');
+            const initialVal = block[field] || '';
+            if (initialVal) {
+                if (!initialVal.includes('<') && initialVal.includes('\n')) {
+                    this.quill.root.innerHTML = initialVal.split('\n').map(p => p.trim() ? `<p>${p}</p>` : '<p><br></p>').join('');
                 } else {
-                    this.quill.root.innerHTML = block.teks;
+                    this.quill.root.innerHTML = initialVal;
                 }
             }
 
-            // Sync to block.teks on user edit
+            // Sync to block[field] on user edit
             this.quill.on('text-change', (delta, oldDelta, source) => {
                 if (this._internalChange) return;
 
                 const html = this.quill.root.innerHTML;
                 const isBlank = html === '<p><br></p>' || this.quill.getText().trim() === '';
-                block.teks = isBlank ? '' : html;
+                block[field] = isBlank ? '' : html;
 
                 if (source === 'user') {
                     const editorComponent = this.$root.closest('[x-data^="courseContentEditor"]');
@@ -1270,8 +1335,8 @@ Alpine.data('quillParagraphEditor', (block, index) => ({
                 }
             });
 
-            // Watch for undo/redo or external block.teks updates
-            this.$watch(() => block.teks, (newVal) => {
+            // Watch for undo/redo or external block[field] updates
+            this.$watch(() => block[field], (newVal) => {
                 if (!this.quill) return;
                 const currentHtml = this.quill.root.innerHTML;
                 const isBlank = currentHtml === '<p><br></p>' || this.quill.getText().trim() === '';

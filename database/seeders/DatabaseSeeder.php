@@ -11,10 +11,14 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
-        $this->call([
-            AdminUserSeeder::class,
-            PortfolioDataSeeder::class,
-            CourseSeeder::class,
-        ]);
+        if (file_exists(database_path('seeders/adyakomp_adyaportfolio.sql'))) {
+            $this->call(SqlDumpSeeder::class);
+        } else {
+            $this->call([
+                AdminUserSeeder::class,
+                PortfolioDataSeeder::class,
+                CourseSeeder::class,
+            ]);
+        }
     }
 }

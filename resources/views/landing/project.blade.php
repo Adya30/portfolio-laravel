@@ -32,74 +32,61 @@
                             <img src="{{ img_url($project->gambar) }}" alt="Preview Proyek {{ $project->nama }} - Portofolio Adya Handika Putra AP" title="{{ $project->nama }}" class="w-full h-auto object-cover rounded-xl" loading="lazy" decoding="async">
                         </div>
 
-                        <div>
-                            <h2 class="font-poppins text-sm sm:text-base font-bold tracking-tight text-slate-900 dark:text-white mb-1.5" x-text="t('aboutThisProject')">
-                                About This Project
-                            </h2>
-                            <p class="prose-measure text-sm sm:text-[15px] text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line" x-text='L(@json($fullDesk), @json($fullDeskIdn))'>
-                                {{ $fullDesk }}
-                            </p>
-                        </div>
+                        @php
+                            $blocksEn = is_array($project->konten) ? $project->konten : [];
+                            $blocksIdn = is_array($project->konten_idn) ? $project->konten_idn : [];
+                            $hasBlocksEn = count($blocksEn) > 0;
+                            $hasBlocksIdn = count($blocksIdn) > 0;
+                            $hasBlocks = $hasBlocksEn || $hasBlocksIdn;
+                        @endphp
 
-                        <template x-if='L(@json($project->fitur ?? []), @json($project->fitur_idn ?? [])).length > 0'>
-                            <div class="pt-3.5 sm:pt-4 border-t border-slate-200/90 dark:border-white/10">
-                                <h2 class="font-poppins text-sm sm:text-base font-bold tracking-tight text-slate-900 dark:text-white mb-2" x-text="t('keyFeatures')">
-                                    Key Features
-                                </h2>
-                                <div class="grid sm:grid-cols-2 gap-x-4 gap-y-1.5">
-                                    <template x-for='(f, fi) in L(@json($project->fitur ?? []), @json($project->fitur_idn ?? []))' :key="fi">
-                                        <div class="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-orange-500 mt-2 shrink-0"></span>
-                                            <span x-text="f"></span>
-                                        </div>
-                                    </template>
+                        @if ($hasBlocks)
+                            {{-- Tampilan Konten Berbasis Blok (seperti Materi) --}}
+                            <div class="space-y-4 pt-1">
+                                @if ($hasBlocksIdn)
+                                    <div x-show="$store.lang.current === 'id'" x-cloak>
+                                        @include('landing._project-blocks', ['blocks' => $blocksIdn])
+                                    </div>
+                                @endif
+
+                                <div x-show="{{ $hasBlocksIdn ? '$store.lang.current !== \'id\'' : 'true' }}">
+                                    @include('landing._project-blocks', ['blocks' => $hasBlocksEn ? $blocksEn : $blocksIdn])
                                 </div>
                             </div>
-                        </template>
-                        @if (!empty($project->konten) && is_array($project->konten) && count($project->konten) > 0)
-                            <div class="pt-3.5 sm:pt-4 border-t border-slate-200/90 dark:border-white/10 space-y-4">
-                                @foreach ($project->konten as $block)
-                                    @if (($block['type'] ?? '') === 'paragraf' && !empty($block['teks']))
-                                        <p class="prose-measure text-sm sm:text-[15px] text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
-                                            {{ $block['teks'] }}
-                                        </p>
-                                    @elseif (($block['type'] ?? '') === 'gambar' && !empty($block['url']))
-                                        @php
-                                            $ukuran = $block['ukuran'] ?? 'penuh';
-                                            $sizeClass = match ($ukuran) {
-                                                'kecil' => 'max-w-xs',
-                                                'sedang' => 'max-w-md',
-                                                'besar' => 'max-w-2xl',
-                                                default => 'max-w-full',
-                                            };
-                                        @endphp
-                                        <figure class="my-3 text-center">
-                                            <div class="inline-block rounded-2xl overflow-hidden border border-slate-200/90 dark:border-white/10 bg-slate-100/70 dark:bg-[#1e293b] p-1.5 sm:p-2 mx-auto {{ $sizeClass }} w-full shadow-2xs">
-                                                <img src="{{ img_url($block['url']) }}"
-                                                     alt="{{ $block['caption'] ?? ('Screenshot Proyek '.$project->nama) }}"
-                                                     title="{{ $block['caption'] ?? $project->nama }}"
-                                                     class="w-full h-auto object-cover rounded-xl"
-                                                     loading="lazy" decoding="async">
-                                            </div>
-                                            @if (!empty($block['caption']))
-                                                <figcaption class="mt-1.5 text-center text-xs text-slate-500 dark:text-slate-400">
-                                                    {{ $block['caption'] }}
-                                                </figcaption>
-                                            @endif
-                                        </figure>
-                                    @endif
-                                @endforeach
+                        @else
+                            {{-- Fallback jika konten blok belum diisi (legacy project) --}}
+                            <div>
+                                <h2 class="font-poppins text-sm sm:text-base font-bold tracking-tight text-slate-900 dark:text-white mb-1.5" x-text="t('aboutThisProject')">
+                                    About This Project
+                                </h2>
+                                <p class="prose-measure text-sm sm:text-[15px] text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line" x-text='L(@json($fullDesk), @json($fullDeskIdn))'>
+                                    {{ $fullDesk }}
+                                </p>
                             </div>
                         @endif
                     </div>
 
-                    <div class="pt-4 mt-4 sm:pt-5 sm:mt-5 border-t border-slate-200/90 dark:border-white/10 flex flex-wrap items-center gap-2.5">
-                        <a href="{{ route('landing') }}#proyek"
-                           class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-slate-300 dark:border-white/20 bg-white dark:bg-white/5 hover:border-orange-500 hover:text-orange-500 text-slate-800 dark:text-slate-200 font-semibold text-xs sm:text-sm active:scale-95 transition-all">
-                            <i class="ri-arrow-left-line text-base" aria-hidden="true"></i>
-                            <span x-text="t('backToProjects')">Back to Projects</span>
-                        </a>
-                    </div>
+                    @if ($prev || $next)
+                        <div class="pt-4 mt-4 sm:pt-5 sm:mt-5 border-t border-slate-200/90 dark:border-white/10 flex items-center justify-between gap-3">
+                            @if ($prev)
+                                <a href="{{ route('project.show', $prev) }}"
+                                   class="group inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full border border-slate-300 dark:border-white/20 bg-white dark:bg-white/5 hover:border-orange-500 hover:text-orange-500 text-slate-800 dark:text-slate-200 font-semibold text-xs sm:text-sm active:scale-95 transition-all">
+                                    <i class="ri-arrow-left-line text-base shrink-0 group-hover:-translate-x-0.5 transition-transform" aria-hidden="true"></i>
+                                    <span x-text="t('previousProject')">Prev Project</span>
+                                </a>
+                            @else
+                                <span></span>
+                            @endif
+
+                            @if ($next)
+                                <a href="{{ route('project.show', $next) }}"
+                                   class="group inline-flex items-center justify-end gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full border border-slate-300 dark:border-white/20 bg-white dark:bg-white/5 hover:border-orange-500 hover:text-orange-500 text-slate-800 dark:text-slate-200 font-semibold text-xs sm:text-sm active:scale-95 transition-all ml-auto">
+                                    <span x-text="t('nextProject')">Next Project</span>
+                                    <i class="ri-arrow-right-line text-base shrink-0 group-hover:translate-x-0.5 transition-transform" aria-hidden="true"></i>
+                                </a>
+                            @endif
+                        </div>
+                    @endif
                 </div>
 
                 <aside class="bg-slate-50/70 dark:bg-white/[0.02] p-4 sm:p-6 lg:p-7 flex flex-col justify-between">
@@ -139,47 +126,9 @@
                                 </div>
                             @endif
                         </div>
-
-                        <div class="pt-3.5 sm:pt-4 border-t border-slate-200/90 dark:border-white/10">
-                            <h2 class="font-poppins text-sm sm:text-base font-bold tracking-tight text-slate-900 dark:text-white mb-2" x-text="t('projectInfo')">
-                                Project Info
-                            </h2>
-                            <ul class="space-y-2 text-xs sm:text-sm">
-                                <li class="flex items-center justify-between gap-3">
-                                    <span class="text-slate-500 dark:text-slate-400" x-text="t('toolsUsed')">Tools Used</span>
-                                    <span class="font-semibold text-slate-700 dark:text-slate-200">{{ count($project->tools ?? []) }}</span>
-                                </li>
-                                <li class="flex items-center justify-between gap-3">
-                                    <span class="text-slate-500 dark:text-slate-400" x-text="t('keyFeatures')">Key Features</span>
-                                    <span class="font-semibold text-slate-700 dark:text-slate-200">{{ count($project->fitur ?? []) }}</span>
-                                </li>
-                            </ul>
-                        </div>
                     </div>
                 </aside>
             </div>
-        </div>
-
-        <div class="flex items-stretch justify-between gap-2.5 sm:gap-3 pt-0.5">
-            @if ($prev)
-                <a href="{{ route('project.show', $prev) }}"
-                   class="rounded-2xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#0f172a]/95 hover:border-orange-500/60 dark:hover:border-orange-500/60 group flex-1 min-w-0 p-3 sm:p-3.5 transition-all">
-                    <span class="block text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-0.5"><i class="ri-arrow-left-s-line mr-0.5" aria-hidden="true"></i><span x-text="t('previousProject')">Previous Project</span></span>
-                    <span class="block font-bold text-xs sm:text-sm text-slate-900 dark:text-white truncate group-hover:text-orange-500 transition-colors">{{ $prev->nama }}</span>
-                </a>
-            @else
-                <span class="flex-1"></span>
-            @endif
-
-            @if ($next)
-                <a href="{{ route('project.show', $next) }}"
-                   class="rounded-2xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#0f172a]/95 hover:border-orange-500/60 dark:hover:border-orange-500/60 group flex-1 min-w-0 text-right p-3 sm:p-3.5 transition-all">
-                    <span class="block text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-0.5"><span x-text="t('nextProject')">Next Project</span><i class="ri-arrow-right-s-line ml-0.5" aria-hidden="true"></i></span>
-                    <span class="block font-bold text-xs sm:text-sm text-slate-900 dark:text-white truncate group-hover:text-orange-500 transition-colors">{{ $next->nama }}</span>
-                </a>
-            @else
-                <span class="flex-1"></span>
-            @endif
         </div>
     </div>
 </section>
