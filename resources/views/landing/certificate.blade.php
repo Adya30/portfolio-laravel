@@ -3,7 +3,7 @@
 @section('content')
     <x-page-background />
 
-    <section class="relative z-20 pt-[calc(5.5rem+env(safe-area-inset-top,0px))] pb-5 sm:pt-20 sm:pb-10 md:pt-24">
+    <section class="relative z-20 pt-[calc(5.5rem+env(safe-area-inset-top,0px))] pb-5 sm:pt-20 sm:pb-3 md:pt-24">
         <div class="w-[calc(100%-2.5rem)] max-w-6xl mx-auto space-y-3 sm:space-y-4">
 
             <div class="rounded-3xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-[#0f172a]/95 overflow-hidden shadow-none"
