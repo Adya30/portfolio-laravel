@@ -45,7 +45,6 @@
                         @endphp
 
                         @if ($hasBlocks)
-                            {{-- Tampilan Konten Berbasis Blok (seperti Project) --}}
                             <div class="space-y-4 pt-1">
                                 @if ($hasBlocksIdn)
                                     <div x-show="$store.lang.current === 'id'" x-cloak>
@@ -58,7 +57,6 @@
                                 </div>
                             </div>
                         @else
-                            {{-- Fallback jika konten blok belum diisi (legacy experience) --}}
                             <div>
                                 <h2 class="font-poppins text-sm sm:text-base font-bold tracking-tight text-slate-900 dark:text-white mb-1.5"
                                     x-text="t('overview')">

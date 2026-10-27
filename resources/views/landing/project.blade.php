@@ -41,7 +41,6 @@
                         @endphp
 
                         @if ($hasBlocks)
-                            {{-- Tampilan Konten Berbasis Blok (seperti Materi) --}}
                             <div class="space-y-4 pt-1">
                                 @if ($hasBlocksIdn)
                                     <div x-show="$store.lang.current === 'id'" x-cloak>
@@ -54,12 +53,11 @@
                                 </div>
                             </div>
                         @else
-                            {{-- Fallback jika konten blok belum diisi (legacy project) --}}
                             <div>
                                 <h2 class="font-poppins text-sm sm:text-base font-bold tracking-tight text-slate-900 dark:text-white mb-1.5" x-text="t('aboutThisProject')">
                                     About This Project
                                 </h2>
-                                <p class="prose-measure text-sm sm:text-[15px] text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line" x-text='L(@json($fullDesk), @json($fullDeskIdn))'>
+                                <p class="w-full text-sm sm:text-[15px] text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line" x-text='L(@json($fullDesk), @json($fullDeskIdn))'>
                                     {{ $fullDesk }}
                                 </p>
                             </div>
@@ -67,7 +65,7 @@
                     </div>
 
                     @if ($prev || $next)
-                        <div class="pt-4 mt-4 sm:pt-5 sm:mt-5 border-t border-slate-200/90 dark:border-white/10 flex items-center justify-between gap-3">
+                        <div class="hidden lg:flex pt-4 mt-4 sm:pt-5 sm:mt-5 border-t border-slate-200/90 dark:border-white/10 items-center justify-between gap-3">
                             @if ($prev)
                                 <a href="{{ route('project.show', $prev) }}"
                                    class="group inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full border border-slate-300 dark:border-white/20 bg-white dark:bg-white/5 hover:border-orange-500 hover:text-orange-500 text-slate-800 dark:text-slate-200 font-semibold text-xs sm:text-sm active:scale-95 transition-all">
@@ -127,6 +125,28 @@
                             @endif
                         </div>
                     </div>
+
+                    @if ($prev || $next)
+                        <div class="lg:hidden pt-4 mt-5 border-t border-slate-200/90 dark:border-white/10 flex items-center justify-between gap-3">
+                            @if ($prev)
+                                <a href="{{ route('project.show', $prev) }}"
+                                   class="group inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full border border-slate-300 dark:border-white/20 bg-white dark:bg-white/5 hover:border-orange-500 hover:text-orange-500 text-slate-800 dark:text-slate-200 font-semibold text-xs sm:text-sm active:scale-95 transition-all">
+                                    <i class="ri-arrow-left-line text-base shrink-0 group-hover:-translate-x-0.5 transition-transform" aria-hidden="true"></i>
+                                    <span x-text="t('previousProject')">Prev Project</span>
+                                </a>
+                            @else
+                                <span></span>
+                            @endif
+
+                            @if ($next)
+                                <a href="{{ route('project.show', $next) }}"
+                                   class="group inline-flex items-center justify-end gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full border border-slate-300 dark:border-white/20 bg-white dark:bg-white/5 hover:border-orange-500 hover:text-orange-500 text-slate-800 dark:text-slate-200 font-semibold text-xs sm:text-sm active:scale-95 transition-all ml-auto">
+                                    <span x-text="t('nextProject')">Next Project</span>
+                                    <i class="ri-arrow-right-line text-base shrink-0 group-hover:translate-x-0.5 transition-transform" aria-hidden="true"></i>
+                                </a>
+                            @endif
+                        </div>
+                    @endif
                 </aside>
             </div>
         </div>

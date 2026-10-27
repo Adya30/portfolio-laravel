@@ -19,7 +19,7 @@
                 $teks = $block['teks'] ?? '';
             @endphp
             @if (trim($teks) !== '')
-                <div class="prose-measure text-sm sm:text-[15px] leading-relaxed text-slate-700 dark:text-slate-300 markdown-content {{ $alignClass }}">
+                <div class="w-full text-sm sm:text-[15px] leading-relaxed text-slate-700 dark:text-slate-300 markdown-content {{ $alignClass }}">
                     {!! render_markdown($teks) !!}
                 </div>
             @endif
